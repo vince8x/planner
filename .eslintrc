@@ -35,7 +35,16 @@
       "react/jsx-props-no-spreading": 0,
       "no-console": "off",
       "react/prop-types": 0,
-      "prettier/prettier": ["error"]
+      "react/require-default-props": 0,
+      "react/destructuring-assignment": 0,
+      "prettier/prettier": 0,
+      "react/forbid-prop-types": 0,
+      "no-plusplus": 0,
+      "no-prototype-builtins": 0,
+      "guard-for-in": 0,
+      "no-restricted-syntax": 0,
+      "no-continue": 0,
+      "no-undef": 0
     },
     "globals": {
       "window": true,

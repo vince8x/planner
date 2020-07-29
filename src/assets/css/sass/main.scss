@@ -7,4 +7,20 @@
 html {
     background-color: $theme-color-1 !important;
 }
-*/ 
+*/
+
+#planner-container {
+    height: 100vh;
+
+    main {
+        height: calc(100% - 160px);
+    }
+
+    .container-fluid {
+        height: 100%;
+
+        .planner-wrapper {
+            height: 100%;
+        }
+    }
+}

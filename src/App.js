@@ -1,3 +1,4 @@
+/* eslint-disable react/static-property-placement */
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -11,7 +12,11 @@ import './helpers/Firebase';
 import AppLocale from './lang';
 import ColorSwitcher from './components/common/ColorSwitcher';
 import { NotificationContainer } from './components/common/react-notifications';
-import { isMultiColorActive, isDemo, adminRoot } from './constants/defaultValues';
+import {
+  isMultiColorActive,
+  isDemo,
+  adminRoot,
+} from './constants/defaultValues';
 import { getDirection } from './helpers/Utils';
 
 const ViewHome = React.lazy(() =>
@@ -19,6 +24,9 @@ const ViewHome = React.lazy(() =>
 );
 const ViewApp = React.lazy(() =>
   import(/* webpackChunkName: "views-app" */ './views/app')
+);
+const ViewPlanner = React.lazy(() =>
+  import(/* webpackChunkName: "views-planner" */ './views/planner')
 );
 const ViewUser = React.lazy(() =>
   import(/* webpackChunkName: "views-user" */ './views/user')
@@ -36,10 +44,7 @@ const AuthRoute = ({ component: Component, authUser, ...rest }) => {
           <Component {...props} />
         ) : (
           <Redirect
-            to={{
-              pathname: '/user/login',
-              state: { from: props.location },
-            }}
+            to={{ pathname: '/user/login', state: { from: props.location } }}
           />
         )
       }
@@ -48,8 +53,10 @@ const AuthRoute = ({ component: Component, authUser, ...rest }) => {
 };
 
 class App extends React.Component {
+
   constructor(props) {
     super(props);
+
     const direction = getDirection();
     if (direction.isRtl) {
       document.body.classList.add('rtl');
@@ -59,6 +66,7 @@ class App extends React.Component {
       document.body.classList.remove('rtl');
     }
   }
+
 
   render() {
     const { locale, loginUser } = this.props;
@@ -80,6 +88,11 @@ class App extends React.Component {
                     path={adminRoot}
                     authUser={loginUser}
                     component={ViewApp}
+                  />
+                  <AuthRoute
+                    path="/planner"
+                    authUser={loginUser}
+                    component={ViewPlanner}
                   />
                   <Route
                     path="/user"

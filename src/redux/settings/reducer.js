@@ -2,7 +2,7 @@ import { CHANGE_LOCALE } from '../actions';
 import { getCurrentLanguage } from '../../helpers/Utils';
 
 const INIT_STATE = {
-  locale: getCurrentLanguage()
+  locale: getCurrentLanguage(),
 };
 
 export default (state = INIT_STATE, action) => {

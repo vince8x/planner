@@ -1,9 +1,13 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { Row } from 'reactstrap';
 import { Colxx } from '../../components/common/CustomBootstrap';
 
-const Footer = () => {
+const Footer = ({ match }) => {
+  if (match.url === '/planner') {
+    return null;
+  }
+
   return (
     <footer className="page-footer">
       <div className="footer-content">
@@ -38,4 +42,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default withRouter(Footer);
