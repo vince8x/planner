@@ -13,7 +13,10 @@ html {
     height: 100vh;
 
     main {
-        height: calc(100% - 160px);
+        height: calc(100% - 120px);
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-top: 120px;
     }
 
     .container-fluid {

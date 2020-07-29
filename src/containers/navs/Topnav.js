@@ -12,7 +12,7 @@ import {
   Input,
 } from 'reactstrap';
 
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -46,6 +46,7 @@ const TopNav = ({
   setContainerClassnamesAction,
   clickOnMobileMenuAction,
   changeLocaleAction,
+  match
 }) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -220,7 +221,7 @@ const TopNav = ({
           <MobileMenuIcon />
         </NavLink>
 
-        <div className="search">
+        {/* <div className="search">
           <Input
             name="searchKeyword"
             id="searchKeyword"
@@ -235,7 +236,7 @@ const TopNav = ({
           >
             <i className="simple-icon-magnifier" />
           </span>
-        </div>
+        </div> */}
 
         <div className="d-inline-block">
           <UncontrolledDropdown className="ml-2">
@@ -262,15 +263,15 @@ const TopNav = ({
           </UncontrolledDropdown>
         </div>
       </div>
-      <NavLink className="navbar-logo" to={adminRoot}>
+      {/* <NavLink className="navbar-logo" to={adminRoot}>
         <span className="logo d-none d-xs-block" />
         <span className="logo-mobile d-block d-xs-none" />
-      </NavLink>
+      </NavLink> */}
 
       <div className="navbar-right">
-        {isDarkSwitchActive && <TopnavDarkSwitch />}
+        {/* {isDarkSwitchActive && <TopnavDarkSwitch />} */}
         <div className="header-icons d-inline-block align-middle">
-          <TopnavEasyAccess />
+          {/* <TopnavEasyAccess /> */}
           <TopnavNotifications />
           <button
             className="header-icon btn btn-empty d-none d-sm-inline-block"
@@ -320,10 +321,10 @@ const mapStateToProps = ({ menu, settings }) => {
     locale,
   };
 };
-export default injectIntl(
+export default withRouter(injectIntl(
   connect(mapStateToProps, {
     setContainerClassnamesAction: setContainerClassnames,
     clickOnMobileMenuAction: clickOnMobileMenu,
     changeLocaleAction: changeLocale,
-  })(TopNav)
+  })(TopNav))
 );
