@@ -15,7 +15,7 @@
     "file-saver": "^2.0.2",
     "firebase": "^7.15.5",
     "formik": "^2.1.4",
-    "immutable": "^4.0.0-rc.12",
+    "immutable": "^3.8.2",
     "immutablediff": "^0.4.4",
     "immutablepatch": "^0.5.0",
     "lodash": "^4.17.19",

@@ -22,7 +22,7 @@ export default function State({state, catalog}) {
   return (
     <g>
       <rect x="0" y="0" width={width} height={height} fill={SharedStyle.COLORS.white}/>
-      <g transform={`translate(0, ${scene.height}) scale(1, -1)`} id="svg-drawing-paper">
+      <g transform={`translate(0, ${height}) scale(1, -1)`} id="svg-drawing-paper">
 
         <Scene scene={scene} catalog={catalog} drawingSupport={drawingSupport} />
         {scene.getIn(['guides','horizontal']).entrySeq().map( ([ hgKey, hgVal ]) => <line id={'hGuide' + hgKey} key={hgKey} x1={0} y1={hgVal} x2={width} y2={hgVal} style={guideStyle}/> )}

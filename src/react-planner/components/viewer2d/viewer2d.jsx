@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Map } from 'immutable';
 import PropTypes from 'prop-types';
 import { ReactSVGPanZoom, TOOL_NONE, TOOL_PAN, TOOL_ZOOM_IN, TOOL_ZOOM_OUT, TOOL_AUTO } from 'react-svg-pan-zoom';
 import * as _ from 'lodash';
@@ -97,7 +98,16 @@ export default function Viewer2D(props, context) {
   const { viewer2DActions, linesActions, holesActions, verticesActions, itemsActions, areaActions, projectActions, catalog } = context;
   const { viewer2D, mode, scene } = state;
 
-  let layerID = scene.selectedLayer;
+  const [viewer, setViewer] = useState(null);
+
+
+  useEffect(() => {
+    if (viewer != null) {
+      // viewer.fitToViewer();
+    }
+  }, [viewer]);
+
+  const layerID = scene.selectedLayer;
 
   let mapCursorPosition = ({ x, y }) => {
     return { x, y: -y + scene.height }
@@ -306,22 +316,11 @@ export default function Viewer2D(props, context) {
 
   
 
-  var e, f, SVGWidth, SVGHeight;
-  let viewer2DGet = state.get('viewer2D');
-  if (_.hasIn(viewer2DGet, 'toJS')) {
-    const viewer2DGetJS = viewer2DGet.toJS();
-    e = viewer2DGetJS.e || 0;
-    f = viewer2DGetJS.f || 0;
-    SVGWidth = viewer2DGetJS.SVGWidth || 0;
-    SVGHeight = viewer2DGetJS.SVGHeight || 0;
-  } else {
-    e = viewer2DGet.e || 0;
-    f = viewer2DGet.f || 0;
-    SVGWidth = viewer2DGet.SVGWidth || 0;
-    SVGHeight = viewer2DGet.SVGHeight || 0;
-  }
   
   // let { e, f, SVGWidth, SVGHeight } = state.get('viewer2D').toJS();
+
+  const viewer2DJs = state.get('viewer2D').toJS();
+  const { e, f, SVGWidth, SVGHeight } = viewer2DJs;
 
   const rulerSize = 15; // px
   const rulerUnitPixelSize = 100;
@@ -335,14 +334,14 @@ export default function Viewer2D(props, context) {
   const rulerYElements = Math.ceil(sceneHeight / rulerUnitPixelSize) + 1;
 
   const minitiatureProps = {
-    miniaturePosition: "none",
+    position: "none",
     // miniatureBackground: "#fff",
     // miniatureWidth: 100,
     // miniatureHeight: 80
   };
 
   const toolbarProps = {
-    toolbarPosition: "none"
+    position: "none"
   }
 
   const getDefaultReactSVGPanZoomValue = () => {
@@ -386,7 +385,7 @@ export default function Viewer2D(props, context) {
       gridTemplateRows: `${rulerSize}px ${height - rulerSize}px`,
       position: 'relative'
     }}>
-      <div style={{ gridColumn: 1, gridRow: 1, backgroundColor: rulerBgColor }}></div>
+      <div style={{ gridColumn: 1, gridRow: 1, backgroundColor: rulerBgColor }} />
       <div style={{ gridRow: 1, gridColumn: 2, position: 'relative', overflow: 'hidden' }} id="rulerX">
         {sceneWidth ? <RulerX
           unitPixelSize={rulerUnitPixelSize}
@@ -419,7 +418,8 @@ export default function Viewer2D(props, context) {
         style={{ gridColumn: 2, gridRow: 2 }}
         width={width - rulerSize}
         height={height - rulerSize}
-        value={_.hasIn(viewer2D, 'toJS') && !viewer2D.isEmpty() ? viewer2D.toJS() : getDefaultReactSVGPanZoomValue() }
+        ref={Viewer => setViewer(Viewer)}
+        value={viewer2D.isEmpty() ? new Map(getDefaultReactSVGPanZoomValue()) : viewer2D.toJS() }
         onChangeValue={onChangeValue}
         tool={mode2Tool(mode)}
         onChangeTool={onChangeTool}
