@@ -109,18 +109,18 @@ export default function Viewer2D(props, context) {
 
   const layerID = scene.selectedLayer;
 
-  let mapCursorPosition = ({ x, y }) => {
+  const mapCursorPosition = ({ x, y }) => {
     return { x, y: -y + scene.height }
   };
 
-  let onMouseMove = viewerEvent => {
+  const onMouseMove = viewerEvent => {
 
     // workaround that allow imageful component to work
     const evt = new Event('mousemove-planner-event');
     evt.viewerEvent = viewerEvent;
     document.dispatchEvent(evt);
 
-    let { x, y } = mapCursorPosition(viewerEvent);
+    const { x, y } = mapCursorPosition(viewerEvent);
 
     projectActions.updateMouseCoord({ x, y });
 
@@ -163,18 +163,18 @@ export default function Viewer2D(props, context) {
     viewerEvent.originalEvent.stopPropagation();
   };
 
-  let onMouseDown = viewerEvent => {
-    let event = viewerEvent.originalEvent;
+  const onMouseDown = viewerEvent => {
+    const event = viewerEvent.originalEvent;
 
     // workaround that allow imageful component to work
-    let evt = new Event('mousedown-planner-event');
+    const evt = new Event('mousedown-planner-event');
     evt.viewerEvent = viewerEvent;
     document.dispatchEvent(evt);
 
-    let { x, y } = mapCursorPosition(viewerEvent);
+    const { x, y } = mapCursorPosition(viewerEvent);
 
     if (mode === constants.MODE_IDLE) {
-      let elementData = extractElementData(event.target);
+      const elementData = extractElementData(event.target);
       if (!elementData || !elementData.selected) return;
 
       switch (elementData.prototype) {
@@ -203,20 +203,20 @@ export default function Viewer2D(props, context) {
     event.stopPropagation();
   };
 
-  let onMouseUp = viewerEvent => {
-    let event = viewerEvent.originalEvent;
+  const onMouseUp = viewerEvent => {
+    const event = viewerEvent.originalEvent;
 
-    let evt = new Event('mouseup-planner-event');
+    const evt = new Event('mouseup-planner-event');
     evt.viewerEvent = viewerEvent;
     document.dispatchEvent(evt);
 
-    let { x, y } = mapCursorPosition(viewerEvent);
+    const { x, y } = mapCursorPosition(viewerEvent);
 
     switch (mode) {
 
       case constants.MODE_IDLE:
         {
-          let elementData = extractElementData(event.target);
+          const elementData = extractElementData(event.target);
 
           if (elementData && elementData.selected) return;
 
@@ -288,12 +288,12 @@ export default function Viewer2D(props, context) {
     event.stopPropagation();
   };
 
-  let onChangeValue = (value) => {
+  const onChangeValue = (value) => {
     projectActions.updateZoomScale(value.a);
     return viewer2DActions.updateCameraView(value)
   };
 
-  let onChangeTool = (tool) => {
+  const onChangeTool = (tool) => {
     switch (tool) {
       case TOOL_NONE:
         projectActions.selectToolEdit();
