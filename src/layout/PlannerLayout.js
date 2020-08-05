@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import TopNav from '../containers/navs/Topnav';
+import TopnavPlanner from '../containers/navs/TopnavPlanner';
 // import Sidebar from '../containers/navs/Sidebar';
 
 const PlannerLayout = ({ containerClassnames, children, history }) => {
   return (
     <div id="planner-container" className={containerClassnames}>
-      <TopNav history={history} />
+      <TopnavPlanner history={history} />
       <main>
         <div className="container-fluid">{children}</div>
       </main>
