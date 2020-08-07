@@ -10,13 +10,12 @@ html {
 */
 
 #planner-container {
-    height: 100vh;
-
     main {
         height: calc(100% - 120px);
-        margin-left: 20px;
-        margin-right: 20px;
-        margin-top: 120px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 110px;
+        margin-bottom: 0;
     }
 
     .container-fluid {

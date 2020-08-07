@@ -11,12 +11,14 @@ const guideStyle = {
 
 export default function State({state, catalog}) {
 
-  let {activeSnapElement, snapElements, scene, drawingSupport } = state;
-  let {width, height} = scene;
+  const { snapElements, scene, drawingSupport } = state;
+  let { activeSnapElement } = state;
+  const width = scene.get('width');
+  const height = scene.get('height');
 
   activeSnapElement = activeSnapElement ?
-    <Snap snap={activeSnapElement} width={scene.width} height={scene.height}/> : null;
-  // snapElements = snapElements.map((snap,id) => <Snap key={id} snap={snap} width={scene.width} height={scene.height}/>);
+    <Snap snap={activeSnapElement} width={scene.get('width')} height={scene.get('height')}/> : null;
+  // snapElements = snapElements.entrySeq().map((snap,id) => <Snap key={id} snap={snap} width={scene.width} height={scene.height}/>);
   // snapElements = null; //only for debug purpose
 
   return (
@@ -28,8 +30,7 @@ export default function State({state, catalog}) {
         {scene.getIn(['guides','horizontal']).entrySeq().map( ([ hgKey, hgVal ]) => <line id={'hGuide' + hgKey} key={hgKey} x1={0} y1={hgVal} x2={width} y2={hgVal} style={guideStyle}/> )}
         {scene.getIn(['guides','vertical']).entrySeq().map( ([ vgKey, vgVal ]) => <line key={vgKey} x1={vgVal} y1={0} x2={vgVal} y2={height} style={guideStyle}/> )}
         {activeSnapElement}
-        {snapElements}
-
+        {/* {snapElements} */}
       </g>
     </g>
   )
