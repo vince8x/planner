@@ -78,7 +78,6 @@ const STYLE_PLUS_HOVER = {
 };
 
 const STYLE_DESCRIPTION = {
-  display: 'block',
   display: '-webkit-box',
   height: '2em',
   margin: '0 auto',
@@ -116,7 +115,7 @@ export default class CatalogItem extends Component {
   }
 
   select() {
-    let element = this.props.element;
+    const { element } = this.props;
 
     switch (element.prototype) {
       case 'lines':
@@ -128,15 +127,17 @@ export default class CatalogItem extends Component {
       case 'holes':
         this.context.holesActions.selectToolDrawingHole(element.name);
         break;
+      default:
+        break;
     }
 
     this.context.projectActions.pushLastSelectedCatalogElementToHistory(element);
   }
 
   render() {
-    let element = this.props.element;
-    let hover = this.state.hover;
-    let {
+    const { element } = this.props;
+    const { hover } = this.state;
+    const {
       context: { translator }
     } = this;
 

@@ -18,7 +18,15 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as localeActions from '../../redux/settings/actions';
+import * as localeActionsAll from '../../redux/settings/actions';
+
+import PerimeterWall from '../../catalog/lines/wall/planner-element';
+import InteriorWall from '../../catalog/lines/interior-wall/planner-element';
+import DividingWall from '../../catalog/lines/dividing-wall/planner-element';
+import Separator from '../../catalog/lines/separator/planner-element';
+import Door from '../../catalog/holes/door/planner-element';
+import Window from '../../catalog/holes/window/planner-element';
+import Gate from '../../catalog/holes/gate/planner-element';
 
 import {
   localeOptions,
@@ -46,6 +54,7 @@ const TopNavPlanner = ({
   projectActions,
   linesActions,
   holesActions,
+  itemsActions,
   statePlanner
 }) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
@@ -136,9 +145,22 @@ const TopNavPlanner = ({
     exportRequirement(updatedState.get('scene').toJS(), type, translateType);
   }
 
-  // Remember
-  // projectActions.pushLastSelectedCatalogElementToHistory(element);
-
+  const handleSelectToolDrawing = (element) => {
+    switch (element.prototype) {
+      case 'lines':
+        linesActions.selectToolDrawingLine(element.name);
+        break;
+      case 'items':
+        itemsActions.selectToolDrawingItem(element.name);
+        break;
+      case 'holes':
+        holesActions.selectToolDrawingHole(element.name);
+        break;
+      default:
+        break;
+    }
+    projectActions.pushLastSelectedCatalogElementToHistory(element);
+  }
 
   return (
     <nav className="navbar fixed-top">
@@ -198,7 +220,7 @@ const TopNavPlanner = ({
         </Button>
 
         <Button className='toolbar-item' id='planner-door'
-          onClick={() => holesActions.selectToolDrawingHole('door')}
+          onClick={() => handleSelectToolDrawing(Door)}
         >
           <GiSteelDoor />
           <UncontrolledTooltip placement="right" target="planner-door" >
@@ -207,7 +229,7 @@ const TopNavPlanner = ({
         </Button>
 
         <Button className='toolbar-item' id='planner-window'
-          onClick={() => holesActions.selectToolDrawingHole('window')}
+          onClick={() => handleSelectToolDrawing(Window)}
         >
           <GiWindow />
           <UncontrolledTooltip placement="right" target="planner-window" >
@@ -216,7 +238,7 @@ const TopNavPlanner = ({
         </Button>
 
         <Button className='toolbar-item' id='planner-gate'
-          onClick={() => holesActions.selectToolDrawingHole('gate')}
+          onClick={() => handleSelectToolDrawing(Gate)}
         >
           <GiGate />
           <UncontrolledTooltip placement="right" target="planner-gate" >
@@ -233,16 +255,16 @@ const TopNavPlanner = ({
           </Button>
           <DropdownToggle caret className='toolbar-toggle' />
           <DropdownMenu>
-            <DropdownItem onClick={() => linesActions.selectToolDrawingLine('wall')}>
+            <DropdownItem onClick={() => handleSelectToolDrawing(PerimeterWall)}>
               <IntlMessages id='planner.perimeter-wall' />
             </DropdownItem>
-            <DropdownItem onClick={() => linesActions.selectToolDrawingLine('wall')}>
+            <DropdownItem onClick={() => handleSelectToolDrawing(InteriorWall)}>
               <IntlMessages id='planner.interior-wall' />
             </DropdownItem>
-            <DropdownItem onClick={() => linesActions.selectToolDrawingLine('wall')}>
+            <DropdownItem onClick={() => handleSelectToolDrawing(DividingWall)}>
               <IntlMessages id='planner.dividing-wall' />
             </DropdownItem>
-            <DropdownItem onClick={() => linesActions.selectToolDrawingLine('separator')}>
+            <DropdownItem onClick={() => handleSelectToolDrawing(Separator)}>
               <IntlMessages id='planner.separator' />
             </DropdownItem>
           </DropdownMenu>
@@ -350,7 +372,7 @@ const mapStateToProps = ({ menu, settings, planner }) => {
 
 const mapDispatchToProps = (dispatch) => {
   const result = {
-    localeActions: bindActionCreators(localeActions, dispatch),
+    localeActions: bindActionCreators(localeActionsAll, dispatch),
     ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch))
   }
   return result;
