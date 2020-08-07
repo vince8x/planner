@@ -188,15 +188,6 @@ const TopNavPlanner = ({
           </UncontrolledTooltip>
         </Button>
 
-        <Button className='toolbar-item' id='planner-undo'
-          onClick={() => projectActions.undo()}
-        >
-          <MdUndo />
-          <UncontrolledTooltip placement="right" target="planner-undo" >
-            <IntlMessages id='planner.undo' />
-          </UncontrolledTooltip>
-        </Button>
-
         <Button className='toolbar-item' id='planner-configure-project'
           onClick={() => projectActions.openProjectConfigurator()}
         >
@@ -233,14 +224,14 @@ const TopNavPlanner = ({
           </UncontrolledTooltip>
         </Button>
 
-        <UncontrolledButtonDropdown id='planner-wall'>
+        <UncontrolledButtonDropdown id='planner-wall' className="toolbar-split-button">
           <Button id="caret" className='toolbar-item'>
             <GiBrickWall />
             <UncontrolledTooltip placement="right" target="planner-wall" >
               <IntlMessages id='planner.wall' />
             </UncontrolledTooltip>
           </Button>
-          <DropdownToggle caret className='toolbar-item' />
+          <DropdownToggle caret className='toolbar-toggle' />
           <DropdownMenu>
             <DropdownItem onClick={() => linesActions.selectToolDrawingLine('wall')}>
               <IntlMessages id='planner.perimeter-wall' />
@@ -257,14 +248,14 @@ const TopNavPlanner = ({
           </DropdownMenu>
         </UncontrolledButtonDropdown>
 
-        <UncontrolledButtonDropdown id='planner-requirement-export'>
+        <UncontrolledButtonDropdown id='planner-requirement-export' className="toolbar-split-button">
           <Button id="caret" className='toolbar-item'>
             <FaFileExport />
             <UncontrolledTooltip placement="right" target="planner-requirement-export" >
               <IntlMessages id='planner.requirement' />
             </UncontrolledTooltip>
           </Button>
-          <DropdownToggle caret className='toolbar-item' />
+          <DropdownToggle caret className='toolbar-toggle' />
           <DropdownMenu>
             <DropdownItem onClick={() => handleSaveProjectRequirementsToFile(THERMAL_REQUIREMENTS)}>
               <IntlMessages id='planner.thermal-requirement' />
