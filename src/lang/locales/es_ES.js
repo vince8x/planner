@@ -160,5 +160,9 @@ module.exports = {
   'planner.gate': 'Puerta',
   'planner.perimeter-wall': 'Muro Perímetral',
   'planner.interior-wall': 'Mudo Interior',
-  'planner.dividing-wall': 'Muro Divisorio'
+  'planner.dividing-wall': 'Muro Divisorio',
+  'planner.modal.length-input': 'Longitud de entrada',
+  'planner.modal.length': 'Longitud',
+  'planner.modal.submit': 'Enviar',
+  'planner.modal.cancel': 'Cancel'
 };

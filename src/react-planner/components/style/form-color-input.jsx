@@ -4,7 +4,7 @@ import FormTextInput from './form-text-input';
 
 const STYLE = {
   padding: 0,
-  border: 0,
+  borderWidth: 0
 };
 const EREG_NUMBER = /^.*$/;
 

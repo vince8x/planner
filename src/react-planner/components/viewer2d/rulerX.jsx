@@ -46,7 +46,7 @@ export default class RulerX extends Component {
       borderLeft: '5px solid transparent',
       borderRight: '5px solid transparent',
       borderTop: '8px solid ' + this.props.markerColor,
-      zIndex: 9001
+      zIndex: 1001
     };
 
     let rulerContainer = {

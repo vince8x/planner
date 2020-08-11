@@ -338,6 +338,28 @@ class Line{
     return { updatedState: state };
   }
 
+  static endDrawingLineExact(state, x, y) {
+    let layerID = state.getIn(['drawingSupport', 'layerID']);
+    let layer = state.getIn(['scene','layers', layerID]);
+
+    let lineID = state.getIn(['scene', 'layers', layerID, 'selected', 'lines']).first();
+    let line = state.getIn(['scene', 'layers', layerID, 'lines', lineID]);
+
+    let v0 = layer.vertices.get(line.vertices.get(0));
+
+    state = Line.remove( state, layerID, lineID ).updatedState;
+    state = Line.createAvoidingIntersections( state, layerID, line.type, v0.x, v0.y, x, y ).updatedState;
+    state = Layer.detectAndUpdateAreas( state, layerID ).updatedState;
+
+    state = state.merge({
+      mode: MODE_WAITING_DRAWING_LINE,
+      snapElements: new List(),
+      activeSnapElement: null
+    });
+
+    return { updatedState: state };
+  }
+
   static beginDraggingLine(state, layerID, lineID, x, y) {
 
     let snapElements = SnapSceneUtils.sceneSnapElements(state.scene, new List(), state.snapMask);

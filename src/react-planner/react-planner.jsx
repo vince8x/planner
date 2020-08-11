@@ -34,6 +34,14 @@ class ReactPlanner extends Component {
   // eslint-disable-next-line react/static-property-placement
   static contextType = ReactReduxContext;
 
+  constructor(props, context) {
+    super(props, context);
+    this.state = {};
+    const {store} = this.context;
+    const { projectActions, catalog, stateExtractor, plugins } = this.props;
+    plugins.forEach(plugin => plugin(store, stateExtractor));
+    projectActions.initCatalog(catalog);
+  }
 
   getChildContext() {
     return {
@@ -43,28 +51,22 @@ class ReactPlanner extends Component {
     }
   }
 
-  UNSAFE_componentWillMount() {
-    let {store} = this.context;
-    let {projectActions, catalog, stateExtractor, plugins} = this.props;
-    plugins.forEach(plugin => plugin(store, stateExtractor));
-    projectActions.initCatalog(catalog);
-  }
-
   // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, currentState) {
     const { stateExtractor, state, projectActions, catalog } = nextProps;
     const plannerState = stateExtractor(state);
     const catalogReady = plannerState.getIn(['catalog', 'ready']);
     if (!catalogReady) {
       projectActions.initCatalog(catalog);
     }
+    return currentState;
   }
 
   render() {
     const { width, height, state, stateExtractor, ...props } = this.props;
 
-    const contentW = width - toolbarW - sidebarW;
-    const toolbarH = height - footerBarH > 0 ? height - footerBarH : 0;
+    const contentW = width - sidebarW;
+    // const toolbarH = height - footerBarH > 0 ? height - footerBarH : 0;
     // let toolbarH = height;
     const contentH = height - footerBarH > 0 ? height - footerBarH : 0;
     // let contentH = height;
@@ -78,7 +80,7 @@ class ReactPlanner extends Component {
 
     return (
       <div style={{ ...wrapperStyle, height }}>
-        <Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} />
+        {/* <Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} /> */}
         <Content width={contentW} height={contentH} state={extractedState} {...props} onWheel={event => event.preventDefault()} />
         <Sidebar width={sidebarW} height={sidebarH} state={extractedState} {...props} />
         <FooterBar width={width} height={footerBarH} state={extractedState} {...props} />

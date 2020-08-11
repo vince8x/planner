@@ -8,7 +8,7 @@ import {
   BEGIN_DRAGGING_LINE,
   UPDATE_DRAGGING_LINE,
   END_DRAGGING_LINE,
-  SELECT_LINE
+  SELECT_LINE,
 } from '../constants';
 
 export default function (state, action) {

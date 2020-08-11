@@ -24,7 +24,7 @@ const footerBarStyle = {
   boxSizing: 'border-box',
   cursor: 'default',
   userSelect: 'none',
-  zIndex: '9001'
+  zIndex: '1001'
 };
 
 export const leftTextStyle = {

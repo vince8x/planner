@@ -51,25 +51,25 @@ export default class FormNumberInput extends Component {
 
   render() {
 
-    let { value, min, max, precision, onChange, onValid, onInvalid, style, placeholder } = this.props;
-    let numericInputStyle = { ...STYLE_INPUT, ...style };
+    const { value, min, max, precision, onChange, onValid, onInvalid, style, placeholder } = this.props;
+    const numericInputStyle = { ...STYLE_INPUT, ...style };
 
     if (this.state.focus) numericInputStyle.border = `1px solid ${SharedStyle.SECONDARY_COLOR.main}`;
 
-    let regexp = new RegExp(`^-?([0-9]+)?\\.?([0-9]{0,${precision}})?$`);
+    const regexp = new RegExp(`^-?([0-9]+)?\\.?([0-9]{0,${precision}})?$`);
 
     if (!isNaN(min) && isFinite(min) && this.state.showedValue < min) this.setState({ showedValue: min }); // value = min;
     if (!isNaN(max) && isFinite(max) && this.state.showedValue > max) this.setState({ showedValue: max }); // value = max;
 
-    let currValue = regexp.test(this.state.showedValue) ? this.state.showedValue : parseFloat(this.state.showedValue).toFixed(precision);
+    const currValue = regexp.test(this.state.showedValue) ? this.state.showedValue : parseFloat(this.state.showedValue).toFixed(precision);
 
-    let different = parseFloat(this.props.value).toFixed(precision) !== parseFloat(this.state.showedValue).toFixed(precision);
+    const different = parseFloat(this.props.value).toFixed(precision) !== parseFloat(this.state.showedValue).toFixed(precision);
 
-    let saveFn = (e) => {
+    const saveFn = (e) => {
       e.stopPropagation();
 
       if (this.state.valid) {
-        let savedValue = (this.state.showedValue !== '' && this.state.showedValue !== '-') ? parseFloat(this.state.showedValue) : 0;
+        const savedValue = (this.state.showedValue !== '' && this.state.showedValue !== '-') ? parseFloat(this.state.showedValue) : 0;
 
         this.setState({ showedValue: savedValue });
         onChange({ target: { value: savedValue } });

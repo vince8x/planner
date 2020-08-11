@@ -161,5 +161,9 @@ module.exports = {
   'planner.gate': 'Gate',
   'planner.perimeter-wall': 'Perimeter Wall',
   'planner.interior-wall': 'Interior Wall',
-  'planner.dividing-wall': 'Dividing Wall'
+  'planner.dividing-wall': 'Dividing Wall',
+  'planner.modal.length-input': 'Input length',
+  'planner.modal.length': 'Length',
+  'planner.modal.submit': 'Submit',
+  'planner.modal.cancel': 'Cancelar'
 };

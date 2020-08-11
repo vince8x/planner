@@ -5,7 +5,7 @@ import patch from 'immutablepatch';
 export const historyPush = (historyStructure, item) => {
   if (historyStructure.last) {
     if (historyStructure.last.hashCode() !== item.hashCode()) {
-      let toPush = new Map({
+      const toPush = new Map({
         time: Date.now(),
         diff: diff(historyStructure.last, item)
       });

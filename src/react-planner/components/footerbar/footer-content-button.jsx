@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as SharedStyle from '../../shared-style';
 import {FaTimes as IconClose} from 'react-icons/fa';
+import * as SharedStyle from '../../shared-style';
 
 const labelContainerStyle = {
   width: 'auto',
@@ -105,39 +105,42 @@ export default class FooterContentButton extends Component {
     };
   }
 
-  toggleOver(e) { this.setState({ over: true }); }
-  toggleOut(e) { this.setState({ over: false }); }
+  
 
   toggle(e) {
-    let isActive = !this.state.active;
+    const isActive = !this.state.active;
     this.setState({ active: isActive });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if( this.state.over != nextState.over ) return true;
-    if( this.state.closeOver != nextState.closeOver ) return true;
-    if( this.state.active != nextState.active ) return true;
+  componentWillReceiveProps(nextProps) {
+    if( nextProps.toggleState !== this.props.toggleState  )
+      this.state.active = nextProps.toggleState;
+  }
 
-    if( this.props.content.length != nextProps.content.length ) return true;
-    if( this.props.toggleState != nextProps.toggleState ) return true;
+  shouldComponentUpdate(nextProps, nextState) {
+    if( this.state.over !== nextState.over ) return true;
+    if( this.state.closeOver !== nextState.closeOver ) return true;
+    if( this.state.active !== nextState.active ) return true;
+
+    if( this.props.content.length !== nextProps.content.length ) return true;
+    if( this.props.toggleState !== nextProps.toggleState ) return true;
 
     return false;
   }
 
-  componentWillReceiveProps(nextProps) {
-    if( nextProps.toggleState != this.props.toggleState  )
-      this.state.active = nextProps.toggleState;
-  }
+  toggleOver(e) { this.setState({ over: true }); }
+  
+  toggleOut(e) { this.setState({ over: false }); }
 
   render() {
 
-    let s = this.state;
-    let p = this.props;
+    const s = this.state;
+    const p = this.props;
 
-    let LabelIcon = p.icon || null;
-    let labelIconStyle = p.iconStyle || {};
-    let labelTextStyle = p.textStyle || {};
-    let inputTitleStyle = p.titleStyle || {};
+    const LabelIcon = p.icon || null;
+    const labelIconStyle = p.iconStyle || {};
+    const labelTextStyle = p.textStyle || {};
+    const inputTitleStyle = p.titleStyle || {};
 
     return (
       <div style={labelContainerStyle}>

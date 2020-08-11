@@ -201,23 +201,26 @@ const TopNavPlanner = ({
           </UncontrolledTooltip>
         </Button>
 
-        <Button className='toolbar-item' id='planner-undo'
-          onClick={() => projectActions.undo()}
-        >
-          <MdUndo />
-          <UncontrolledTooltip placement="right" target="planner-undo" >
-            <IntlMessages id='planner.undo' />
-          </UncontrolledTooltip>
-        </Button>
-
-        <Button className='toolbar-item' id='planner-configure-project'
-          onClick={() => projectActions.openProjectConfigurator()}
-        >
-          <MdSettings />
-          <UncontrolledTooltip placement="right" target="planner-configure-project" >
-            <IntlMessages id='planner.configure-project' />
-          </UncontrolledTooltip>
-        </Button>
+        <UncontrolledButtonDropdown id='planner-requirement-export' className="toolbar-split-button">
+          <Button id="caret" className='toolbar-item'>
+            <FaFileExport />
+            <UncontrolledTooltip placement="right" target="planner-requirement-export" >
+              <IntlMessages id='planner.requirement' />
+            </UncontrolledTooltip>
+          </Button>
+          <DropdownToggle caret className='toolbar-toggle' />
+          <DropdownMenu>
+            <DropdownItem onClick={() => handleSaveProjectRequirementsToFile(THERMAL_REQUIREMENTS)}>
+              <IntlMessages id='planner.thermal-requirement' />
+            </DropdownItem>
+            <DropdownItem onClick={() => handleSaveProjectRequirementsToFile(FIRE_RESISTANCE_REQUIREMENTS)}>
+              <IntlMessages id='planner.fire-resistance-requirement' />
+            </DropdownItem>
+            <DropdownItem onClick={() => handleSaveProjectRequirementsToFile(FIRE_RESISTANCE_REQUIREMENTS)}>
+              <IntlMessages id='planner.acoustic-requirement' />
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledButtonDropdown>
 
         <Button className='toolbar-item' id='planner-door'
           onClick={() => handleSelectToolDrawing(Door)}
@@ -270,26 +273,23 @@ const TopNavPlanner = ({
           </DropdownMenu>
         </UncontrolledButtonDropdown>
 
-        <UncontrolledButtonDropdown id='planner-requirement-export' className="toolbar-split-button">
-          <Button id="caret" className='toolbar-item'>
-            <FaFileExport />
-            <UncontrolledTooltip placement="right" target="planner-requirement-export" >
-              <IntlMessages id='planner.requirement' />
-            </UncontrolledTooltip>
-          </Button>
-          <DropdownToggle caret className='toolbar-toggle' />
-          <DropdownMenu>
-            <DropdownItem onClick={() => handleSaveProjectRequirementsToFile(THERMAL_REQUIREMENTS)}>
-              <IntlMessages id='planner.thermal-requirement' />
-            </DropdownItem>
-            <DropdownItem onClick={() => handleSaveProjectRequirementsToFile(FIRE_RESISTANCE_REQUIREMENTS)}>
-              <IntlMessages id='planner.fire-resistance-requirement' />
-            </DropdownItem>
-            <DropdownItem onClick={() => handleSaveProjectRequirementsToFile(FIRE_RESISTANCE_REQUIREMENTS)}>
-              <IntlMessages id='planner.acoustic-requirement' />
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledButtonDropdown>
+        <Button className='toolbar-item' id='planner-undo'
+          onClick={() => projectActions.undo()}
+        >
+          <MdUndo />
+          <UncontrolledTooltip placement="right" target="planner-undo" >
+            <IntlMessages id='planner.undo' />
+          </UncontrolledTooltip>
+        </Button>
+
+        <Button className='toolbar-item' id='planner-configure-project'
+          onClick={() => projectActions.openProjectConfigurator()}
+        >
+          <MdSettings />
+          <UncontrolledTooltip placement="right" target="planner-configure-project" >
+            <IntlMessages id='planner.configure-project' />
+          </UncontrolledTooltip>
+        </Button>
 
       </div>
       <div className="navbar-right">

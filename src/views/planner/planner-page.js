@@ -23,19 +23,21 @@ const PlannerPage = () => {
 
   return (
     <ContainerDimensions>
-        {({width, height}) =>
-          <ReactPlanner
-            catalog={MyCatalog}
-            width={width}
-            height={height}
-            plugins={plugins}
-            toolbarButtons={toolbarButtons}
-            stateExtractor={state => {
-              return state.get('react-planner');
-            }}
-          />
-        }
-      </ContainerDimensions>
+      {({ width, height }) =>
+        <ReactPlanner
+          catalog={MyCatalog}
+          width={width}
+          height={height}
+          plugins={plugins}
+          toolbarButtons={toolbarButtons}
+          stateExtractor={state => {
+            return state.get('react-planner');
+          }}
+        />
+      }
+      
+    </ContainerDimensions>
+
   );
 }
 

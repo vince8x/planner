@@ -32,7 +32,9 @@ export const PRIMARY_COLOR = {
   main: '#28292D',
   alt: '#2E2F33',
   icon: '#C2C2C2',
-  border: '1px solid #555',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: '#555',
   text_main: COLORS.white,
   text_alt: '#EBEBEB',
   input: '#55595C'
@@ -42,7 +44,9 @@ export const SECONDARY_COLOR = {
   main: '#1CA6FC',
   alt: '#005FAF',
   icon: '#1CA6FC',
-  border: '1px solid #FFF'
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: '#FFF',
 };
 
 export const MESH_SELECTED = '#99C3FB';

@@ -6,7 +6,7 @@ import {
   END_DRAWING_LINE,
   BEGIN_DRAGGING_LINE,
   UPDATE_DRAGGING_LINE,
-  END_DRAGGING_LINE
+  END_DRAGGING_LINE,
 } from '../constants';
 
 export function selectLine(layerID, lineID) {

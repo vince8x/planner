@@ -33,7 +33,8 @@ import {
   ADD_CIRCULAR_GUIDE,
   REMOVE_HORIZONTAL_GUIDE,
   REMOVE_VERTICAL_GUIDE,
-  REMOVE_CIRCULAR_GUIDE
+  REMOVE_CIRCULAR_GUIDE,
+  SET_LINES_LENGTH_END_DRAWING
 } from '../constants';
 
 import { Project } from '../class/export';
@@ -71,6 +72,9 @@ export default function (state, action) {
       return Project.setItemsAttributes(state, action.itemsAttributes).updatedState;
 
     case SET_LINES_ATTRIBUTES:
+      state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
+      return Project.setLinesAttributes(state, action.linesAttributes).updatedState;
+    case SET_LINES_LENGTH_END_DRAWING:
       state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
       return Project.setLinesAttributes(state, action.linesAttributes).updatedState;
 
