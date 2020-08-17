@@ -124,7 +124,7 @@ module.exports = {
   'planner.Unselect': 'Deseleccion',
   'planner.Vertical':'Vertical',
   'planner.width': 'ancho',
-  'planner.Canvas Width': 'Ancho de lienzo',
+  'planner.canvas-width': 'Ancho de lienzo',
   'planner.Would you want to start a new Project?': 'Le gustaria comenzar un nuevo proyecto?',
   'planner.Zoom in': 'Zoom in',
   'planner.Zoom out': 'Zoom out',

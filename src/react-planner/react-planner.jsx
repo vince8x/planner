@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect, ReactReduxContext } from 'react-redux';
+import { injectIntl } from 'react-intl';
 
 import Translator from './translator/translator';
 import Catalog from './catalog/catalog';
@@ -37,7 +38,7 @@ class ReactPlanner extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {};
-    const {store} = this.context;
+    const { store } = this.context;
     const { projectActions, catalog, stateExtractor, plugins } = this.props;
     plugins.forEach(plugin => plugin(store, stateExtractor));
     projectActions.initCatalog(catalog);
@@ -47,6 +48,7 @@ class ReactPlanner extends Component {
     return {
       ...objectsMap(actions, actionNamespace => this.props[actionNamespace]),
       translator: this.props.translator,
+      intl: this.props.intl,
       catalog: this.props.catalog,
     }
   }
@@ -110,6 +112,7 @@ ReactPlanner.childContextTypes = {
   ...objectsMap(actions, () => PropTypes.object),
   translator: PropTypes.object,
   catalog: PropTypes.object,
+  intl: PropTypes.object
 };
 
 ReactPlanner.defaultProps = {
@@ -136,4 +139,4 @@ function mapDispatchToProps(dispatch) {
   return objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch));
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReactPlanner);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(ReactPlanner));

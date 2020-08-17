@@ -16,7 +16,7 @@ import { Map, List } from 'immutable';
 
 export function sceneSnapElements(scene, snapElements = new List(), snapMask = new Map(), pointX, pointY) {
 
-  let { width, height } = scene;
+  const { width, height } = scene;
 
   let a, b, c;
   return snapElements.withMutations(snapElements => {
@@ -51,7 +51,7 @@ export function sceneSnapElements(scene, snapElements = new List(), snapMask = n
     });
 
     if (snapMask.get(SNAP_ORTHO) && pointX !== undefined && pointY !== undefined) {
-      addOrthoSnap(snapElements, pointX, pointY, Number.MAX_SAFE_INTEGER, 10);
+      addOrthoSnap(snapElements, pointX, pointY, Number.MAX_SAFE_INTEGER, 1000);
     }
 
     if (snapMask.get(SNAP_GRID)) {
@@ -100,7 +100,7 @@ export function sceneOrthoSnapElements(scene, x, y, snapElements = new List(), s
 
   return snapElements.withMutations(snapElements => {
     if (snapMask.get(SNAP_ORTHO)) {
-      addOrthoSnap(snapElements, x, y, Number.MAX_SAFE_INTEGER, 10);
+      addOrthoSnap(snapElements, x, y, Number.MAX_SAFE_INTEGER, 1000);
     }
   });
 }

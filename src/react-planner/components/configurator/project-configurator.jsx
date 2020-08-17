@@ -18,13 +18,14 @@ import { THERMAL_REGULATION, CURRENT_THERMAL_REGULATION, VENTILATED } from '../.
 import { TYPE_OF_GROUPING, NUMBER_OF_FLOORS, FIRST_FLOOR_TYPE, ISOLATE_BUILDING, FUTURE_THERMAL_REGULATION } from './../../constants';
 import { futureThermalZoneData } from './../../data/thermal-regulations/future';
 import { currentThermalZoneData } from './../../data/thermal-regulations/current';
+import IntlMessages from '../../../helpers/IntlMessages';
 
 export default class ProjectConfigurator extends Component {
 
   constructor(props, context) {
     super(props, context);
 
-    let scene = props.state.scene;
+    const { scene } = props.state;
     const layers = scene.get('layers');
 
     // calculate the area
@@ -156,7 +157,7 @@ export default class ProjectConfigurator extends Component {
       thermalRegulation, typeOfGrouping, numberOfFloor, firstFloorType, totalAreaSize,
       region, commune
     } = this.state;
-    let { projectActions, translator } = this.context;
+    let { projectActions, translator, intl } = this.context;
 
     let thermalRegulations = THERMAL_REGULATION.map(item => {
       return {
@@ -184,21 +185,21 @@ export default class ProjectConfigurator extends Component {
     let communes = [];
     if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
       communes = _.filter(futureThermalZoneData, item => {
-        return item.regionNum == region
+        return item.regionNum === region
       });
     } else {
       communes = _.filter(currentThermalZoneData, item => {
-        return item.regionNum == region
+        return item.regionNum === region
       });
     }
 
     return (
       <ContentContainer width={width} height={height}>
-        <ContentTitle>{translator.t('Project config')}</ContentTitle>
+        <ContentTitle><IntlMessages id='planner.project-config' /></ContentTitle>
 
         <form onSubmit={e => this.onSubmit(e)}>
           <FormBlock>
-            <FormLabel htmlFor='height'>{translator.t('Canvas Width')}</FormLabel>
+            <FormLabel htmlFor='height'><IntlMessages id='planner.canvas-width' /></FormLabel>
             <FormTextInput
               id='width'
               placeholder='width'
@@ -340,4 +341,5 @@ ProjectConfigurator.propTypes = {
 ProjectConfigurator.contextTypes = {
   projectActions: PropTypes.object.isRequired,
   translator: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired
 };

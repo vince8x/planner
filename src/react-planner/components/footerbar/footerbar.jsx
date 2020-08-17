@@ -201,4 +201,5 @@ FooterBar.contextTypes = {
   holesActions: PropTypes.object.isRequired,
   itemsActions: PropTypes.object.isRequired,
   translator: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired
 };
