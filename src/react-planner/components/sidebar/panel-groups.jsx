@@ -12,6 +12,7 @@ import {
   MODE_DRAGGING_VERTEX, MODE_DRAGGING_ITEM, MODE_DRAGGING_HOLE, MODE_FITTING_IMAGE, MODE_UPLOADING_IMAGE,
   MODE_ROTATING_ITEM
 } from '../../constants';
+import IntlMessages from '../../../helpers/IntlMessages';
 
 const VISIBILITY_MODE = {
   MODE_IDLE, MODE_2D_ZOOM_IN, MODE_2D_ZOOM_OUT, MODE_2D_PAN, MODE_3D_VIEW, MODE_3D_FIRST_PERSON,
@@ -68,16 +69,22 @@ export default class PanelGroups extends Component {
   render() {
     let { mode, groups, layers } = this.props;
 
+    let { intl } = this.context;
+
     if (!VISIBILITY_MODE[ mode ]) return null;
 
     return (
-      <Panel name={this.context.translator.t('Groups')} opened={groups.size > 0}>
+      <Panel name={intl.formatMessage({ id: 'planner.groups' })} opened={groups.size > 0}>
         { groups.size ? <table style={tablegroupStyle}>
           <thead>
             <tr>
               <th colSpan="4"></th>
-              <th>{this.context.translator.t('Elements')}</th>
-              <th>{this.context.translator.t('Name')}</th>
+              <th>
+                <IntlMessages id='planner.elements' />
+              </th>
+              <th>
+                <IntlMessages id='planner.name' />
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -127,25 +134,25 @@ export default class PanelGroups extends Component {
                     key={groupID}
                     style={rowStyle}
                   >
-                    <td style={iconColStyle} title={this.context.translator.t('Toggle Group Visibility')}>
+                    <td style={iconColStyle} title={intl.formatMessage({ id: 'planner.toggle-group-visibility' })}>
                       <FaEye
                         onClick={swapVisibility}
                         style={!group.get('visible') ? styleEyeHidden : styleEyeVisible}
                       />
                     </td>
-                    <td style={iconColStyle} title={this.context.translator.t('Chain selected Elements to Group')}>
+                    <td style={iconColStyle} title={intl.formatMessage({ id: 'planner.Groups' })}>
                       <FaLink
                         onClick={chainToGroup}
                         style={!shouldHighlight ? styleEditButton : styleEditButtonHover}
                       />
                     </td>
-                    <td style={iconColStyle} title={this.context.translator.t('Un-chain all Group\'s Elements and remove Group')}>
+                    <td style={iconColStyle} title={intl.formatMessage({ id: 'planner.un-chain-all-group-elements-and-remove-group' })}>
                       <FaUnlink
                         onClick={ e => this.context.groupsActions.removeGroup(groupID) }
                         style={!shouldHighlight ? styleEditButton : styleEditButtonHover}
                       />
                     </td>
-                    <td style={iconColStyle} title={this.context.translator.t('Delete group and all Elements')}>
+                    <td style={iconColStyle} title={intl.formatMessage({ id: 'planner.delete-group-and-all-elements' })}>
                       <FaTrash
                         onClick={ e => this.context.groupsActions.removeGroupAndDeleteElements(groupID) }
                         style={!shouldHighlight ? styleEditButton : styleEditButtonHover}
@@ -174,7 +181,9 @@ export default class PanelGroups extends Component {
                 onClick={ e => this.context.groupsActions.addGroup() }
               >
                 <TiPlus />
-                <b style={styleAddLabel}>{this.context.translator.t('New Empty Group')}</b>
+                <b style={styleAddLabel}>
+                  <IntlMessages id='planner.new-empty-group' />
+                </b>
               </td>
               <td
                 style={ !this.state.newSelectedHover ? newLayerLableStyle : newLayerLableHoverStyle }
@@ -183,7 +192,9 @@ export default class PanelGroups extends Component {
                 onClick={ e => this.context.groupsActions.addGroupFromSelected() }
               >
                 <TiPlus />
-                <b style={styleAddLabel}>{this.context.translator.t('New Group from selected')}</b>
+                <b style={styleAddLabel}>
+                  <IntlMessages id='new-group-from-selected' />
+                </b>
               </td>
             </tr>
           </tbody>

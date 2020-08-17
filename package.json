@@ -48,7 +48,7 @@
     "react-rater": "^5.1.1",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^3.4.3",
     "react-scroll": "^1.7.16",
     "react-select": "^3.1.0",
     "react-sortablejs": "^2.0.11",

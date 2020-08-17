@@ -5,6 +5,7 @@ import * as SharedStyle from '../../shared-style';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { FaPencil, FaTrash, FaTimes } from 'react-icons/fa';
 import { FormNumberInput } from '../../components/style/export';
+import IntlMessages from '../../../helpers/IntlMessages';
 
 const tabStyle = { margin: '1em' };
 
@@ -47,15 +48,19 @@ export default class PanelGuides extends Component {
 
   render() {
     let { state } = this.props;
-    let { projectActions, translator } = this.context;
+    let { projectActions, translator, intl } = this.context;
     let { guides } = state.scene;
 
     return (
-      <Panel name={translator.t('Guides')}>
+      <Panel name={intl.formatMessage({ id: 'planner.guides' })}>
         <Tabs id='guidesTabs' style={tabStyle}>
           <TabList>
-            <Tab>{translator.t('Horizontal')}</Tab>
-            <Tab>{translator.t('Vertical')}</Tab>
+            <Tab>
+              <IntlMessages id='planner.horizontal' />
+            </Tab>
+            <Tab>
+              <IntlMessages id='planner.vertical' />
+            </Tab>
             {/*<Tab>{translator.t('Circular')}</Tab>*/}
           </TabList>
 
@@ -89,7 +94,7 @@ export default class PanelGuides extends Component {
                       style={addGuideStyle}
                       onClick={e => this.setState({ addHGVisible: false })}
                     >
-                      {translator.t('+ Add Horizontal Giude')}
+                      <IntlMessages id='planner.add-horizontal-guide' />
                     </td>
                   </tr>
                 ) : (
@@ -146,7 +151,7 @@ export default class PanelGuides extends Component {
                       style={addGuideStyle}
                       onClick={e => this.setState({ addVGVisible: false })}
                     >
-                      {translator.t('+ Add Vertical Giude')}
+                      <IntlMessages id='planner.add-vertical-guide' />
                     </td>
                   </tr>
                 ) : (

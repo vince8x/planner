@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormNumberInput, FormTextInput } from '../../../style/export';
 import { PropertyLengthMeasure } from '../../../../catalog/properties/export';
+import IntlMessages from '../../../../../helpers/IntlMessages';
 
 const tableStyle = { width: '100%' };
 const firstTdStyle = { width: '6em' };
@@ -19,7 +20,9 @@ export default function LineAttributesEditor({element, onUpdate, attributeFormDa
       <table style={tableStyle}>
         <tbody>
           <tr>
-            <td style={firstTdStyle}>{translator.t('Name')}</td>
+            <td style={firstTdStyle}>
+              <IntlMessages id='planner.name' />
+            </td>
             <td>
               <FormTextInput
                 value={name}
