@@ -14,19 +14,18 @@ html {
 
   .navbar {
     .top-toolbar {
-
       border-top: 1px solid #dadada;
       border-left: 1px solid #dadada;
       margin-left: 10px;
       flex-basis: auto;
 
-      button.toolbar-item, button.toolbar-toggle {
+      button.toolbar-item,
+      button.toolbar-toggle {
         background: #fff;
         color: #333;
         padding: 0;
         border: none;
         border-radius: 0;
-        
 
         &:hover {
           background: #f4f4f4;
@@ -51,7 +50,15 @@ html {
           margin-left: 0;
         }
       }
-
+    }
+    .btn-title {
+      font-weight: bold;
+      font-size: 10px;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+    .flex-auto {
+      flex-basis: auto;
     }
   }
 
