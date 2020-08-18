@@ -7,6 +7,7 @@ import CatalogList from './catalog-view/catalog-list';
 import ProjectConfigurator from './configurator/project-configurator';
 
 import * as constants from '../constants';
+import CanvasConfigurator from './configurator/canvas-configurator';
 
 export default function Content({ width, height, state, customContents }) {
   const mode = state.get('mode');
@@ -39,14 +40,16 @@ export default function Content({ width, height, state, customContents }) {
     case constants.MODE_CONFIGURING_PROJECT:
       return <ProjectConfigurator width={width} height={height} state={state} />;
 
+    case constants.MODE_CONFIGURING_CANVAS:
+      return <CanvasConfigurator width={width} height={height} state={state} />;
     default:
       {
         if (customContents.hasOwnProperty(mode)) {
           const CustomContent = customContents[mode];
           return <CustomContent width={width} height={height} state={state} />
-        } 
+        }
         throw new Error(`Mode ${mode} doesn't have a mapped content`);
-        
+
       }
   }
 }

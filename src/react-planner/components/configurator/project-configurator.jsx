@@ -83,10 +83,6 @@ export default class ProjectConfigurator extends Component {
     }), 'regionNum', 'region');
 
     this.state = {
-      dataWidth: scene.width,
-      dataHeight: scene.height,
-      dataDefaultWallHeight: scene.defaultWallHeight || 300,
-      dataDefaultWallWidth: scene.defaultWallWidth || 20,
       thermalRegulation: scene.thermalRegulation || CURRENT_THERMAL_REGULATION,
       typeOfGrouping: scene.typeOfGrouping || ISOLATE_BUILDING,
       numberOfFloor: scene.numberOfFloor || 1,
@@ -105,37 +101,23 @@ export default class ProjectConfigurator extends Component {
     let { projectActions } = this.context;
 
     let {
-      dataWidth, dataHeight, dataDefaultWallWidth, dataDefaultWallHeight,
       thermalRegulation, typeOfGrouping, numberOfFloor, firstFloorType,
       region, commune
     } = this.state;
-    dataHeight = _.isNumber(parseInt(dataHeight)) ? parseInt(dataHeight) : 2000;
-    dataWidth = _.isNumber(parseInt(dataWidth)) ? parseInt(dataWidth) : 3000;
-    dataDefaultWallWidth = _.isNumber(parseInt(dataDefaultWallWidth)) ? parseInt(dataDefaultWallWidth) : 20;
-    dataDefaultWallHeight = _.isNumber(parseInt(dataDefaultWallHeight)) ? parseInt(dataDefaultWallHeight) : 300;
-
     let selectedCommune = _.find(currentThermalZoneData, { regionNum: region, commune: commune })
     if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
       selectedCommune = _.find(futureThermalZoneData, { regionNum: region, commune: commune })
     }
 
-    if (dataWidth <= 100 || dataHeight <= 100) {
-      alert('Scene size too small');
-    } else {
-      projectActions.setProjectProperties({
-        width: dataWidth,
-        height: dataHeight,
-        defaultWallWidth: dataDefaultWallWidth,
-        defaultWallHeight: dataDefaultWallHeight,
-        thermalRegulation: thermalRegulation,
-        typeOfGrouping: typeOfGrouping,
-        numberOfFloor: numberOfFloor,
-        firstFloorType: firstFloorType,
-        region: region,
-        commune: commune,
-        thermalZone: selectedCommune ? selectedCommune.thermalZone : 1
-      });
-    }
+    projectActions.setProjectProperties({
+      thermalRegulation: thermalRegulation,
+      typeOfGrouping: typeOfGrouping,
+      numberOfFloor: numberOfFloor,
+      firstFloorType: firstFloorType,
+      region: region,
+      commune: commune,
+      thermalZone: selectedCommune ? selectedCommune.thermalZone : 1
+    });
   }
 
   onThermalRegulationChanged(newRegulation) {
@@ -153,11 +135,10 @@ export default class ProjectConfigurator extends Component {
   render() {
     let { width, height } = this.props;
     let {
-      dataWidth, dataHeight, dataDefaultWallHeight, dataDefaultWallWidth,
       thermalRegulation, typeOfGrouping, numberOfFloor, firstFloorType, totalAreaSize,
       region, commune
     } = this.state;
-    let { projectActions, translator, intl } = this.context;
+    let { projectActions, translator } = this.context;
 
     let thermalRegulations = THERMAL_REGULATION.map(item => {
       return {
@@ -198,40 +179,6 @@ export default class ProjectConfigurator extends Component {
         <ContentTitle><IntlMessages id='planner.project-config' /></ContentTitle>
 
         <form onSubmit={e => this.onSubmit(e)}>
-          <FormBlock>
-            <FormLabel htmlFor='height'><IntlMessages id='planner.canvas-width' /></FormLabel>
-            <FormTextInput
-              id='width'
-              placeholder='width'
-              value={dataWidth}
-              onChange={e => this.setState({ dataWidth: e.target.value })}
-            />
-          </FormBlock>
-
-          <FormBlock>
-            <FormLabel htmlFor='height'>
-              <IntlMessages id='planner.canvas-height' />
-            </FormLabel>
-            <FormTextInput
-              id='height'
-              placeholder='height'
-              value={dataHeight}
-              onChange={e => this.setState({ dataHeight: e.target.value })}
-            />
-          </FormBlock>
-
-          <FormBlock>
-            <FormLabel htmlFor='default-wall-height'>
-              <IntlMessages id='planner.default-wall-height' />
-            </FormLabel>
-            <FormTextInput
-              id='default-wall-height'
-              placeholder='default-wall-height'
-              value={dataDefaultWallHeight}
-              onChange={e => this.setState({ dataDefaultWallHeight: e.target.value })}
-            />
-          </FormBlock>
-
           <FormBlock>
             <FormLabel htmlFor='thermal-regulations'>
               <IntlMessages id='planner.thermal-regulations' />

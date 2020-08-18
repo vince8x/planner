@@ -2,6 +2,7 @@ import { Map, List } from 'immutable';
 import {
   MODE_VIEWING_CATALOG,
   MODE_CONFIGURING_PROJECT,
+  MODE_CONFIGURING_CANVAS,
   MODE_IDLE
 } from '../constants';
 import { State, Catalog } from '../models';
@@ -150,6 +151,14 @@ class Project{
   static openProjectConfigurator(state) {
     state = state.merge({
       mode: MODE_CONFIGURING_PROJECT,
+    });
+
+    return { updatedState: state };
+  }
+
+  static openCanvasConfigurator(state) {
+    state = state.merge({
+      mode: MODE_CONFIGURING_CANVAS,
     });
 
     return { updatedState: state };

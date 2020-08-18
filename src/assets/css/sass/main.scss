@@ -14,44 +14,56 @@ html {
 
   .navbar {
     .top-toolbar {
-
-      border-top: 1px solid #dadada;
-      border-left: 1px solid #dadada;
       margin-left: 10px;
       flex-basis: auto;
 
-      button.toolbar-item, button.toolbar-toggle {
-        background: #fff;
-        color: #333;
-        padding: 0;
-        border: none;
-        border-radius: 0;
-        
+      .button-group {
+        border-top: 1px solid #dadada;
+        border-left: 1px solid #dadada;
+        margin-right: 10px;
+      
+        button.toolbar-item,
+        button.toolbar-toggle {
+          background: #fff;
+          color: #333;
+          padding: 0;
+          border: none;
+          border-radius: 0;
+  
+          &:hover {
+            background: #f4f4f4;
+            border-color: #eaeaea;
+          }
+        }
+  
+        button.toolbar-item {
+          font-size: 32px;
+          min-width: 48px;
+          min-height: 48px;
+          border-bottom: 1px solid #dadada;
+          border-right: 1px solid #dadada;
+        }
+  
+        button.toolbar-toggle {
+          font-size: 16px;
+          width: 24px;
+          border-bottom: 1px solid #dadada;
+          border-right: 1px solid #dadada;
+          &:after {
+            margin-left: 0;
+          }
+        }
 
-        &:hover {
-          background: #f4f4f4;
-          border-color: #eaeaea;
+        .btn-title {
+          font-weight: bold;
+          font-size: 10px;
+          margin-left: 5px;
+          margin-right: 5px;
         }
       }
-
-      button.toolbar-item {
-        font-size: 32px;
-        min-width: 48px;
-        min-height: 48px;
-        border-bottom: 1px solid #dadada;
-        border-right: 1px solid #dadada;
-      }
-
-      button.toolbar-toggle {
-        font-size: 16px;
-        width: 24px;
-        border-bottom: 1px solid #dadada;
-        border-right: 1px solid #dadada;
-        &:after {
-          margin-left: 0;
-        }
-      }
-
+    }
+    .flex-auto {
+      flex-basis: auto;
     }
   }
 
