@@ -19,6 +19,7 @@ import {
   MODE_ROTATING_ITEM
 } from '../../constants';
 import * as SharedStyle from '../../shared-style';
+import IntlMessages from '../../../helpers/IntlMessages';
 
 const VISIBILITY_MODE = {
   MODE_IDLE, MODE_2D_ZOOM_IN, MODE_2D_ZOOM_OUT, MODE_2D_PAN,
@@ -124,8 +125,8 @@ export default class PanelLayers extends Component {
           <thead>
             <tr>
               <th colSpan='3'></th>
-              <th>{this.context.translator.t('Altitude')}</th>
-              <th>{this.context.translator.t('Name')}</th>
+              <th><IntlMessages id='planner.altitude' /></th>
+              <th><IntlMessages id='planner.name' /></th>
             </tr>
           </thead>
           <tbody>
@@ -197,7 +198,9 @@ export default class PanelLayers extends Component {
           onClick={ (e) => this.addLayer(e) }
         >
           { !this.state.layerAddUIVisible ? <TiPlus /> : <TiDelete /> }
-          <b style={styleAddLabel}>{this.context.translator.t('New layer')}</b>
+          <b style={styleAddLabel}>
+            <IntlMessages id='planner.new-layer' />
+          </b>
         </p>
 
         {
@@ -205,7 +208,7 @@ export default class PanelLayers extends Component {
             <table style={layerInputTableStyle}>
               <tbody>
                 <tr style={{marginTop: '1em'}}>
-                  <td style={firstTdStyle}>{this.context.translator.t('Name')}:</td>
+                  <td style={firstTdStyle}><IntlMessages id='planner.name' />:</td>
                   <td>
                     <FormTextInput
                       value={this.state.editingLayer.get('name')}
@@ -214,7 +217,9 @@ export default class PanelLayers extends Component {
                   </td>
                 </tr>
                 <tr>
-                  <td style={firstTdStyle}>{this.context.translator.t('opacity')}:</td>
+                  <td style={firstTdStyle}>
+                    <IntlMessages id='planner.opacity' />:
+                  </td>
                   <td>
                     <FormSlider
                       min={0}
@@ -225,7 +230,7 @@ export default class PanelLayers extends Component {
                   </td>
                 </tr>
                 <tr>
-                  <td style={firstTdStyle}>{this.context.translator.t('altitude')}:</td>
+                  <td style={firstTdStyle}><IntlMessages id='planner.altitude' />:</td>
                   <td>
                     <FormNumberInput
                       value={this.state.editingLayer.get('altitude')}
@@ -234,7 +239,7 @@ export default class PanelLayers extends Component {
                   </td>
                 </tr>
                 <tr>
-                  <td style={firstTdStyle}>{this.context.translator.t('order')}:</td>
+                  <td style={firstTdStyle}><IntlMessages id='planner.order' />:</td>
                   <td>
                     <FormNumberInput
                       value={this.state.editingLayer.get('order')}
@@ -249,10 +254,10 @@ export default class PanelLayers extends Component {
                         <tr>
                           <td><CancelButton size="small" onClick={ e => {
                             this.resetLayerMod(e);
-                          } }>{this.context.translator.t('Reset')}</CancelButton></td>
+                          } }><IntlMessages id='planner.reset' /></CancelButton></td>
                           <td><FormSubmitButton size="small" onClick={ e => {
                             this.updateLayer(e, this.state.editingLayer);
-                          } }>{this.context.translator.t('Save')}</FormSubmitButton></td>
+                          } }><IntlMessages id='planner.save' /></FormSubmitButton></td>
                         </tr>
                       </tbody>
                     </table>

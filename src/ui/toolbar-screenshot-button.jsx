@@ -23,7 +23,7 @@ const {
 
 const { ToolbarButton } = ReactPlannerComponents.ToolbarComponents;
 
-export default function ToolbarScreenshotButton({ mode }, { translator }) {
+export default function ToolbarScreenshotButton({ mode }, { translator, intl }) {
 
   const imageBrowserDownload = imageUri => {
     const fileOutputLink = document.createElement('a');
@@ -93,7 +93,7 @@ export default function ToolbarScreenshotButton({ mode }, { translator }) {
 
   if ([MODE_3D_FIRST_PERSON, MODE_3D_VIEW].includes(mode)) {
     return (
-      <ToolbarButton active={false} tooltip={translator.t('Get Screenshot')} onClick={saveScreenshotToFile}>
+      <ToolbarButton active={false} tooltip={intl.formatMessage({ id: 'planner.get-screenshot' })} onClick={saveScreenshotToFile}>
         <MdCamera />
       </ToolbarButton>
     );
@@ -114,7 +114,7 @@ export default function ToolbarScreenshotButton({ mode }, { translator }) {
     MODE_ROTATING_ITEM].includes(mode)) {
 
     return (
-      <ToolbarButton active={false} tooltip={translator.t('Get Screenshot')} onClick={saveSVGScreenshotToFile}>
+      <ToolbarButton active={false} tooltip={intl.formatMessage({ id: 'planner.get-screenshot' })} onClick={saveSVGScreenshotToFile}>
         <MdCamera />
       </ToolbarButton>
     );
@@ -130,4 +130,5 @@ ToolbarScreenshotButton.propTypes = {
 
 ToolbarScreenshotButton.contextTypes = {
   translator: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
 };

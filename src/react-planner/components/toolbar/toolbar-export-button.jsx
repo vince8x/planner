@@ -6,7 +6,7 @@ import ToolbarButton from './toolbar-button';
 import { Project } from '../../class/export';
 import { exportElementsCsv } from '../../utils/csv-export';
 
-export default function ToolbarExportButton({state}, {translator}) {
+export default function ToolbarExportButton({state}, {translator, intl}) {
 
   let saveProjectElementsToFile = e => {
     e.preventDefault();
@@ -16,7 +16,7 @@ export default function ToolbarExportButton({state}, {translator}) {
   };
 
   return (
-    <ToolbarButton active={false} tooltip={translator.t('Export project')} onClick={saveProjectElementsToFile}>
+    <ToolbarButton active={false} tooltip={intl.formatMessage({ id: 'planner.export-project' })} onClick={saveProjectElementsToFile}>
       <IconExport />
     </ToolbarButton>
   );
@@ -28,4 +28,5 @@ ToolbarExportButton.propTypes = {
 
 ToolbarExportButton.contextTypes = {
   translator: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
 };

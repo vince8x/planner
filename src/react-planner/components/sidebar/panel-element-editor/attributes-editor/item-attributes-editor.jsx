@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FormNumberInput from '../../../style/form-number-input';
 import FormTextInput from '../../../style/form-text-input';
+import IntlMessages from '../../../../../helpers/IntlMessages';
 
 const tableStyle = { width: '100%' };
 const firstTdStyle = { width: '6em' };
@@ -17,7 +18,9 @@ export default function ItemAttributesEditor({element, onUpdate, attributeFormDa
     <table style={tableStyle}>
       <tbody>
         <tr>
-          <td style={firstTdStyle}>{translator.t('Name')}</td>
+          <td style={firstTdStyle}>
+            <IntlMessages id='planner.name' />
+          </td>
           <td>
             <FormTextInput
               value={name}
@@ -53,7 +56,9 @@ export default function ItemAttributesEditor({element, onUpdate, attributeFormDa
           </td>
         </tr>
         <tr>
-          <td style={firstTdStyle}>{translator.t('Rotation')}</td>
+          <td style={firstTdStyle}>
+            <IntlMessages id='planner.rotation' />
+          </td>
           <td>
             <FormNumberInput
               value={renderedR}

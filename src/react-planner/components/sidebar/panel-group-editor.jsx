@@ -13,6 +13,7 @@ import {
   MODE_DRAGGING_VERTEX, MODE_DRAGGING_ITEM, MODE_DRAGGING_HOLE, MODE_FITTING_IMAGE, MODE_UPLOADING_IMAGE,
   MODE_ROTATING_ITEM
 } from '../../constants';
+import IntlMessages from '../../../helpers/IntlMessages';
 
 const VISIBILITY_MODE = {
   MODE_IDLE, MODE_2D_ZOOM_IN, MODE_2D_ZOOM_OUT, MODE_2D_PAN, MODE_3D_VIEW, MODE_3D_FIRST_PERSON,
@@ -59,18 +60,22 @@ export default class PanelGroupEditor extends Component {
   }
 
   render() {
+    const { intl } = this.context;
+
     if (!this.props.groupID || !VISIBILITY_MODE[this.props.state.mode]) return null;
 
     let group = this.props.state.getIn(['scene', 'groups', this.props.groupID]);
     let elements = group.get('elements');
 
     return (
-      <Panel name={this.context.translator.t('Group [{0}]', group.get('name'))} opened={true}>
+      <Panel name={intl.formatMessage({id:'planner.group'},  {name: group.get('name') })} opened={true}>
         <div style={{padding: '5px 15px'}}>
           <table style={tableStyle}>
             <tbody>
               <tr>
-                <td style={firstTdStyle}>{this.context.translator.t('Name')}</td>
+                <td style={firstTdStyle}>
+                  <IntlMessages id='planner.name' />
+                </td>
                 <td>
                   <FormTextInput
                     value={group.get('name')}
@@ -104,7 +109,9 @@ export default class PanelGroupEditor extends Component {
                 </td>
               </tr>
               <tr>
-                <td style={firstTdStyle}>{this.context.translator.t('Rotation')}</td>
+                <td style={firstTdStyle}>
+                  <IntlMessages id='planner.rotation' />
+                </td>
                 <td>
                   <FormNumberInput
                     value={group.get('rotation')}
@@ -120,14 +127,16 @@ export default class PanelGroupEditor extends Component {
           {
             elements.size ?
               <div>
-                <p style={{textAlign:'center', borderBottom:SharedStyle.PRIMARY_COLOR.border , paddingBottom:'1em'}}>{this.context.translator.t('Group\'s Elements')}</p>
+                <p style={{textAlign:'center', borderBottom:SharedStyle.PRIMARY_COLOR.border , paddingBottom:'1em'}}>
+                  <IntlMessages id='groups-elements' />
+                </p>
                 <table style={tablegroupStyle}>
                   <thead>
                     <tr>
                       <th style={iconColStyle}></th>
-                      <th>{this.context.translator.t('Layer')}</th>
-                      <th>{this.context.translator.t('Prototype')}</th>
-                      <th>{this.context.translator.t('Name')}</th>
+                      <th><IntlMessages id='layer' /></th>
+                      <th><IntlMessages id='prototype' /></th>
+                      <th><IntlMessages id='name' /></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -142,7 +151,7 @@ export default class PanelGroupEditor extends Component {
                             return <tr
                               key={elementID}
                             >
-                              <td style={iconColStyle} title={this.context.translator.t('Un-chain Element from Group')}>
+                              <td style={iconColStyle} title={intl.formatMessage({id:'planner.un-chain-element-from-group'})}>
                                 <FaUnlink
                                   onClick={ e => this.context.groupsActions.removeFromGroup( this.props.groupID, layerID, elementPrototype, elementID ) }
                                   style={styleEditButton}
