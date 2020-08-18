@@ -6,6 +6,7 @@ import {
   Vertex
 } from './export';
 import {
+  MathUtils,
   IDBroker,
   NameGenerator,
   GeometryUtils,
@@ -389,27 +390,63 @@ class Line{
 
   static updateDraggingLine(state, x, y) {
 
-    let draggingSupport = state.draggingSupport;
-    let snapElements = state.snapElements;
+    const { draggingSupport, snapElements } = state;
 
-    let layerID = draggingSupport.get('layerID');
-    let lineID = draggingSupport.get('lineID');
-    let diffX = x - draggingSupport.get('startPointX');
-    let diffY = y - draggingSupport.get('startPointY');
-    let newVertex0X = draggingSupport.get('startVertex0X') + diffX;
-    let newVertex0Y = draggingSupport.get('startVertex0Y') + diffY;
-    let newVertex1X = draggingSupport.get('startVertex1X') + diffX;
-    let newVertex1Y = draggingSupport.get('startVertex1Y') + diffY;
+    const layerID = draggingSupport.get('layerID');
+    const lineID = draggingSupport.get('lineID');
 
+    const startPointX = draggingSupport.get('startPointX');
+    const startPointY = draggingSupport.get('startPointY');
 
+    const diffX = x - draggingSupport.get('startPointX');
+    const diffY = y - draggingSupport.get('startPointY');
+
+    if (diffX === 0 && diffY === 0) {
+      return { updatedState: state };
+    }
+
+    const horizontalLine = GeometryUtils.horizontalLine(y);
+    const verticalLine = GeometryUtils.verticalLine(x);
+
+    const startVertex0X = draggingSupport.get('startVertex0X');
+    const startVertex0Y = draggingSupport.get('startVertex0Y');
+    const startVertex1X = draggingSupport.get('startVertex1X');
+    const startVertex1Y = draggingSupport.get('startVertex1Y');
+
+    let newVertex0X = startVertex0X;
+    let newVertex0Y = startVertex0Y;
+    let newVertex1X = startVertex1X;
+    let newVertex1Y = startVertex1Y;
+
+    const startLine = GeometryUtils.linePassingThroughTwoPoints(startVertex0X, startVertex0Y, startVertex1X, startVertex1Y);
+
+    if (GeometryUtils.twoLinesIntersection(horizontalLine.a, horizontalLine.b, horizontalLine.c, startLine.a, startLine.b, startLine.c) === undefined) {
+      // The startLine is parallel with horizontal line
+      // then we move the startLine along the vertical line
+      newVertex0Y = startVertex0Y + diffY;
+      newVertex1Y = startVertex1Y + diffY;
+    } else if (GeometryUtils.twoLinesIntersection(verticalLine.a, verticalLine.b, verticalLine.c, startLine.a, startLine.b, startLine.c) === undefined) {
+      // The startLine is parallel with vertical line
+      // then we move the startLine along the horizontal line
+      newVertex0X = startVertex0X + diffX;
+      newVertex1X = startVertex1X + diffX;
+    } else {
+      newVertex0X = startVertex0X + diffX;
+      newVertex1X = startVertex1X + diffX;
+      newVertex0Y = startVertex0Y + diffY;
+      newVertex1Y = startVertex1Y + diffY;
+    }
+   
     let activeSnapElement = null;
-    let curSnap0 = null, curSnap1 = null;
+    let curSnap0 = null;
+    let curSnap1 = null;
     if (state.snapMask && !state.snapMask.isEmpty()) {
       curSnap0 = SnapUtils.nearestSnap(snapElements, newVertex0X, newVertex0Y, state.snapMask);
       curSnap1 = SnapUtils.nearestSnap(snapElements, newVertex1X, newVertex1Y, state.snapMask);
     }
 
-    let deltaX = 0, deltaY = 0;
+    let deltaX = 0;
+    let deltaY = 0;
     if (curSnap0 && curSnap1) {
       if (curSnap0.point.distance < curSnap1.point.distance) {
         deltaX = curSnap0.point.x - newVertex0X;
@@ -452,27 +489,27 @@ class Line{
   }
 
   static endDraggingLine(state, x, y) {
-    let {draggingSupport} = state;
-    let layerID = draggingSupport.get('layerID');
-    let layer = state.scene.layers.get(layerID);
-    let lineID = draggingSupport.get('lineID');
-    let line = layer.lines.get(lineID);
+    const { draggingSupport } = state;
+    const layerID = draggingSupport.get('layerID');
+    const layer = state.scene.layers.get(layerID);
+    const lineID = draggingSupport.get('lineID');
+    const line = layer.lines.get(lineID);
 
-    let vertex0 = layer.vertices.get(line.vertices.get(0));
-    let vertex1 = layer.vertices.get(line.vertices.get(1));
+    const vertex0 = layer.vertices.get(line.vertices.get(0));
+    const vertex1 = layer.vertices.get(line.vertices.get(1));
 
-    let maxV = GeometryUtils.maxVertex(vertex0, vertex1);
-    let minV = GeometryUtils.minVertex(vertex0, vertex1);
+    const maxV = GeometryUtils.maxVertex(vertex0, vertex1);
+    const minV = GeometryUtils.minVertex(vertex0, vertex1);
 
-    let lineLength = GeometryUtils.verticesDistance(minV,maxV);
-    let alpha = Math.atan2(maxV.y - minV.y, maxV.x - minV.x);
+    const lineLength = GeometryUtils.verticesDistance(minV,maxV);
+    const alpha = Math.atan2(maxV.y - minV.y, maxV.x - minV.x);   // angle between ray and positive x axis
 
-    let holesWithOffsetPosition = [];
+    const holesWithOffsetPosition = [];
     layer.lines.get(lineID).holes.forEach(holeID => {
-      let hole = layer.holes.get(holeID);
-      let pointOnLine = lineLength * hole.offset;
+      const hole = layer.holes.get(holeID);
+      const pointOnLine = lineLength * hole.offset;
 
-      let offsetPosition = {
+      const offsetPosition = {
         x: pointOnLine * Math.cos(alpha) + minV.x,
         y: pointOnLine * Math.sin(alpha) + minV.y
       };
@@ -480,19 +517,48 @@ class Line{
       holesWithOffsetPosition.push({hole, offsetPosition});
     });
 
-    let diffX = x - draggingSupport.get('startPointX');
-    let diffY = y - draggingSupport.get('startPointY');
-    let newVertex0X = draggingSupport.get('startVertex0X') + diffX;
-    let newVertex0Y = draggingSupport.get('startVertex0Y') + diffY;
-    let newVertex1X = draggingSupport.get('startVertex1X') + diffX;
-    let newVertex1Y = draggingSupport.get('startVertex1Y') + diffY;
+    const startVertex0X = draggingSupport.get('startVertex0X');
+    const startVertex0Y = draggingSupport.get('startVertex0Y');
+    const startVertex1X = draggingSupport.get('startVertex1X');
+    const startVertex1Y = draggingSupport.get('startVertex1Y');
+
+    let newVertex0X = startVertex0X;
+    let newVertex0Y = startVertex0Y;
+    let newVertex1X = startVertex1X;
+    let newVertex1Y = startVertex1Y;
+
+    const startLine = GeometryUtils.linePassingThroughTwoPoints(startVertex0X, startVertex0Y, startVertex1X, startVertex1Y);
+
+    const horizontalLine = GeometryUtils.horizontalLine(y);
+    const verticalLine = GeometryUtils.verticalLine(x);
+
+    const diffX = x - draggingSupport.get('startPointX');
+    const diffY = y - draggingSupport.get('startPointY');
+
+    if (GeometryUtils.twoLinesIntersection(horizontalLine.a, horizontalLine.b, horizontalLine.c, startLine.a, startLine.b, startLine.c) === undefined) {
+      // The startLine is parallel with horizontal line
+      // then we move the startLine along the vertical line
+      newVertex0Y = startVertex0Y + diffY;
+      newVertex1Y = startVertex1Y + diffY;
+    } else if (GeometryUtils.twoLinesIntersection(verticalLine.a, verticalLine.b, verticalLine.c, startLine.a, startLine.b, startLine.c) === undefined) {
+      // The startLine is parallel with vertical line
+      // then we move the startLine along the horizontal line
+      newVertex0X = startVertex0X + diffX;
+      newVertex1X = startVertex1X + diffX;
+    } else {
+      newVertex0X = startVertex0X + diffX;
+      newVertex1X = startVertex1X + diffX;
+      newVertex0Y = startVertex0Y + diffY;
+      newVertex1Y = startVertex1Y + diffY;
+    }
 
     if (state.snapMask && !state.snapMask.isEmpty()) {
 
-      let curSnap0 = SnapUtils.nearestSnap(state.snapElements, newVertex0X, newVertex0Y, state.snapMask);
-      let curSnap1 = SnapUtils.nearestSnap(state.snapElements, newVertex1X, newVertex1Y, state.snapMask);
+      const curSnap0 = SnapUtils.nearestSnap(state.snapElements, newVertex0X, newVertex0Y, state.snapMask);
+      const curSnap1 = SnapUtils.nearestSnap(state.snapElements, newVertex1X, newVertex1Y, state.snapMask);
 
-      let deltaX = 0, deltaY = 0;
+      let deltaX = 0;
+      let deltaY = 0;
       if (curSnap0 && curSnap1) {
         if (curSnap0.point.distance < curSnap1.point.distance) {
           deltaX = curSnap0.point.x - newVertex0X;
@@ -518,7 +584,7 @@ class Line{
       newVertex1Y += deltaY;
     }
 
-    let lineGroups = state   //get groups membership if present
+    const lineGroups = state   //get groups membership if present
       .getIn(['scene', 'groups'])
       .filter( group => {
         const lines = group.getIn(['elements', layerID, 'lines']);
