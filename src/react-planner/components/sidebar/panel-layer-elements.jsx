@@ -9,6 +9,7 @@ import {
 } from '../../constants';
 import * as SharedStyle from '../../shared-style';
 import {MdSearch} from 'react-icons/md';
+import IntlMessages from '../../../helpers/IntlMessages';
 
 const VISIBILITY_MODE = {
   MODE_IDLE, MODE_2D_ZOOM_IN, MODE_2D_ZOOM_OUT, MODE_2D_PAN, MODE_3D_VIEW, MODE_3D_FIRST_PERSON,
@@ -162,7 +163,9 @@ export default class PanelLayerElement extends Component {
           {
             this.state.matchedElements.lines.count() ?
               <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Lines')}</p>
+                <p style={categoryDividerStyle}>
+                  <IntlMessages id='planner.lines' />
+                </p>
                 {
                   this.state.matchedElements.lines.entrySeq().map(([lineID, line]) => {
                     return (
@@ -183,7 +186,9 @@ export default class PanelLayerElement extends Component {
           {
             this.state.matchedElements.holes.count() ?
               <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Holes')}</p>
+                <p style={categoryDividerStyle}>
+                  <IntlMessages id='planner.holes' />
+                </p>
                 {
                   this.state.matchedElements.holes.entrySeq().map(([holeID, hole]) => {
                     return (
@@ -204,7 +209,9 @@ export default class PanelLayerElement extends Component {
           {
             this.state.matchedElements.items.count() ?
               <div>
-                <p style={categoryDividerStyle}>{this.context.translator.t('Items')}</p>
+                <p style={categoryDividerStyle}>
+                  <IntlMessages id='planner.items' />
+                </p>
                 {
                   this.state.matchedElements.items.entrySeq().map(([itemID, item]) => {
                     return (

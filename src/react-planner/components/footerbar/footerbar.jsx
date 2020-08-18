@@ -11,6 +11,7 @@ import { SNAP_POINT, SNAP_LINE, SNAP_SEGMENT, SNAP_GRID, SNAP_GUIDE } from '../.
 import { MODE_SNAPPING } from '../../constants';
 import * as SharedStyle from '../../shared-style';
 import { VERSION } from '../../version';
+import IntlMessages from '../../../helpers/IntlMessages';
 
 const footerBarStyle = {
   position: 'absolute',
@@ -60,7 +61,7 @@ export default class FooterBar extends Component {
 
   render() {
     const { state: globalState, width, height } = this.props;
-    const { translator, projectActions } = this.context;
+    const { projectActions, intl } = this.context;
     const { x, y } = globalState.get('mouse').toJS();
     const zoom = globalState.get('zoom');
     const mode = globalState.get('mode');
@@ -86,11 +87,13 @@ export default class FooterBar extends Component {
 
         <If condition={MODE_SNAPPING.includes(mode)}>
           <div style={leftTextStyle}>
-            <div title={translator.t('Mouse X Coordinate')} style={coordStyle}>X : {x.toFixed(3)}</div>
-            <div title={translator.t('Mouse Y Coordinate')} style={coordStyle}>Y : {y.toFixed(3)}</div>
+            <div title={intl.formatMessage({id:'planner.mouse-x-coordinate'})} style={coordStyle}>
+              X : {x.toFixed(3)}
+            </div>
+            <div title={intl.formatMessage({id:'planner.mouse-y-coordinate'})} style={coordStyle}>Y : {y.toFixed(3)}</div>
           </div>
 
-          <div style={leftTextStyle} title={translator.t('Scene Zoom Level')}>Zoom: {zoom.toFixed(3)}X</div>
+          <div style={leftTextStyle} title={intl.formatMessage({id:'planner.scene-zoom-level'})}>Zoom: {zoom.toFixed(3)}X</div>
 
           <div style={leftTextStyle}>
             <FooterToggleButton
@@ -99,7 +102,7 @@ export default class FooterBar extends Component {
               toggleOff={() => { updateSnapMask({ SNAP_ORTHO: false }); }}
               text="Ortho"
               toggleState={globalState.snapMask.get(SNAP_POINT)}
-              title={translator.t('Orthogonal')}
+              title={intl.formatMessage({id:'planner.orthogonal'})}
             />
             <FooterToggleButton
               state={this.state}
@@ -107,7 +110,7 @@ export default class FooterBar extends Component {
               toggleOff={() => { updateSnapMask({ SNAP_POINT: false }); }}
               text="Snap PT"
               toggleState={globalState.snapMask.get(SNAP_POINT)}
-              title={translator.t('Snap to Point')}
+              title={intl.formatMessage({id:'planner.snap-to-point'})}
             />
             <FooterToggleButton
               state={this.state}
@@ -115,7 +118,7 @@ export default class FooterBar extends Component {
               toggleOff={() => { updateSnapMask({ SNAP_LINE: false }); }}
               text="Snap LN"
               toggleState={globalState.snapMask.get(SNAP_LINE)}
-              title={translator.t('Snap to Line')}
+              title={intl.formatMessage({id:'planner.snap-to-line'})}
             />
             <FooterToggleButton
               state={this.state}
@@ -123,7 +126,7 @@ export default class FooterBar extends Component {
               toggleOff={() => { updateSnapMask({ SNAP_SEGMENT: false }); }}
               text="Snap SEG"
               toggleState={globalState.snapMask.get(SNAP_SEGMENT)}
-              title={translator.t('Snap to Segment')}
+              title={intl.formatMessage({id:'planner.snap-to-segment'})}
             />
             <FooterToggleButton
               state={this.state}
@@ -131,7 +134,7 @@ export default class FooterBar extends Component {
               toggleOff={() => { updateSnapMask({ SNAP_GRID: false }); }}
               text="Snap GRD"
               toggleState={globalState.snapMask.get(SNAP_GRID)}
-              title={translator.t('Snap to Grid')}
+              title={intl.formatMessage({id:'planner.snap-to-grid'})}
             />
             <FooterToggleButton
               state={this.state}
@@ -139,7 +142,7 @@ export default class FooterBar extends Component {
               toggleOff={() => { updateSnapMask({ SNAP_GUIDE: false }); }}
               text="Snap GDE"
               toggleState={globalState.snapMask.get(SNAP_GUIDE)}
-              title={translator.t('Snap to Guide')}
+              title={intl.formatMessage({id:'planner.snap-to-guide'})}
             />
           </div>
         </If>

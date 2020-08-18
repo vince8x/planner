@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import If from '../../utils/react-if';
 import * as sharedStyles from '../../shared-style';
+import IntlMessages from '../../../helpers/IntlMessages';
 
 const cx = 0;
 const cy = 0;
@@ -34,7 +35,9 @@ export default function Group({ layer, group, scene, catalog }, {translator}) {
           data-part="rotation-anchor"
         >
           <circle cx={cx} cy={cy} r={radius} style={STYLE_CIRCLE}>
-            <title>{translator.t('Group\'s Barycenter')}</title>
+            <title>
+              <IntlMessages id='planner.group-barycenter' />
+            </title>
           </circle>
         </g>
       </If>

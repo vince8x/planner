@@ -209,7 +209,9 @@ export default class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='height'>{translator.t('Canvas Height')}</FormLabel>
+            <FormLabel htmlFor='height'>
+              <IntlMessages id='planner.canvas-height' />
+            </FormLabel>
             <FormTextInput
               id='height'
               placeholder='height'
@@ -219,7 +221,9 @@ export default class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='default-wall-height'>{translator.t('Default Wall Height')}</FormLabel>
+            <FormLabel htmlFor='default-wall-height'>
+              <IntlMessages id='planner.default-wall-height' />
+            </FormLabel>
             <FormTextInput
               id='default-wall-height'
               placeholder='default-wall-height'
@@ -229,7 +233,9 @@ export default class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='thermal-regulations'>{translator.t('Thermal Regulations')}</FormLabel>
+            <FormLabel htmlFor='thermal-regulations'>
+              <IntlMessages id='planner.thermal-regulations' />
+            </FormLabel>
             <FormSelect id="thermal-regulations"
               value={thermalRegulation}
               onChange={e => this.onThermalRegulationChanged(e.target.value)}
@@ -242,7 +248,9 @@ export default class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='region'>{translator.t('Region')}</FormLabel>
+            <FormLabel htmlFor='planner.region'>
+              <IntlMessages id='planner.region' />
+            </FormLabel>
             <FormSelect id="region"
               value={region}
               onChange={e => this.onRegionChanged(e.target.value)}
@@ -255,7 +263,9 @@ export default class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='commune'>{translator.t('Commune')}</FormLabel>
+            <FormLabel htmlFor='commune'>
+              <IntlMessages id='planner.commune' />
+            </FormLabel>
             <FormSelect id="commune"
               value={commune}
               onChange={e => this.onCommuneChanged(e.target.value)}
@@ -268,7 +278,9 @@ export default class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='type-of-grouping'>{translator.t('Type of grouping')}</FormLabel>
+            <FormLabel htmlFor='type-of-grouping'>
+              <IntlMessages id='planner.type-of-grouping' />
+            </FormLabel>
             <FormSelect id="type-of-grouping"
               value={typeOfGrouping}
               onChange={e => this.setState({ typeOfGrouping: e.target.value })}
@@ -280,7 +292,9 @@ export default class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='number-of-floors'>{translator.t('Number of floors')}</FormLabel>
+            <FormLabel htmlFor='number-of-floors'>
+              <IntlMessages id='planner.number-of-floors' />
+            </FormLabel>
             <FormSelect id="number-of-floors"
               value={numberOfFloor}
               onChange={e => this.setState({ numberOfFloor: e.target.value })}
@@ -292,7 +306,9 @@ export default class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='area'>{translator.t('Number of square meters of the building')}</FormLabel>
+            <FormLabel htmlFor='area'>
+              <IntlMessages id='planner.number-of-square-meters-of-the-building' />
+            </FormLabel>
             <FormTextInput
               id='area'
               value={(totalAreaSize / 10000).toFixed(2)}
@@ -302,7 +318,9 @@ export default class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor='first-floor-type'>{translator.t('First floor type')}</FormLabel>
+            <FormLabel htmlFor='first-floor-type'>
+              <IntlMessages id='planner.first-floor-type' />
+            </FormLabel>
             <FormSelect id="first-floor-type"
               value={firstFloorType}
               onChange={e => this.setState({ firstFloorType: e.target.value })}
@@ -318,10 +336,14 @@ export default class ProjectConfigurator extends Component {
               <tr>
                 <td>
                   <CancelButton size='large'
-                    onClick={e => projectActions.rollback()}>{translator.t('Cancel')}</CancelButton>
+                    onClick={e => projectActions.rollback()}>
+                    <IntlMessages id='planner.cancel' />
+                  </CancelButton>
                 </td>
                 <td>
-                  <FormSubmitButton size='large'>{translator.t('Save')}</FormSubmitButton>
+                  <FormSubmitButton size='large'>
+                    <IntlMessages id='planner.save' />
+                  </FormSubmitButton>
                 </td>
               </tr>
             </tbody>
