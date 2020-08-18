@@ -8,7 +8,7 @@ const tableStyle = { width: '100%' };
 const firstTdStyle = { width: '6em' };
 const inputStyle = { textAlign: 'left' };
 
-export default function LineAttributesEditor({element, onUpdate, attributeFormData, state, ...rest}, {translator}) {
+export default function LineAttributesEditor({element, onUpdate, attributeFormData, state, ...rest}, {translator, intl}) {
 
   let name = attributeFormData.has('name') ? attributeFormData.get('name') : element.name;
   let vertexOne = attributeFormData.has('vertexOne') ? attributeFormData.get('vertexOne') : null;
@@ -88,7 +88,7 @@ export default function LineAttributesEditor({element, onUpdate, attributeFormDa
       <PropertyLengthMeasure
         value={ lineLength }
         onUpdate={mapped => onUpdate('lineLength', mapped)}
-        configs={{label: translator.t('Length'), min: 0, max: Infinity, precision: 2}}
+        configs={{label: intl.formatMessage({ id: 'planner.length' }), min: 0, max: Infinity, precision: 2}}
         state={state}
       />
     </div>
@@ -105,4 +105,5 @@ LineAttributesEditor.propTypes = {
 
 LineAttributesEditor.contextTypes = {
   translator: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
 };

@@ -5,7 +5,7 @@ import ToolbarButton from './toolbar-button';
 import {browserDownload}  from '../../utils/browser';
 import { Project } from '../../class/export';
 
-export default function ToolbarSaveButton({state}, {translator}) {
+export default function ToolbarSaveButton({state}, {translator, intl}) {
 
   let saveProjectToFile = e => {
     e.preventDefault();
@@ -14,7 +14,7 @@ export default function ToolbarSaveButton({state}, {translator}) {
   };
 
   return (
-    <ToolbarButton active={false} tooltip={translator.t('Save project')} onClick={saveProjectToFile}>
+    <ToolbarButton active={false} tooltip={intl.formatMessage({ id: 'planner.save-project' })} onClick={saveProjectToFile}>
       <IconSave />
     </ToolbarButton>
   );
@@ -26,4 +26,5 @@ ToolbarSaveButton.propTypes = {
 
 ToolbarSaveButton.contextTypes = {
   translator: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
 };

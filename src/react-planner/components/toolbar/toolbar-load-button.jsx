@@ -4,7 +4,7 @@ import {FaFolderOpen as IconLoad} from 'react-icons/fa';
 import ToolbarButton from './toolbar-button';
 import {browserUpload}  from '../../utils/browser';
 
-export default function ToolbarLoadButton({state}, {translator, projectActions}) {
+export default function ToolbarLoadButton({state}, {translator, projectActions, intl}) {
 
   let loadProjectFromFile = event => {
     event.preventDefault();
@@ -14,7 +14,7 @@ export default function ToolbarLoadButton({state}, {translator, projectActions})
   };
 
   return (
-    <ToolbarButton active={false} tooltip={translator.t("Load project")} onClick={loadProjectFromFile}>
+    <ToolbarButton active={false} tooltip={intl.formatMessage({ id: 'planner.load-project' })} onClick={loadProjectFromFile}>
       <IconLoad />
     </ToolbarButton>
   );
@@ -27,4 +27,5 @@ ToolbarLoadButton.propTypes = {
 ToolbarLoadButton.contextTypes = {
   projectActions: PropTypes.object.isRequired,
   translator: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
 };

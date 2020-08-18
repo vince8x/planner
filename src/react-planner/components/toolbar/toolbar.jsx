@@ -86,7 +86,7 @@ export default class Toolbar extends Component {
 
     let {
       props: { state, width, height, toolbarButtons, allowProjectFileSupport },
-      context: { projectActions, viewer3DActions, translator }
+      context: { projectActions, viewer3DActions, translator, intl }
     } = this;
 
     let mode = state.get('mode');
@@ -97,7 +97,7 @@ export default class Toolbar extends Component {
       {
         index: 0, condition: allowProjectFileSupport, dom: <ToolbarButton
           active={false}
-          tooltip={translator.t('New project')}
+          tooltip={intl.formatMessage({ id: 'planner.new-project' })}
           onClick={() => projectActions.newProject() }>
           <FaFile />
         </ToolbarButton>
@@ -118,7 +118,7 @@ export default class Toolbar extends Component {
         index: 4, condition: true,
         dom: <ToolbarButton
           active={[MODE_VIEWING_CATALOG].includes(mode)}
-          tooltip={translator.t('Open catalog')}
+          tooltip={intl.formatMessage({ id: 'planner.open-catalog' })}
           onClick={event => projectActions.openCatalog()}>
           <FaPlus />
         </ToolbarButton>
@@ -152,7 +152,7 @@ export default class Toolbar extends Component {
       {
         index: 7, condition: true, dom: <ToolbarButton
           active={false}
-          tooltip={translator.t('Undo (CTRL-Z)')}
+          tooltip={intl.formatMessage({ id: 'planner.undo' })}
           onClick={event => projectActions.undo()}>
           <MdUndo />
         </ToolbarButton>
@@ -160,7 +160,7 @@ export default class Toolbar extends Component {
       {
         index: 8, condition: true, dom: <ToolbarButton
           active={[MODE_CONFIGURING_PROJECT].includes(mode)}
-          tooltip={translator.t('Configure project')}
+          tooltip={intl.formatMessage({ id: 'planner.configure-project' })}
           onClick={event => projectActions.openProjectConfigurator()}>
           <MdSettings />
         </ToolbarButton>
@@ -216,4 +216,5 @@ Toolbar.contextTypes = {
   holesActions: PropTypes.object.isRequired,
   itemsActions: PropTypes.object.isRequired,
   translator: PropTypes.object.isRequired,
+  intl: PropTypes.object.isRequired,
 };
