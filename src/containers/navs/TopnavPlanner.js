@@ -44,18 +44,22 @@ import { Project } from '../../react-planner/class/export';
 import { browserDownload, browserUpload } from '../../react-planner/utils/browser';
 import { exportElementsCsv, exportRequirement } from '../../react-planner/utils/csv-export';
 import { THERMAL_REQUIREMENTS, FIRE_RESISTANCE_REQUIREMENTS, ACOUSTIC_REQUIREMENTS } from '../../react-planner/constants';
+import { logoutUser } from '../../redux/actions';
 
 
 
 const TopNavPlanner = ({
   intl,
   locale,
+  history,
   localeActions,
   projectActions,
+  logoutUserAction,
   linesActions,
   holesActions,
   itemsActions,
-  statePlanner
+  statePlanner,
+  authUser
 }) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
 
@@ -109,7 +113,7 @@ const TopNavPlanner = ({
   };
 
   const handleLogout = () => {
-    console.log('logout');
+    logoutUserAction(history);
   };
 
   const handleSaveProject = () => {
@@ -443,7 +447,7 @@ const TopNavPlanner = ({
   );
 };
 
-const mapStateToProps = ({ menu, settings, planner }) => {
+const mapStateToProps = ({ menu, settings, planner, authUser }) => {
   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
   const { locale } = settings;
   return {
@@ -451,13 +455,15 @@ const mapStateToProps = ({ menu, settings, planner }) => {
     menuClickCount,
     selectedMenuHasSubItems,
     locale,
-    statePlanner: planner
+    statePlanner: planner,
+    authUser
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   const result = {
     localeActions: bindActionCreators(localeActionsAll, dispatch),
+    logoutUserAction: bindActionCreators(logoutUser, dispatch),
     ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch))
   }
   return result;

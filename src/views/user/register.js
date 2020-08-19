@@ -16,15 +16,21 @@ import { registerUser } from '../../redux/actions';
 import IntlMessages from '../../helpers/IntlMessages';
 import { Colxx } from '../../components/common/CustomBootstrap';
 
-const Register = ({ history }) => {
-  const [email] = useState('demo@gogo.com');
-  const [password] = useState('gogo123');
-  const [name] = useState('Sarah Kortney');
+const Register = ({ history, registerUserAction }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
   const onUserRegister = () => {
     if (email !== '' && password !== '') {
       history.push('/');
+
+      const userRegister = { email, password, name };
+
+      registerUserAction(userRegister, history);
     }
+
+
     // call registerUserAction()
   };
 
@@ -55,21 +61,21 @@ const Register = ({ history }) => {
                 <Label>
                   <IntlMessages id="user.fullname" />
                 </Label>
-                <Input type="name" defaultValue={name} />
+                <Input type="name" defaultValue={name} value={name} onChange={(e) => setName(e.target.value)} />
               </FormGroup>
 
               <FormGroup className="form-group has-float-label  mb-4">
                 <Label>
                   <IntlMessages id="user.email" />
                 </Label>
-                <Input type="email" defaultValue={email} />
+                <Input type="email" defaultValue={email} value={email} onChange={(e) => setEmail(e.target.value)} />
               </FormGroup>
 
-              <FormGroup className="form-group has-float-label  mb-4">
+              <FormGroup className="form-group has-float-label mb-4">
                 <Label>
-                  <IntlMessages id="user.password" defaultValue={password} />
+                  <IntlMessages id="user.password" />
                 </Label>
-                <Input type="password" />
+                <Input type="password" defaultValue={password} value={password} onChange={(e) => setPassword(e.target.value)}/>
               </FormGroup>
 
               <div className="d-flex justify-content-end align-items-center">

@@ -19,6 +19,7 @@ import {
   setContainerClassnames,
   clickOnMobileMenu,
   changeLocale,
+  logoutUser,
 } from '../../redux/actions';
 
 import {
@@ -46,6 +47,7 @@ const TopNav = ({
   setContainerClassnamesAction,
   clickOnMobileMenuAction,
   changeLocaleAction,
+  logoutUserAction,
   match
 }) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
@@ -175,7 +177,7 @@ const TopNav = ({
   };
 
   const handleLogout = () => {
-    console.log('logout');
+    logoutUserAction(history);
   };
 
   const menuButtonClick = (e, _clickCount, _conClassnames) => {
@@ -326,5 +328,6 @@ export default withRouter(injectIntl(
     setContainerClassnamesAction: setContainerClassnames,
     clickOnMobileMenuAction: clickOnMobileMenu,
     changeLocaleAction: changeLocale,
+    logoutUserAction: logoutUser
   })(TopNav))
 );

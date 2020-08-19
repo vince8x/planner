@@ -130,7 +130,7 @@ export const setCurrentLanguage = (locale) => {
 
 export const getCurrentUser = () => {
   try {
-    return localStorage.getItem('gogo_current_user')
+    return localStorage.getItem('planner_current_user')
   } catch (error) {
     console.log(">>>> src/redux/auth/reducer.js : getCurrentUser -> error", error)
     return '';
@@ -140,9 +140,9 @@ export const getCurrentUser = () => {
 export const setCurrentUser = (user) => {
   try {
     if (user) {
-      localStorage.setItem('gogo_current_user', JSON.stringify(user.uid))
+      localStorage.setItem('planner_current_user', JSON.stringify(user.uid))
     } else {
-      localStorage.removeItem('gogo_current_user')
+      localStorage.removeItem('planner_current_user')
     }
   } catch (error) {
     console.log(">>>>: src/helpers/Utils.js : setCurrentUser -> error", error)

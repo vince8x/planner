@@ -22,9 +22,6 @@ import {
 import { adminRoot } from "../../constants/defaultValues"
 import { setCurrentUser } from '../../helpers/Utils';
 
-export function* watchLoginUser() {
-  yield takeEvery(LOGIN_USER, loginWithEmailPassword);
-}
 
 const loginWithEmailPasswordAsync = async (email, password) =>
   await auth
@@ -40,7 +37,7 @@ function* loginWithEmailPassword({ payload }) {
     if (!loginUser.message) {
       setCurrentUser(loginUser.user);
       yield put(loginUserSuccess(loginUser.user));
-      history.push(adminRoot);
+      history.push('/planner');
     } else {
       yield put(loginUserError(loginUser.message));
     }
@@ -49,8 +46,8 @@ function* loginWithEmailPassword({ payload }) {
   }
 }
 
-export function* watchRegisterUser() {
-  yield takeEvery(REGISTER_USER, registerWithEmailPassword);
+export function* watchLoginUser() {
+  yield takeEvery(LOGIN_USER, loginWithEmailPassword);
 }
 
 const registerWithEmailPasswordAsync = async (email, password) =>
@@ -59,8 +56,13 @@ const registerWithEmailPasswordAsync = async (email, password) =>
     .then((authUser) => authUser)
     .catch((error) => error);
 
+const updateUserProfileAsync = async(userProfile) => {
+  const user = auth.currentUser;
+  await user.updateProfile(userProfile).then(() => {}).catch((error) => error);
+}
+
 function* registerWithEmailPassword({ payload }) {
-  const { email, password } = payload.user;
+  const { email, password, name } = payload.user;
   const { history } = payload;
   try {
     const registerUser = yield call(
@@ -71,7 +73,7 @@ function* registerWithEmailPassword({ payload }) {
     if (!registerUser.message) {
       setCurrentUser(registerUser.user);
       yield put(registerUserSuccess(registerUser));
-      history.push(adminRoot);
+      history.push('/planner');
     } else {
       yield put(registerUserError(registerUser.message));
     }
@@ -80,8 +82,8 @@ function* registerWithEmailPassword({ payload }) {
   }
 }
 
-export function* watchLogoutUser() {
-  yield takeEvery(LOGOUT_USER, logout);
+export function* watchRegisterUser() {
+  yield takeEvery(REGISTER_USER, registerWithEmailPassword);
 }
 
 const logoutAsync = async (history) => {
@@ -98,8 +100,8 @@ function* logout({ payload }) {
   yield call(logoutAsync, history);
 }
 
-export function* watchForgotPassword() {
-  yield takeEvery(FORGOT_PASSWORD, forgotPassword);
+export function* watchLogoutUser() {
+  yield takeEvery(LOGOUT_USER, logout);
 }
 
 const forgotPasswordAsync = async (email) => {
@@ -123,8 +125,8 @@ function* forgotPassword({ payload }) {
   }
 }
 
-export function* watchResetPassword() {
-  yield takeEvery(RESET_PASSWORD, resetPassword);
+export function* watchForgotPassword() {
+  yield takeEvery(FORGOT_PASSWORD, forgotPassword);
 }
 
 const resetPasswordAsync = async (resetPasswordCode, newPassword) => {
@@ -150,6 +152,10 @@ function* resetPassword({ payload }) {
   } catch (error) {
     yield put(resetPasswordError(error));
   }
+}
+
+export function* watchResetPassword() {
+  yield takeEvery(RESET_PASSWORD, resetPassword);
 }
 
 export default function* rootSaga() {

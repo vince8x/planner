@@ -13,12 +13,12 @@ export const localeOptions = [
 ];
 
 export const firebaseConfig = {
-  apiKey: 'AIzaSyBBksq-Asxq2M4Ot-75X19IyrEYJqNBPcg',
-  authDomain: 'gogo-react-login.firebaseapp.com',
-  databaseURL: 'https://gogo-react-login.firebaseio.com',
-  projectId: 'gogo-react-login',
-  storageBucket: 'gogo-react-login.appspot.com',
-  messagingSenderId: '216495999563',
+  apiKey: 'AIzaSyAJXK205x8hOcpahCYqfc2nCFKmjKC0RHY',
+  authDomain: 'https://deodem-woodproject.firebaseapp.com/',
+  databaseURL: 'https://deodem-woodproject.firebaseio.com',
+  projectId: 'deodem-woodproject',
+  storageBucket: 'deodem-woodproject.appspot.com',
+  messagingSenderId: '703206105136',
 };
 
 export const adminRoot = '/app';

@@ -12,6 +12,9 @@ import {
   RESET_PASSWORD,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_ERROR,
+  UPDATE_USER_PROFILE,
+  UPDATE_USER_PROFILE_SUCCESS,
+  UPDATE_USER_PROFILE_ERROR
 } from '../actions';
 
 export const loginUser = (user, history) => ({
@@ -64,6 +67,21 @@ export const registerUserSuccess = (user) => ({
 export const registerUserError = (message) => ({
   type: REGISTER_USER_ERROR,
   payload: { message },
+});
+
+export const updateUserProfile = (user) => ({
+  type: UPDATE_USER_PROFILE,
+  payload: user
+});
+
+export const updateUserProfileSuccess = (user) => ({
+  type: UPDATE_USER_PROFILE_SUCCESS,
+  payload: user
+});
+
+export const updateUserProfileError = (message) => ({
+  type: UPDATE_USER_PROFILE_ERROR,
+  payload: { message }
 });
 
 export const logoutUser = (history) => ({
