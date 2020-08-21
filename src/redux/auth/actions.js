@@ -74,9 +74,8 @@ export const updateUserProfile = (user) => ({
   payload: user
 });
 
-export const updateUserProfileSuccess = (user) => ({
-  type: UPDATE_USER_PROFILE_SUCCESS,
-  payload: user
+export const updateUserProfileSuccess = () => ({
+  type: UPDATE_USER_PROFILE_SUCCESS
 });
 
 export const updateUserProfileError = (message) => ({

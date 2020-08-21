@@ -7,7 +7,6 @@ import {
   DropdownToggle,
   DropdownMenu,
   UncontrolledTooltip,
-  UncontrolledButtonDropdown,
   Button
 } from 'reactstrap';
 
@@ -23,7 +22,6 @@ import * as localeActionsAll from '../../redux/settings/actions';
 import PerimeterWall from '../../catalog/lines/wall/planner-element';
 import InteriorWall from '../../catalog/lines/interior-wall/planner-element';
 import DividingWall from '../../catalog/lines/dividing-wall/planner-element';
-import Separator from '../../catalog/lines/separator/planner-element';
 import Door from '../../catalog/holes/door/planner-element';
 import Window from '../../catalog/holes/window/planner-element';
 import Gate from '../../catalog/holes/gate/planner-element';
@@ -38,13 +36,12 @@ import TopnavNotifications from './Topnav.Notifications';
 import { getDirection, setDirection } from '../../helpers/Utils';
 import { objectsMap } from '../../react-planner/utils/objects-utils';
 import actions from '../../react-planner/actions/export';
-import SplitButton from '../../components/common/SplitButton';
 import IntlMessages from '../../helpers/IntlMessages';
-import { Project } from '../../react-planner/class/export';
 import { browserDownload, browserUpload } from '../../react-planner/utils/browser';
 import { exportElementsCsv, exportRequirement } from '../../react-planner/utils/csv-export';
 import { THERMAL_REQUIREMENTS, FIRE_RESISTANCE_REQUIREMENTS, ACOUSTIC_REQUIREMENTS } from '../../react-planner/constants';
 import { logoutUser } from '../../redux/actions';
+import { Project } from '../../react-planner/class/export';
 
 
 
@@ -118,7 +115,7 @@ const TopNavPlanner = ({
 
   const handleSaveProject = () => {
     const state = statePlanner.get('react-planner');
-    const { updatedState } = Project.unselectAll(state).updatedState;
+    const { updatedState } = Project.unselectAll(state);
     browserDownload(updatedState.get('scene').toJS());
   }
 
@@ -146,7 +143,7 @@ const TopNavPlanner = ({
     } else if (type === ACOUSTIC_REQUIREMENTS) {
       translateType = intl.formatMessage({ id: 'planner.acoustic-requirement' });
     }
-    exportRequirement(updatedState.get('scene').toJS(), type, translateType);
+    exportRequirement(updatedState.get('scene'), type, translateType);
   }
 
   const handleSelectToolDrawing = (element) => {
@@ -219,7 +216,7 @@ const TopNavPlanner = ({
           </Button>
 
           <Button className='toolbar-item' id='planner-thermal-requirement'
-            onClick={() => handleSaveProjectElementsToFile(THERMAL_REQUIREMENTS)}
+            onClick={() => handleSaveProjectRequirementsToFile(THERMAL_REQUIREMENTS)}
           >
             <FaFileExport />
             <div className="btn-title" >
@@ -231,7 +228,7 @@ const TopNavPlanner = ({
           </Button>
 
           <Button className='toolbar-item' id='planner-fire-resistance-requirement'
-            onClick={() => handleSaveProjectElementsToFile(FIRE_RESISTANCE_REQUIREMENTS)}
+            onClick={() => handleSaveProjectRequirementsToFile(FIRE_RESISTANCE_REQUIREMENTS)}
           >
             <FaFileExport />
             <div className="btn-title" >
@@ -243,7 +240,7 @@ const TopNavPlanner = ({
           </Button>
 
           <Button className='toolbar-item' id='planner-acoustic-requirement'
-            onClick={() => handleSaveProjectElementsToFile(ACOUSTIC_REQUIREMENTS)}
+            onClick={() => handleSaveProjectRequirementsToFile(ACOUSTIC_REQUIREMENTS)}
           >
             <FaFileExport />
             <div className="btn-title" >
@@ -408,7 +405,7 @@ const TopNavPlanner = ({
         </div>
         <div className="header-icons d-inline-block align-middle">
           {/* <TopnavEasyAccess /> */}
-          <TopnavNotifications />
+          {/* <TopnavNotifications /> */}
           <button
             className="header-icon btn btn-empty d-none d-sm-inline-block"
             type="button"
@@ -423,24 +420,21 @@ const TopNavPlanner = ({
           </button>
         </div>
         <div className="user d-inline-block">
-          <UncontrolledDropdown className="dropdown-menu-right">
-            <DropdownToggle className="p-0" color="empty">
-              <span className="name mr-1">Sarah Kortney</span>
-              <span>
-                <img alt="Profile" src="/assets/img/profiles/l-1.jpg" />
-              </span>
-            </DropdownToggle>
-            <DropdownMenu className="mt-3" right>
-              <DropdownItem>Account</DropdownItem>
-              <DropdownItem>Features</DropdownItem>
-              <DropdownItem>History</DropdownItem>
-              <DropdownItem>Support</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem onClick={() => handleLogout()}>
-                Sign out
+          {authUser.user &&
+            (<UncontrolledDropdown className="dropdown-menu-right">
+              <DropdownToggle className="p-0" color="empty">
+                <span className="name mr-1">{authUser.displayName}</span>
+                <span>
+                  <img alt="Profile" src="/assets/img/profiles/no-avatar.png" />
+                </span>
+              </DropdownToggle>
+              <DropdownMenu className="mt-3" right>
+                <DropdownItem onClick={() => handleLogout()}>
+                  Sign out
               </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
+              </DropdownMenu>
+            </UncontrolledDropdown>)
+          }
         </div>
       </div>
     </nav >

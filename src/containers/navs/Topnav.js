@@ -48,6 +48,7 @@ const TopNav = ({
   clickOnMobileMenuAction,
   changeLocaleAction,
   logoutUserAction,
+  authUser,
   match
 }) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
@@ -274,7 +275,7 @@ const TopNav = ({
         {/* {isDarkSwitchActive && <TopnavDarkSwitch />} */}
         <div className="header-icons d-inline-block align-middle">
           {/* <TopnavEasyAccess /> */}
-          <TopnavNotifications />
+          {/* <TopnavNotifications /> */}
           <button
             className="header-icon btn btn-empty d-none d-sm-inline-block"
             type="button"
@@ -284,36 +285,33 @@ const TopNav = ({
             {isInFullScreen ? (
               <i className="simple-icon-size-actual d-block" />
             ) : (
-              <i className="simple-icon-size-fullscreen d-block" />
-            )}
+                <i className="simple-icon-size-fullscreen d-block" />
+              )}
           </button>
         </div>
         <div className="user d-inline-block">
-          <UncontrolledDropdown className="dropdown-menu-right">
-            <DropdownToggle className="p-0" color="empty">
-              <span className="name mr-1">Sarah Kortney</span>
-              <span>
-                <img alt="Profile" src="/assets/img/profiles/l-1.jpg" />
-              </span>
-            </DropdownToggle>
-            <DropdownMenu className="mt-3" right>
-              <DropdownItem>Account</DropdownItem>
-              <DropdownItem>Features</DropdownItem>
-              <DropdownItem>History</DropdownItem>
-              <DropdownItem>Support</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem onClick={() => handleLogout()}>
-                Sign out
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
+          {authUser.user &&
+            (<UncontrolledDropdown className="dropdown-menu-right">
+              <DropdownToggle className="p-0" color="empty">
+                <span className="name mr-1">{authUser.displayName}</span>
+                <span>
+                  <img alt="Profile" src="/assets/img/profiles/no-avatar.png" />
+                </span>
+              </DropdownToggle>
+              <DropdownMenu className="mt-3" right>
+                <DropdownItem onClick={() => handleLogout()}>
+                  Sign out
+            </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>)
+          }
         </div>
       </div>
     </nav>
   );
 };
 
-const mapStateToProps = ({ menu, settings }) => {
+const mapStateToProps = ({ menu, settings, authUser }) => {
   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
   const { locale } = settings;
   return {
@@ -321,6 +319,7 @@ const mapStateToProps = ({ menu, settings }) => {
     menuClickCount,
     selectedMenuHasSubItems,
     locale,
+    authUser
   };
 };
 export default withRouter(injectIntl(

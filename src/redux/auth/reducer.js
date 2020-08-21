@@ -12,6 +12,7 @@ import {
   RESET_PASSWORD,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_ERROR,
+  UPDATE_USER_PROFILE_SUCCESS,
 } from '../actions';
 import { getCurrentUser } from '../../helpers/Utils';
 
@@ -96,6 +97,15 @@ export default (state = INIT_STATE, action) => {
       };
     case LOGOUT_USER:
       return { ...state, user: null, error: '' };
+    case UPDATE_USER_PROFILE_SUCCESS:
+      return { 
+        ...state, 
+        loading: false, 
+        user: action.payload.uid, 
+        error: '',
+        email: action.payload.email,
+        displayName: action.payload.displayName,
+      };
     default:
       return { ...state };
   }

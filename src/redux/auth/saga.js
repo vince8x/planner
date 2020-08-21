@@ -13,6 +13,8 @@ import {
   loginUserError,
   registerUserSuccess,
   registerUserError,
+  updateUserProfileSuccess,
+  updateUserProfileError,
   forgotPasswordSuccess,
   forgotPasswordError,
   resetPasswordSuccess,
@@ -56,9 +58,24 @@ const registerWithEmailPasswordAsync = async (email, password) =>
     .then((authUser) => authUser)
     .catch((error) => error);
 
-const updateUserProfileAsync = async(userProfile) => {
+const updateUserProfileAsync = async (userProfile) => {
   const user = auth.currentUser;
-  await user.updateProfile(userProfile).then(() => {}).catch((error) => error);
+  debugger;
+  return await user.updateProfile(userProfile)
+    .then(() => { 
+      console.log('success');
+    })
+    .catch((error) => { console.log(error) });
+}
+
+function* updateUserProfile({ payload }) {
+  const { user } = payload;
+  try {
+    yield call(updateUserProfileAsync, user);
+    yield put(updateUserProfileSuccess());
+  } catch (error) {
+    yield put(updateUserProfileError(error));
+  }
 }
 
 function* registerWithEmailPassword({ payload }) {
@@ -73,6 +90,7 @@ function* registerWithEmailPassword({ payload }) {
     if (!registerUser.message) {
       setCurrentUser(registerUser.user);
       yield put(registerUserSuccess(registerUser));
+      yield call(updateUserProfile, { payload: { user: { displayName: name } } });
       history.push('/planner');
     } else {
       yield put(registerUserError(registerUser.message));

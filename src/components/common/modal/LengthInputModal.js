@@ -54,7 +54,6 @@ const LengthInputModal = ({ toggle, data, onSubmitLength }) => {
               onChange={e => setUnit(e.target.value)}
               value={unit}
               onKeyPress={handleKeyPress}
-              defaultValue={unit}
             >
               {
                 UNITS_LENGTH.map(el => <option key={el} value={el}>{el}</option>)
