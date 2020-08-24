@@ -36,6 +36,7 @@ import TopnavNotifications from './Topnav.Notifications';
 import TopnavDarkSwitch from './Topnav.DarkSwitch';
 
 import { getDirection, setDirection } from '../../helpers/Utils';
+import TopNavProfileSection from './TopNavProfileSection';
 
 const TopNav = ({
   intl,
@@ -47,7 +48,6 @@ const TopNav = ({
   setContainerClassnamesAction,
   clickOnMobileMenuAction,
   changeLocaleAction,
-  logoutUserAction,
   authUser,
   match
 }) => {
@@ -177,10 +177,6 @@ const TopNav = ({
     setIsInFullScreen(!isFS);
   };
 
-  const handleLogout = () => {
-    logoutUserAction(history);
-  };
-
   const menuButtonClick = (e, _clickCount, _conClassnames) => {
     e.preventDefault();
 
@@ -290,21 +286,7 @@ const TopNav = ({
           </button>
         </div>
         <div className="user d-inline-block">
-          {authUser.user &&
-            (<UncontrolledDropdown className="dropdown-menu-right">
-              <DropdownToggle className="p-0" color="empty">
-                <span className="name mr-1">{authUser.displayName}</span>
-                <span>
-                  <img alt="Profile" src="/assets/img/profiles/no-avatar.png" />
-                </span>
-              </DropdownToggle>
-              <DropdownMenu className="mt-3" right>
-                <DropdownItem onClick={() => handleLogout()}>
-                  Sign out
-            </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>)
-          }
+          <TopNavProfileSection />
         </div>
       </div>
     </nav>
@@ -327,6 +309,5 @@ export default withRouter(injectIntl(
     setContainerClassnamesAction: setContainerClassnames,
     clickOnMobileMenuAction: clickOnMobileMenu,
     changeLocaleAction: changeLocale,
-    logoutUserAction: logoutUser
   })(TopNav))
 );

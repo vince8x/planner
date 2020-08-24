@@ -1,4 +1,5 @@
-import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
+import firebase from 'firebase/app';
+import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import { auth } from '../../helpers/Firebase';
 import {
   LOGIN_USER,
@@ -6,6 +7,7 @@ import {
   LOGOUT_USER,
   FORGOT_PASSWORD,
   RESET_PASSWORD,
+  GET_USER_PROFILE,
 } from '../actions';
 
 import {
@@ -19,6 +21,8 @@ import {
   forgotPasswordError,
   resetPasswordSuccess,
   resetPasswordError,
+  getUserProfileSuccess,
+  getUserProfileError,
 } from './actions';
 
 import { adminRoot } from "../../constants/defaultValues"
@@ -27,7 +31,8 @@ import { setCurrentUser } from '../../helpers/Utils';
 
 const loginWithEmailPasswordAsync = async (email, password) =>
   await auth
-    .signInWithEmailAndPassword(email, password)
+    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => auth.signInWithEmailAndPassword(email, password))
     .then((authUser) => authUser)
     .catch((error) => error);
 
@@ -176,6 +181,46 @@ export function* watchResetPassword() {
   yield takeEvery(RESET_PASSWORD, resetPassword);
 }
 
+const getUserProfileAsync = async () => {
+  return auth.currentUser
+    .then((user) => { 
+      return user;
+    })
+    .catch((error) => {
+      return error;
+    })
+}
+
+function* getUserProfile() {
+  try {
+    const user = yield auth.currentUser;
+    if (user) {
+      // User already login
+      yield put(getUserProfileSuccess(user))
+    } else {
+
+    }
+    const userProfile = yield call(getUserProfileAsync);;
+    
+    debugger;
+    //  = yield call(getUserProfileAsync);
+    // const test = auth.currentUser();
+    if (!userProfile) {
+      // yield put(getUserProfileSuccess(userProfile));
+    } else {
+      // yield put(getUserProfileError(userProfile));
+    }
+  } catch (error) {
+    // yield put(getUserProfileError(error));
+    console.log(error);
+  }
+  yield {};
+}
+
+export function* watchGetUserProfile() {
+  yield takeEvery(GET_USER_PROFILE, getUserProfile);
+}
+
 export default function* rootSaga() {
   yield all([
     fork(watchLoginUser),
@@ -183,5 +228,6 @@ export default function* rootSaga() {
     fork(watchRegisterUser),
     fork(watchForgotPassword),
     fork(watchResetPassword),
+    // fork(watchGetUserProfile)
   ]);
 }

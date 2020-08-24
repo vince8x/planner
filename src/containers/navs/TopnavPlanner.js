@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
+import * as _ from 'lodash';
 
 import {
   UncontrolledDropdown,
@@ -18,6 +19,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as localeActionsAll from '../../redux/settings/actions';
+
 
 import PerimeterWall from '../../catalog/lines/wall/planner-element';
 import InteriorWall from '../../catalog/lines/interior-wall/planner-element';
@@ -40,8 +42,9 @@ import IntlMessages from '../../helpers/IntlMessages';
 import { browserDownload, browserUpload } from '../../react-planner/utils/browser';
 import { exportElementsCsv, exportRequirement } from '../../react-planner/utils/csv-export';
 import { THERMAL_REQUIREMENTS, FIRE_RESISTANCE_REQUIREMENTS, ACOUSTIC_REQUIREMENTS } from '../../react-planner/constants';
-import { logoutUser } from '../../redux/actions';
+import { logoutUser, openDialog, getUserProfile } from '../../redux/actions';
 import { Project } from '../../react-planner/class/export';
+import TopNavProfileSection from './TopNavProfileSection';
 
 
 
@@ -51,12 +54,13 @@ const TopNavPlanner = ({
   history,
   localeActions,
   projectActions,
-  logoutUserAction,
+  showSaveProjectAsDialog,
   linesActions,
   holesActions,
   itemsActions,
   statePlanner,
-  authUser
+  authUser,
+  userId
 }) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
 
@@ -109,14 +113,12 @@ const TopNavPlanner = ({
     setIsInFullScreen(!isFS);
   };
 
-  const handleLogout = () => {
-    logoutUserAction(history);
-  };
-
   const handleSaveProject = () => {
     const state = statePlanner.get('react-planner');
     const { updatedState } = Project.unselectAll(state);
-    browserDownload(updatedState.get('scene').toJS());
+    showSaveProjectAsDialog();
+    // stubFalse;
+    // browserDownload(updatedState.get('scene').toJS());
   }
 
   const handleLoadProjectFromFile = () => {
@@ -420,21 +422,7 @@ const TopNavPlanner = ({
           </button>
         </div>
         <div className="user d-inline-block">
-          {authUser.user &&
-            (<UncontrolledDropdown className="dropdown-menu-right">
-              <DropdownToggle className="p-0" color="empty">
-                <span className="name mr-1">{authUser.displayName}</span>
-                <span>
-                  <img alt="Profile" src="/assets/img/profiles/no-avatar.png" />
-                </span>
-              </DropdownToggle>
-              <DropdownMenu className="mt-3" right>
-                <DropdownItem onClick={() => handleLogout()}>
-                  Sign out
-              </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>)
-          }
+          <TopNavProfileSection />
         </div>
       </div>
     </nav >
@@ -450,15 +438,16 @@ const mapStateToProps = ({ menu, settings, planner, authUser }) => {
     selectedMenuHasSubItems,
     locale,
     statePlanner: planner,
-    authUser
+    authUser,
+    userId: authUser.user
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   const result = {
     localeActions: bindActionCreators(localeActionsAll, dispatch),
-    logoutUserAction: bindActionCreators(logoutUser, dispatch),
-    ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch))
+    ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch)),
+    showSaveProjectAsDialog: () => dispatch(openDialog('saveProjectDialog'))
   }
   return result;
 };

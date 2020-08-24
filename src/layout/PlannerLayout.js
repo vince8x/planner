@@ -6,13 +6,15 @@ import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import convert from 'convert-units';
 import { Map } from 'immutable';
-
+import { ToastContainer } from 'react-toastify-redux';
+import 'react-toastify/dist/ReactToastify.css';
 import TopnavPlanner from '../containers/navs/TopnavPlanner';
 import LengthInputModal from '../components/common/modal/LengthInputModal';
 import { GeometryUtils } from '../react-planner/utils/export';
 import { UNIT_CENTIMETER } from '../react-planner/constants';
 import { objectsMap } from '../react-planner/utils/objects-utils';
 import actions from '../react-planner/actions/export';
+import SaveProjectModal from '../containers/projects/SaveProjectModal';
 // import Sidebar from '../containers/navs/Sidebar';
 
 const PlannerLayout = ({
@@ -74,6 +76,8 @@ const PlannerLayout = ({
         <div className="container-fluid">{children}</div>
       </main>
       <LengthInputModal autoFocus={false} onSubmitLength={(length, unit) => handleLengthInput(length, unit)} />
+      <SaveProjectModal autoFocus={false} />
+      <ToastContainer />
     </div>
   );
 };

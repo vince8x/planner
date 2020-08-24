@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import { connect } from "react-redux";
 import {
   Button, ModalHeader, ModalBody, ModalFooter,
@@ -27,7 +27,7 @@ const LengthInputModal = ({ toggle, data, onSubmitLength }) => {
   }
 
   return (
-    <div>
+    <Fragment key="length-input-modal">
       <ModalHeader toggle={toggle}><IntlMessages id="planner.modal.length-input" /></ModalHeader>
       <ModalBody>
         <FormGroup row>
@@ -66,7 +66,7 @@ const LengthInputModal = ({ toggle, data, onSubmitLength }) => {
         <Button color="primary" onClick={() => handleSubmitLength()}><IntlMessages id="planner.modal.submit" /></Button>{' '}
         <Button color="secondary" onClick={toggle}><IntlMessages id="planner.modal.cancel" /></Button>
       </ModalFooter>
-    </div>
+    </Fragment>
   )
 };
 

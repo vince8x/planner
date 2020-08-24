@@ -25,6 +25,7 @@ module.exports = {
   'user.reset-password-button': 'RESET',
   'user.buy': 'BUY',
   'user.username': 'Username',
+  'user.signout': 'Sign out',
 
   /* 03.Menu */
   'menu.home': 'Home',
@@ -176,5 +177,8 @@ module.exports = {
   'planner.modal.length-input': 'Input length',
   'planner.modal.length': 'Length',
   'planner.modal.submit': 'Submit',
-  'planner.modal.cancel': 'Cancelar'
+  'planner.modal.cancel': 'Cancelar',
+  'planner.save-project-as': 'Save project as',
+  'planner.project-name': 'Project name',
+  'planner.new-project-success': 'New project success'
 };

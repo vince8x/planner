@@ -43,10 +43,10 @@ const AuthRoute = ({ component: Component, authUser, ...rest }) => {
         authUser || isDemo ? (
           <Component {...props} />
         ) : (
-          <Redirect
-            to={{ pathname: '/user/login', state: { from: props.location } }}
-          />
-        )
+            <Redirect
+              to={{ pathname: '/user/login', state: { from: props.location } }}
+            />
+          )
       }
     />
   );
