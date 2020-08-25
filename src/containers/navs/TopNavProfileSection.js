@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { injectIntl } from 'react-intl';
 import {
@@ -6,7 +6,6 @@ import {
   DropdownItem,
   DropdownToggle,
   DropdownMenu,
-  Input,
 } from 'reactstrap';
 import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -15,7 +14,6 @@ import IntlMessages from '../../helpers/IntlMessages';
 import * as authActionsAll from '../../redux/auth/actions';
 
 const TopNavProfileSection = ({
-  intl,
   authUser,
   authActions,
 }) => {

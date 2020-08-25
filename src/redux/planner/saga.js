@@ -1,5 +1,5 @@
 import { put, takeEvery, fork, all, takeLatest, select, call } from 'redux-saga/effects'
-import {dismiss, update, error, message, warning, success, info} from 'react-toastify-redux';
+import { success } from 'react-toastify-redux';
 import { database } from '../../helpers/Firebase';
 import { SET_LINES_LENGTH_END_DRAWING, NEW_PROJECT, SAVE_PROJECT } from '../../react-planner/constants'
 import { beginDrawingLine, endDrawingLine } from '../../react-planner/actions/lines-actions';
@@ -41,6 +41,7 @@ export function* saveProject() {
 
 export function* newProject() {
   try {
+    // @TODO: multi language in saga
     yield put(success('New project success'));
     yield put(newProjectSuccess());
   } catch (err) {

@@ -21,8 +21,6 @@ import {
   forgotPasswordError,
   resetPasswordSuccess,
   resetPasswordError,
-  getUserProfileSuccess,
-  getUserProfileError,
 } from './actions';
 
 import { adminRoot } from "../../constants/defaultValues"
@@ -65,7 +63,6 @@ const registerWithEmailPasswordAsync = async (email, password) =>
 
 const updateUserProfileAsync = async (userProfile) => {
   const user = auth.currentUser;
-  debugger;
   return await user.updateProfile(userProfile)
     .then(() => { 
       console.log('success');
@@ -181,46 +178,6 @@ export function* watchResetPassword() {
   yield takeEvery(RESET_PASSWORD, resetPassword);
 }
 
-const getUserProfileAsync = async () => {
-  return auth.currentUser
-    .then((user) => { 
-      return user;
-    })
-    .catch((error) => {
-      return error;
-    })
-}
-
-function* getUserProfile() {
-  try {
-    const user = yield auth.currentUser;
-    if (user) {
-      // User already login
-      yield put(getUserProfileSuccess(user))
-    } else {
-
-    }
-    const userProfile = yield call(getUserProfileAsync);;
-    
-    debugger;
-    //  = yield call(getUserProfileAsync);
-    // const test = auth.currentUser();
-    if (!userProfile) {
-      // yield put(getUserProfileSuccess(userProfile));
-    } else {
-      // yield put(getUserProfileError(userProfile));
-    }
-  } catch (error) {
-    // yield put(getUserProfileError(error));
-    console.log(error);
-  }
-  yield {};
-}
-
-export function* watchGetUserProfile() {
-  yield takeEvery(GET_USER_PROFILE, getUserProfile);
-}
-
 export default function* rootSaga() {
   yield all([
     fork(watchLoginUser),
@@ -228,6 +185,5 @@ export default function* rootSaga() {
     fork(watchRegisterUser),
     fork(watchForgotPassword),
     fork(watchResetPassword),
-    // fork(watchGetUserProfile)
   ]);
 }

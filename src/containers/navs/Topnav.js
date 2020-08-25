@@ -19,7 +19,6 @@ import {
   setContainerClassnames,
   clickOnMobileMenu,
   changeLocale,
-  logoutUser,
 } from '../../redux/actions';
 
 import {
@@ -48,7 +47,6 @@ const TopNav = ({
   setContainerClassnamesAction,
   clickOnMobileMenuAction,
   changeLocaleAction,
-  authUser,
   match
 }) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);

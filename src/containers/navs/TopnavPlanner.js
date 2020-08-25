@@ -42,7 +42,7 @@ import IntlMessages from '../../helpers/IntlMessages';
 import { browserDownload, browserUpload } from '../../react-planner/utils/browser';
 import { exportElementsCsv, exportRequirement } from '../../react-planner/utils/csv-export';
 import { THERMAL_REQUIREMENTS, FIRE_RESISTANCE_REQUIREMENTS, ACOUSTIC_REQUIREMENTS } from '../../react-planner/constants';
-import { logoutUser, openDialog, getUserProfile } from '../../redux/actions';
+import { logoutUser, openDialog } from '../../redux/actions';
 import { Project } from '../../react-planner/class/export';
 import TopNavProfileSection from './TopNavProfileSection';
 
@@ -51,7 +51,6 @@ import TopNavProfileSection from './TopNavProfileSection';
 const TopNavPlanner = ({
   intl,
   locale,
-  history,
   localeActions,
   projectActions,
   showSaveProjectAsDialog,
@@ -59,8 +58,6 @@ const TopNavPlanner = ({
   holesActions,
   itemsActions,
   statePlanner,
-  authUser,
-  userId
 }) => {
   const [isInFullScreen, setIsInFullScreen] = useState(false);
 
@@ -114,11 +111,7 @@ const TopNavPlanner = ({
   };
 
   const handleSaveProject = () => {
-    const state = statePlanner.get('react-planner');
-    const { updatedState } = Project.unselectAll(state);
     showSaveProjectAsDialog();
-    // stubFalse;
-    // browserDownload(updatedState.get('scene').toJS());
   }
 
   const handleLoadProjectFromFile = () => {
@@ -429,7 +422,7 @@ const TopNavPlanner = ({
   );
 };
 
-const mapStateToProps = ({ menu, settings, planner, authUser }) => {
+const mapStateToProps = ({ menu, settings, planner }) => {
   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
   const { locale } = settings;
   return {
@@ -438,8 +431,6 @@ const mapStateToProps = ({ menu, settings, planner, authUser }) => {
     selectedMenuHasSubItems,
     locale,
     statePlanner: planner,
-    authUser,
-    userId: authUser.user
   };
 };
 

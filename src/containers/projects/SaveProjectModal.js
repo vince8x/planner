@@ -1,45 +1,89 @@
 import React, { useState, Fragment } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from 'redux';
 import {
   Button, Label, Select, ModalHeader, ModalBody, ModalFooter,
   Input, FormGroup, Col
 } from 'reactstrap';
-import { Formik } from 'formik';
+import { Formik, Form, Field, useFormikContext } from 'formik';
 import IntlMessages from "../../helpers/IntlMessages";
 import reduxDialog from '../../components/common/modal/redux-reactstrap-modal';
+import * as projectActionsAll from '../../redux/projects/actions';
+import { Project } from '../../react-planner/class/export';
 
 
-const SaveProjectModal = ({ toggle }) => {
+const SaveProjectModal = ({ toggle, planner, projectActions }) => {
 
-  const [name, setName] = useState('');
+
+  const onSubmit = (values) => {
+    const statePlanner = planner.get('react-planner');
+    const { updatedState } = Project.unselectAll(statePlanner);
+    const projectState = updatedState.get('scene').toJS();
+    projectActions.saveRemoteProject(values.name, projectState);
+    toggle();
+  };
+
+  const validateName = (value) => {
+    let error;
+    if (!value) {
+      error = 'Please enter project name';
+    } else if (value.length < 2) {
+      error = 'Value must be longer than 2 characters';
+    }
+    return error;
+  };
 
   return (
     <Fragment key="new-project-modal">
-      {/* <Formik
+      <ModalHeader toggle={toggle}>
+        <IntlMessages id="planner.save-project-as" />
+      </ModalHeader>
+      <Formik
         initialValues={{
           name: '',
         }}
         onSubmit={onSubmit}
-      > */}
-        <ModalHeader toggle={toggle}>
-          <IntlMessages id="planner.save-project-as" />
-        </ModalHeader>
-        <ModalBody>
-          <Label className="mt-4">
-            <IntlMessages id="planner.project-name" />
-          </Label>
-          <Input value={name} onChange={(e) => setName(e.target.value)}/>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" ><IntlMessages id="planner.modal.submit" /></Button>{' '}
-          <Button color="secondary" onClick={toggle}><IntlMessages id="planner.modal.cancel" /></Button>
-        </ModalFooter>
-      {/* </Formik> */}
-
+      >
+        {({ errors, touched }) => (
+          <Form className="av-tooltip tooltip-label-right">
+            <ModalBody>
+              <FormGroup>
+                <Label><IntlMessages id="planner.project-name" /></Label>
+                <Field
+                  className="form-control"
+                  name="name"
+                  validate={validateName}
+                />
+                {errors.name && touched.name && (
+                  <div className="invalid-feedback d-block">
+                    {errors.name}
+                  </div>
+                )}
+              </FormGroup>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" type="submit"><IntlMessages id="planner.modal.submit" /></Button>{' '}
+              <Button color="secondary" onClick={toggle}><IntlMessages id="planner.modal.cancel" /></Button>
+            </ModalFooter>
+          </Form>
+        )}
+      </Formik>
     </Fragment>
   )
 }
 
+const mapStateToProps = ({ planner }) => {
+  return {
+    planner
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    projectActions: bindActionCreators(projectActionsAll, dispatch)
+  };
+};
+
 export default reduxDialog(connect, {
   name: 'saveProjectDialog'
-})(SaveProjectModal);
+})(connect(mapStateToProps, mapDispatchToProps)(SaveProjectModal));

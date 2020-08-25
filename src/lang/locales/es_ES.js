@@ -179,5 +179,10 @@ module.exports = {
   'planner.modal.cancel': 'Cancel',
   'planner.save-project-as': 'Guardar proyecto como',
   'planner.project-name': 'Nombre del proyecto',
-  'planner.new-project-success': "Éxito del nuevo proyecto"
+  'planner.new-project-success': "Éxito del nuevo proyecto",
+
+  /* 06. Project */
+  'project.project-list': 'Lista de proyectos',
+  'project.add-new': 'Agregar Nuevo',
+  'project.delete': 'Borrar'
 };
