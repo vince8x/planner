@@ -25,6 +25,9 @@ const ViewHome = React.lazy(() =>
 const ViewApp = React.lazy(() =>
   import(/* webpackChunkName: "views-app" */ './views/app')
 );
+const ViewProjects = React.lazy(() =>
+  import(/* webpackChunkName: "views-app" */ './views/projects')
+);
 const ViewPlanner = React.lazy(() =>
   import(/* webpackChunkName: "views-planner" */ './views/planner')
 );
@@ -88,6 +91,11 @@ class App extends React.Component {
                     path={adminRoot}
                     authUser={loginUser}
                     component={ViewApp}
+                  />
+                  <AuthRoute
+                    path={'/projects'}
+                    authUser={loginUser}
+                    component={ViewProjects}
                   />
                   <Route
                     path="/planner"

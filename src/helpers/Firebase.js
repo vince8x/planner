@@ -2,13 +2,16 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/firestore';
+import ReduxSagaFirebase from 'redux-saga-firebase'
 
 import { firebaseConfig } from '../constants/defaultValues';
 
-firebase.initializeApp(firebaseConfig);
+const myFirebaseApp = firebase.initializeApp(firebaseConfig);
+
+const reduxSagaFirebase = new ReduxSagaFirebase(myFirebaseApp)
 
 const auth = firebase.auth();
 const database = firebase.database();
 const firestore = firebase.firestore();
 
-export { auth, database, firestore };
+export { auth, database, firestore, reduxSagaFirebase };

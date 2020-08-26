@@ -1,7 +1,7 @@
 /* PLANNER */
-export const PLANNER_NEW_PROJECT = 'PLANNER_NEW_PROJECT';
-export const PLANNER_NEW_PROJECT_SUCCESS = 'PLANNER_NEW_PROJECT_SUCCESS';
-export const PLANNER_NEW_PROJECT_ERROR = 'PLANNER_NEW_PROJECT_ERROR';
+export const NEW_REMOTE_PROJECT = 'NEW_REMOTE_PROJECT';
+export const NEW_REMOTE_PROJECT_SUCCESS = 'NEW_REMOTE_PROJECT_SUCCESS';
+export const NEW_REMOTE_PROJECT_ERROR = 'NEW_REMOTE_PROJECT_ERROR';
 
 export const SAVE_REMOTE_PROJECT = 'SAVE_REMOTE_PROJECT';
 export const SAVE_REMOTE_PROJECT_SUCCESS = 'SAVE_REMOTE_PROJECT_SUCCESS';
@@ -26,32 +26,32 @@ export const saveRemoteProjectError = (message) => ({
   payload: { message }
 });
 
-export const newProject = (name) => ({
-  type: PLANNER_NEW_PROJECT,
+export const newRemoteProject = (name) => ({
+  type: NEW_REMOTE_PROJECT,
   payload: { name },
 });
 
-export const newProjectSuccess = (project) => ({
-  type: PLANNER_NEW_PROJECT_SUCCESS,
+export const newRemoteProjectSuccess = (project) => ({
+  type: NEW_REMOTE_PROJECT_SUCCESS,
   payload: project,
 });
 
-export const newProjectError = (message) => ({
-  type: PLANNER_NEW_PROJECT_ERROR,
+export const newRemoteProjectError = (message) => ({
+  type: NEW_REMOTE_PROJECT_ERROR,
   payload: { message },
 });
 
-export const FetchRemoteProjectList = (userId) => ({
+export const fetchRemoteProjectList = (userId) => ({
   type: FETCH_REMOTE_PROJECT_LIST,
   payload: { userId }
 });
 
-export const FetchRemoteProjectListSuccess = (projects) => ({
+export const fetchRemoteProjectListSuccess = (projects) => ({
   type: FETCH_REMOTE_PROJECT_LIST_SUCCESS,
   payload: projects
 });
 
-export const FetchRemoteProjectListError = (message) => ({
+export const fetchRemoteProjectListError = (message) => ({
   type: FETCH_REMOTE_PROJECT_LIST_ERROR,
   payload: { message }
 });

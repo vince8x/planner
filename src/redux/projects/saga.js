@@ -1,9 +1,17 @@
 import firebase from 'firebase';
 import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
 import { success } from 'react-toastify-redux';
-import { firestore } from '../../helpers/Firebase';
+import { firestore, reduxSagaFirebase as rsf } from '../../helpers/Firebase';
 import { getUserId } from '../auth/selectors';
-import { saveRemoteProjectError, saveRemoteProjectSuccess, SAVE_REMOTE_PROJECT, SAVE_REMOTE_PROJECT_SUCCESS } from './actions';
+import { 
+  saveRemoteProjectError, 
+  saveRemoteProjectSuccess, 
+  SAVE_REMOTE_PROJECT, 
+  SAVE_REMOTE_PROJECT_SUCCESS, 
+  fetchRemoteProjectListError, 
+  fetchRemoteProjectListSuccess, 
+  FETCH_REMOTE_PROJECT_LIST 
+} from './actions';
 
 
 const saveRemoteProjectAsync = async(userId, projectName, projectState) => {
@@ -46,9 +54,25 @@ export function* watchSaveRemoteProjectSuccess() {
   yield takeLatest(SAVE_REMOTE_PROJECT_SUCCESS, saveRemoteProjectSuccessSaga);
 }
 
+
+export function* fetchRemoteProjectList({ payload }) {
+  const { userId } = payload;
+  try {
+    const snapshot = yield call(rsf.firestore.getCollection, `users/${userId}/projects`);
+    yield put(fetchRemoteProjectListSuccess(snapshot));
+  } catch (error) {
+    yield put(fetchRemoteProjectListError(error));
+  }
+}
+
+export function* watchFetchRemoteProjectList() {
+  yield takeLatest(FETCH_REMOTE_PROJECT_LIST, fetchRemoteProjectList);
+}
+
 export default function* rootSaga() {
   yield all([
     fork(watchSaveRemoteProject),
-    fork(watchSaveRemoteProjectSuccess)
+    fork(watchSaveRemoteProjectSuccess),
+    fork(watchFetchRemoteProjectList)
   ]);
 }

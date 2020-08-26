@@ -11,9 +11,14 @@ const getIndex = (value, arr, prop) => {
   return -1;
 };
 
+const orderOptions = [
+  { column: 'name', label: 'Product Name' },
+  { column: 'updatedAt', label: 'Updated' }
+];
+const pageSizes = [4, 8, 12, 20];
+
 const ProjectList = ({ match }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [displayMode, setDisplayMode] = useState('imagelist');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(8);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
@@ -34,24 +39,13 @@ const ProjectList = ({ match }) => {
   }, [selectedPageSize, selectedOrderOption]);
 
   useEffect(() => {
-    async function fetchData() {
-      axios
-        .get(
-          `${apiUrl}?pageSize=${selectedPageSize}&currentPage=${currentPage}&orderBy=${selectedOrderOption.column}&search=${search}`
-        )
-        .then((res) => {
-          return res.data;
-        })
-        .then((data) => {
-          setTotalPage(data.totalPage);
-          setItems(data.data.map(x => { return { ...x, img: x.img.replace("img/", "img/products/") } }));
-          setSelectedItems([]);
-          setTotalItemCount(data.totalItem);
-          setIsLoaded(true);
-        });
-    }
-    fetchData();
-  }, [selectedPageSize, currentPage, selectedOrderOption, search]);
+    
+          // setTotalPage(data.totalPage);
+          // setItems(data.data.map(x => { return { ...x, img: x.img.replace("img/", "img/products/") } }));
+          // setSelectedItems([]);
+          // setTotalItemCount(data.totalItem);
+          // setIsLoaded(true);
+  }, []);
 
   const onCheckItem = (event, id) => {
     if (
@@ -113,8 +107,6 @@ const ProjectList = ({ match }) => {
         <div className="disable-text-selection">
           <ProjectListHeading
             heading="menu.image-list"
-            displayMode={displayMode}
-            changeDisplayMode={setDisplayMode}
             handleChangeSelectAll={handleChangeSelectAll}
             changeOrderBy={(column) => {
               setSelectedOrderOption(
@@ -154,5 +146,28 @@ const ProjectList = ({ match }) => {
       </>
     );
 };
+
+
+
+// const mapStateToProps = ({ menu, settings, planner }) => {
+//   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
+//   const { locale } = settings;
+//   return {
+//     containerClassnames,
+//     menuClickCount,
+//     selectedMenuHasSubItems,
+//     locale,
+//     statePlanner: planner,
+//   };
+// };
+
+// const mapDispatchToProps = (dispatch) => {
+//   const result = {
+//     localeActions: bindActionCreators(localeActionsAll, dispatch),
+//     ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch)),
+//     showSaveProjectAsDialog: () => dispatch(openDialog('saveProjectDialog'))
+//   }
+//   return result;
+// };
 
 export default ProjectList;

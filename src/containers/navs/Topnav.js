@@ -199,7 +199,7 @@ const TopNav = ({
   return (
     <nav className="navbar fixed-top">
       <div className="d-flex align-items-center navbar-left">
-        <NavLink
+        {/* <NavLink
           to="#"
           location={{}}
           className="menu-button d-none d-md-block"
@@ -216,7 +216,7 @@ const TopNav = ({
           onClick={(e) => mobileMenuButtonClick(e, containerClassnames)}
         >
           <MobileMenuIcon />
-        </NavLink>
+        </NavLink> */}
 
         {/* <div className="search">
           <Input
@@ -235,6 +235,14 @@ const TopNav = ({
           </span>
         </div> */}
 
+
+      </div>
+      {/* <NavLink className="navbar-logo" to={adminRoot}>
+        <span className="logo d-none d-xs-block" />
+        <span className="logo-mobile d-block d-xs-none" />
+      </NavLink> */}
+
+      <div className="navbar-right">
         <div className="d-inline-block">
           <UncontrolledDropdown className="ml-2">
             <DropdownToggle
@@ -259,13 +267,6 @@ const TopNav = ({
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
-      </div>
-      {/* <NavLink className="navbar-logo" to={adminRoot}>
-        <span className="logo d-none d-xs-block" />
-        <span className="logo-mobile d-block d-xs-none" />
-      </NavLink> */}
-
-      <div className="navbar-right">
         {/* {isDarkSwitchActive && <TopnavDarkSwitch />} */}
         <div className="header-icons d-inline-block align-middle">
           {/* <TopnavEasyAccess /> */}
