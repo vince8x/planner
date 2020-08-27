@@ -27,6 +27,27 @@ class Sidebar extends Component {
     };
   }
 
+  componentDidMount() {
+    window.addEventListener('resize', this.handleWindowResize);
+    this.handleWindowResize();
+    this.handleProps();
+    this.setSelectedLiActive(this.setHasSubItemStatus);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.setSelectedLiActive(this.setHasSubItemStatus);
+
+      window.scrollTo(0, 0);
+    }
+    this.handleProps();
+  }
+
+  componentWillUnmount() {
+    this.removeEvents();
+    window.removeEventListener('resize', this.handleWindowResize);
+  }
+
   handleWindowResize = (event) => {
     if (event && !event.isTrusted) {
       return;
@@ -104,7 +125,8 @@ class Sidebar extends Component {
   };
 
   getContainer = () => {
-    return ReactDOM.findDOMNode(this);
+    return this.node;
+    // return ReactDOM.findDOMNode(this);
   };
 
   toggle = () => {
@@ -237,26 +259,9 @@ class Sidebar extends Component {
     return false;
   };
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location.pathname !== prevProps.location.pathname) {
-      this.setSelectedLiActive(this.setHasSubItemStatus);
+  
 
-      window.scrollTo(0, 0);
-    }
-    this.handleProps();
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleWindowResize);
-    this.handleWindowResize();
-    this.handleProps();
-    this.setSelectedLiActive(this.setHasSubItemStatus);
-  }
-
-  componentWillUnmount() {
-    this.removeEvents();
-    window.removeEventListener('resize', this.handleWindowResize);
-  }
+  
 
   openSubMenu = (e, menuItem) => {
     const selectedParent = menuItem.id;
@@ -330,7 +335,7 @@ class Sidebar extends Component {
       collapsedMenus,
     } = this.state;
     return (
-      <div className="sidebar">
+      <div className="sidebar" ref={node => { this.node = node} }>
         <div className="main-menu">
           <div className="scroll">
             <PerfectScrollbar

@@ -42,7 +42,7 @@ function* loginWithEmailPassword({ payload }) {
     if (!loginUser.message) {
       setCurrentUser(loginUser.user);
       yield put(loginUserSuccess(loginUser.user));
-      history.push('/planner');
+      history.push('/projects');
     } else {
       yield put(loginUserError(loginUser.message));
     }
@@ -65,7 +65,6 @@ const updateUserProfileAsync = async (userProfile) => {
   const user = auth.currentUser;
   return await user.updateProfile(userProfile)
     .then(() => { 
-      console.log('success');
     })
     .catch((error) => { console.log(error) });
 }
@@ -93,7 +92,7 @@ function* registerWithEmailPassword({ payload }) {
       setCurrentUser(registerUser.user);
       yield put(registerUserSuccess(registerUser));
       yield call(updateUserProfile, { payload: { user: { displayName: name } } });
-      history.push('/planner');
+      history.push('/projects');
     } else {
       yield put(registerUserError(registerUser.message));
     }

@@ -32,7 +32,6 @@ const ProjectListHeading = ({
   endIndex,
   selectedItemsLength,
   itemsLength,
-  onSearchKey,
   orderOptions,
   pageSizes,
 }) => {
@@ -88,7 +87,7 @@ const ProjectListHeading = ({
               />
               <DropdownMenu right>
                 <DropdownItem>
-                  <IntlMessages id="pages.delete" />
+                  <IntlMessages id="general.delete" />
                 </DropdownItem>
               </DropdownMenu>
             </ButtonDropdown>
@@ -101,7 +100,7 @@ const ProjectListHeading = ({
             className="pt-0 pl-0 d-inline-block d-md-none"
             onClick={() => setDisplayOptionsIsOpen(!displayOptionsIsOpen)}
           >
-            <IntlMessages id="pages.display-options" />{' '}
+            <IntlMessages id="general.display-options" />{' '}
             <i className="simple-icon-arrow-down align-middle" />
           </Button>
           <Collapse
@@ -110,18 +109,17 @@ const ProjectListHeading = ({
             id="displayOptions"
           >
             <span className="mr-3 d-inline-block float-md-left">
-              <a
-                href="#/"
-                className='active'
+              <div
+                className='mr-2 view-icon active'
               >
                 <ImageListIcon />
-              </a>
+              </div>
             </span>
 
             <div className="d-block d-md-inline-block pt-1">
               <UncontrolledDropdown className="mr-1 float-md-left btn-group mb-1">
                 <DropdownToggle caret color="outline-dark" size="xs">
-                  <IntlMessages id="pages.orderby" />
+                  <IntlMessages id="general.orderby" />
                   {selectedOrderOption.label}
                 </DropdownToggle>
                 <DropdownMenu>
@@ -137,15 +135,6 @@ const ProjectListHeading = ({
                   })}
                 </DropdownMenu>
               </UncontrolledDropdown>
-              <div className="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
-                <input
-                  type="text"
-                  name="keyword"
-                  id="search"
-                  placeholder={messages['menu.search']}
-                  onKeyPress={(e) => onSearchKey(e)}
-                />
-              </div>
             </div>
             <div className="float-md-right pt-1">
               <span className="text-muted text-small mr-1">{`${startIndex}-${endIndex} of ${totalItemCount} `}</span>

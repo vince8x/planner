@@ -3,37 +3,30 @@ import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
 import { success } from 'react-toastify-redux';
 import { firestore, reduxSagaFirebase as rsf } from '../../helpers/Firebase';
 import { getUserId } from '../auth/selectors';
-import { 
-  saveRemoteProjectError, 
-  saveRemoteProjectSuccess, 
-  SAVE_REMOTE_PROJECT, 
-  SAVE_REMOTE_PROJECT_SUCCESS, 
-  fetchRemoteProjectListError, 
-  fetchRemoteProjectListSuccess, 
-  FETCH_REMOTE_PROJECT_LIST 
+import {
+  saveRemoteProjectError,
+  saveRemoteProjectSuccess,
+  SAVE_REMOTE_PROJECT,
+  SAVE_REMOTE_PROJECT_SUCCESS,
+  fetchRemoteProjectListError,
+  fetchRemoteProjectListSuccess,
+  FETCH_REMOTE_PROJECT_LIST
 } from './actions';
-
-
-const saveRemoteProjectAsync = async(userId, projectName, projectState) => {
-  return await firestore.collection('users').doc(userId).collection('projects').set({
-    name: projectName,
-    state: projectState,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
-}
 
 function* saveRemoteProject({ payload }) {
   const { name, projectState } = payload;
 
   try {
     const userId = yield select(getUserId);
-    const status = yield call(saveRemoteProjectAsync, userId, name, projectState);
-
-    if (!status) {
-      yield put(saveRemoteProjectSuccess(projectState));
-    } else {
-      yield put(saveRemoteProjectError(status.message));
+    const project = {
+      name,
+      state: projectState,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     }
+    const doc = yield call(rsf.firestore.addDocument, `users/${userId}/projects`, project)
+    const result = yield doc.get();
+    yield put(saveRemoteProjectSuccess(result.data()));
+
   } catch (error) {
     yield put(saveRemoteProjectError(error));
   }
@@ -59,9 +52,17 @@ export function* fetchRemoteProjectList({ payload }) {
   const { userId } = payload;
   try {
     const snapshot = yield call(rsf.firestore.getCollection, `users/${userId}/projects`);
-    yield put(fetchRemoteProjectListSuccess(snapshot));
-  } catch (error) {
-    yield put(fetchRemoteProjectListError(error));
+    const projects = [];
+    snapshot.forEach(item => {
+      const project = {
+        id: item.id,
+        ...item.data()
+      }
+      projects.push(project);
+    });
+    yield put(fetchRemoteProjectListSuccess(projects));
+  } catch (err) {
+    yield put(fetchRemoteProjectListError(err));
   }
 }
 

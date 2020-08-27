@@ -1,26 +1,52 @@
-import { 
-  FETCH_REMOTE_PROJECT_LIST, 
-  FETCH_REMOTE_PROJECT_LIST_SUCCESS 
+import {
+  createEntityAdapter,
+} from '@reduxjs/toolkit'
+
+import {
+  FETCH_REMOTE_PROJECT_LIST,
+  FETCH_REMOTE_PROJECT_LIST_SUCCESS,
+  LOAD_REMOTE_PROJECT,
+  LOAD_REMOTE_PROJECT_SUCCESS,
 } from "./actions";
 
-const INIT_STATE = {
+export const projectsAdapter = createEntityAdapter();
+
+const initialState = {
   loading: false,
   error: '',
-  projects: []
+  ...projectsAdapter.getInitialState(),
+  loadedProject: null
 };
 
-export default (state = INIT_STATE, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
+
     case FETCH_REMOTE_PROJECT_LIST:
-      return { 
-        ...state, 
+      return {
+        ...state,
         loading: true,
-        error: '' 
+        error: '',
+
       };
     case FETCH_REMOTE_PROJECT_LIST_SUCCESS:
       return {
         ...state,
-        projects: action.payload.projects
+        loading: false,
+        error: '',
+        ...projectsAdapter.setAll(state, action.payload)
+      };
+    case LOAD_REMOTE_PROJECT:
+      return {
+        ...state,
+        loading: true,
+        error: ''
+      }
+    case LOAD_REMOTE_PROJECT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: '',
+        loadedProject: action.payload
       };
     default:
       return { ...state };

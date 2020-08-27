@@ -1,15 +1,20 @@
 import React, { Suspense, useEffect } from 'react';
 import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import PlannerPage from './planner-page';
 import PlannerLayout from '../../layout/PlannerLayout';
 
 
-const App = ({ match }) => {
+const App = ({ match, loadRemoteProject }) => {
   
   useEffect(() => {
     document.body.style.paddingBottom = 0;
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    const { id } = 
+  }, []);
 
   return (
     <PlannerLayout>
@@ -33,4 +38,10 @@ const mapStateToProps = ({ menu }) => {
   return { containerClassnames };
 };
 
-export default withRouter(connect(mapStateToProps, {})(App));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...bindActionCreators(projectActionsAll, dispatch)
+  };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

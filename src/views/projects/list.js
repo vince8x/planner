@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as projectActionsAll from '../../redux/projects/actions';
+import { getAllProjects } from '../../redux/projects/selectors';
 import ProjectListHeading from '../../containers/projects/ProjectListHeading';
+import ProjectListing from '../../containers/projects/ProjectListing';
 
 
 const getIndex = (value, arr, prop) => {
@@ -12,26 +18,24 @@ const getIndex = (value, arr, prop) => {
 };
 
 const orderOptions = [
-  { column: 'name', label: 'Product Name' },
-  { column: 'updatedAt', label: 'Updated' }
+  { column: 'name', label: 'Name' },
+  { column: 'updatedAt', label: 'Updated at' }
 ];
 const pageSizes = [4, 8, 12, 20];
 
-const ProjectList = ({ match }) => {
+const ProjectList = ({ match, fetchRemoteProjectList, userId, items }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(8);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
     column: 'name',
-    label: 'Project Name',
+    label: 'Name',
   });
 
-  const [modalOpen, setModalOpen] = useState(false);
   const [totalItemCount, setTotalItemCount] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
-  const [search, setSearch] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
-  const [items, setItems] = useState([]);
+  // const [items, setItems] = useState([]);
   const [lastChecked, setLastChecked] = useState(null);
 
   useEffect(() => {
@@ -39,12 +43,12 @@ const ProjectList = ({ match }) => {
   }, [selectedPageSize, selectedOrderOption]);
 
   useEffect(() => {
-    
+    fetchRemoteProjectList(userId);
           // setTotalPage(data.totalPage);
           // setItems(data.data.map(x => { return { ...x, img: x.img.replace("img/", "img/products/") } }));
           // setSelectedItems([]);
           // setTotalItemCount(data.totalItem);
-          // setIsLoaded(true);
+          setIsLoaded(true);
   }, []);
 
   const onCheckItem = (event, id) => {
@@ -106,7 +110,6 @@ const ProjectList = ({ match }) => {
       <>
         <div className="disable-text-selection">
           <ProjectListHeading
-            heading="menu.image-list"
             handleChangeSelectAll={handleChangeSelectAll}
             changeOrderBy={(column) => {
               setSelectedOrderOption(
@@ -122,52 +125,39 @@ const ProjectList = ({ match }) => {
             endIndex={endIndex}
             selectedItemsLength={selectedItems ? selectedItems.length : 0}
             itemsLength={items ? items.length : 0}
-            onSearchKey={(e) => {
-              if (e.key === 'Enter') {
-                setSearch(e.target.value.toLowerCase());
-              }
-            }}
             orderOptions={orderOptions}
             pageSizes={pageSizes}
-            toggleModal={() => setModalOpen(!modalOpen)}
           />
-          {/* <ListPageListing
+          <ProjectListing
             items={items}
-            displayMode={displayMode}
             selectedItems={selectedItems}
             onCheckItem={onCheckItem}
             currentPage={currentPage}
             totalPage={totalPage}
-            onContextMenuClick={onContextMenuClick}
-            onContextMenu={onContextMenu}
             onChangePage={setCurrentPage}
-          /> */}
+          />
         </div>
       </>
     );
 };
 
 
+const mapStateToProps = (state) => {
+  const { containerClassnames, authUser } = state;
+  return {
+    authUser,
+    userId: authUser.user,
+    containerClassnames,
+    items: getAllProjects(state)
+  };
+};
 
-// const mapStateToProps = ({ menu, settings, planner }) => {
-//   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
-//   const { locale } = settings;
-//   return {
-//     containerClassnames,
-//     menuClickCount,
-//     selectedMenuHasSubItems,
-//     locale,
-//     statePlanner: planner,
-//   };
-// };
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...bindActionCreators(projectActionsAll, dispatch)
+  }
+};
 
-// const mapDispatchToProps = (dispatch) => {
-//   const result = {
-//     localeActions: bindActionCreators(localeActionsAll, dispatch),
-//     ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch)),
-//     showSaveProjectAsDialog: () => dispatch(openDialog('saveProjectDialog'))
-//   }
-//   return result;
-// };
-
-export default ProjectList;
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(ProjectList)
+);

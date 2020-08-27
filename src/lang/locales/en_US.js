@@ -11,7 +11,10 @@ Table of Contents
 module.exports = {
   /* 01.General */
   'general.copyright': 'Gogo React © 2018 All Rights Reserved.',
-
+  'general.orderby': 'Order by : ',
+  'general.delete': 'Delete',
+  'general.display-options': 'Display Options',
+  
   /* 02.User Login, Logout, Register */
   'user.login-title': 'Login',
   'user.register': 'Register',
@@ -43,6 +46,8 @@ module.exports = {
   'menu.search': 'Search',
   'menu.docs': 'Docs',
   'menu.blank-page': 'Blank Page',
+  'menu.projects': 'Projects',
+  'menu.planner': 'Planner',
 
   /* 04.Error Page */
   'pages.error-title': 'Ooops... looks like an error occurred!',

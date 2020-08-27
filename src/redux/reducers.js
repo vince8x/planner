@@ -16,7 +16,7 @@ const reducers = combineReducers({
   planner,
   dialogReducer,
   toasts,
-
+  projects
 });
 
 export default reducers;

@@ -140,7 +140,7 @@ export const getCurrentUser = () => {
 export const setCurrentUser = (user) => {
   try {
     if (user) {
-      localStorage.setItem('planner_current_user', JSON.stringify(user.uid))
+      localStorage.setItem('planner_current_user', user.uid)
     } else {
       localStorage.removeItem('planner_current_user')
     }

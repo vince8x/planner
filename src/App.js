@@ -93,12 +93,12 @@ class App extends React.Component {
                     component={ViewApp}
                   />
                   <AuthRoute
-                    path={'/projects'}
+                    path='/projects'
                     authUser={loginUser}
                     component={ViewProjects}
                   />
                   <Route
-                    path="/planner"
+                    path="/planner/:id"
                     authUser={loginUser}
                     render={(props) => <ViewPlanner {...props} />}
                   />

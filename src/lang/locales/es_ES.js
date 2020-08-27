@@ -11,6 +11,9 @@ Table of Contents
 module.exports = {
   /* 01.General */
   'general.copyright': 'Gogo React © Todos los derechos reservados.',
+  'general.orderby': 'Ordenar por : ',
+  'general.delete': 'Borrar',
+  'general.display-options': 'Opciones de Pantalla',
 
   /* 02.Inicio de sesión de usuario, cierre de sesión, registro */
   'user.login-title': 'Iniciar sesión',
@@ -43,6 +46,9 @@ module.exports = {
   'menu.search': 'Búsqueda',
   'menu.docs': 'Docs',
   'menu.blank-page': 'Blank Page',
+  'menu.projects': 'Proyectos',
+  'menu.planner': 'Planificador',
+
   /* 04.Error  */
   'layouts.error-title': 'Vaya, parece que ha ocurrido un error!',
   'layouts.error-code': 'Código de error',

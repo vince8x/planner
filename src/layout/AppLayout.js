@@ -4,12 +4,13 @@ import { withRouter } from 'react-router-dom';
 
 import TopNav from '../containers/navs/Topnav';
 import Footer from '../containers/navs/Footer';
+import Sidebar from '../containers/navs/Sidebar';
 
 const AppLayout = ({ containerClassnames, children, history }) => {
   return (
     <div id="app-container" className={containerClassnames}>
       <TopNav history={history} />
-      {/* <Sidebar /> */}
+      <Sidebar />
       <main>
         <div className="container-fluid">{children}</div>
       </main>

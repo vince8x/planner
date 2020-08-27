@@ -199,7 +199,7 @@ const TopNav = ({
   return (
     <nav className="navbar fixed-top">
       <div className="d-flex align-items-center navbar-left">
-        {/* <NavLink
+        <NavLink
           to="#"
           location={{}}
           className="menu-button d-none d-md-block"
@@ -216,7 +216,7 @@ const TopNav = ({
           onClick={(e) => mobileMenuButtonClick(e, containerClassnames)}
         >
           <MobileMenuIcon />
-        </NavLink> */}
+        </NavLink>
 
         {/* <div className="search">
           <Input
