@@ -65,7 +65,7 @@ const updateUserProfileAsync = async (userProfile) => {
   return await user.updateProfile(userProfile)
     .then(() => { 
     })
-    .catch((error) => { console.log(error) });
+    .catch(() => { });
 }
 
 function* updateUserProfile({ payload }) {

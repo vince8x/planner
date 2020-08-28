@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
-import { success } from 'react-toastify-redux';
+import { success, error } from 'react-toastify-redux';
+import * as _ from 'lodash';
 import { reduxSagaFirebase as rsf } from '../../helpers/Firebase';
 import { getUserId } from '../auth/selectors';
 import {
@@ -8,31 +9,42 @@ import {
   saveRemoteProjectSuccess,
   SAVE_REMOTE_PROJECT,
   SAVE_REMOTE_PROJECT_SUCCESS,
+  SAVE_REMOTE_PROJECT_ERROR,
   fetchRemoteProjectListError,
   fetchRemoteProjectListSuccess,
   FETCH_REMOTE_PROJECT_LIST,
   LOAD_REMOTE_PROJECT,
   loadRemoteProjectSuccess,
-  loadRemoteProjectError
+  loadRemoteProjectError,
+  ADD_REMOTE_PROJECT,
+  addRemoteProjectSuccess,
+  addRemoteProjectError,
+  ADD_REMOTE_PROJECT_SUCCESS,
+  ADD_REMOTE_PROJECT_ERROR,
+  DELETE_REMOTE_PROJECTS,
+  deleteRemoteProjectsSuccess,
+  deleteRemoteProjectsError
 } from './actions';
 import { loadProject } from '../../react-planner/actions/project-actions';
 
 function* saveRemoteProject({ payload }) {
-  const { name, projectState } = payload;
+  const { id, imageBlob } = payload;
+  let { project } = payload;
 
   try {
     const userId = yield select(getUserId);
-    const project = {
-      name,
-      state: projectState,
+    project = {
+      ...project,
+      id,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }
-    const doc = yield call(rsf.firestore.addDocument, `users/${userId}/projects`, project)
-    const result = yield doc.get();
-    yield put(saveRemoteProjectSuccess(result.data()));
+    };
 
-  } catch (error) {
-    yield put(saveRemoteProjectError(error));
+    yield rsf.storage.uploadFile(`images/${userId}/projects/${id}.png`, imageBlob);
+    yield call(rsf.firestore.setDocument, `users/${userId}/projects/${id}`, project);
+    yield put(saveRemoteProjectSuccess(project));
+
+  } catch (err) {
+    yield put(saveRemoteProjectError(err));
   }
 }
 
@@ -47,8 +59,17 @@ export function* saveRemoteProjectSuccessSaga() {
   yield put(success('Save project success'));
 }
 
+export function* saveRemoteProjectErrorSaga() {
+  // @TODO: multi language in saga
+  yield put(error('Unable to save project'));
+}
+
 export function* watchSaveRemoteProjectSuccess() {
   yield takeLatest(SAVE_REMOTE_PROJECT_SUCCESS, saveRemoteProjectSuccessSaga);
+}
+
+export function* watchSaveRemoteProjectError() {
+  yield takeLatest(SAVE_REMOTE_PROJECT_ERROR, saveRemoteProjectErrorSaga);
 }
 
 
@@ -76,7 +97,7 @@ export function* watchFetchRemoteProjectList() {
 
 export function* loadRemoteProject({ payload }) {
   try {
-    const { id,  history } = payload;
+    const { id, history } = payload;
     const userId = yield select(getUserId);
     const snapshot = yield call(rsf.firestore.getDocument, `users/${userId}/projects/${id}`);
     if (snapshot.exists) {
@@ -93,15 +114,93 @@ export function* loadRemoteProject({ payload }) {
   }
 }
 
+export function* addRemoteProjectSuccessSaga() {
+  // @TODO: multi language in saga
+  yield put(success('Add project success'));
+}
+
+export function* addRemoteProjectErrorSaga() {
+  // @TODO: multi language in saga
+  yield put(error('Unable to add project'));
+}
+
 export function* watchLoadRemoteProject() {
   yield takeLatest(LOAD_REMOTE_PROJECT, loadRemoteProject);
 }
 
+function* addRemoteProject({ payload }) {
+  const { name, projectState, imageBlob } = payload;
+
+  try {
+    const userId = yield select(getUserId);
+    const project = {
+      name,
+      state: projectState,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    const doc = yield call(rsf.firestore.addDocument, `users/${userId}/projects`, project);
+    const result = yield doc.get();
+    const newProject = result.data();
+    newProject.id = result.id;
+    yield rsf.storage.uploadFile(`images/${userId}/projects/${newProject.id}.png`, imageBlob);
+    yield put(addRemoteProjectSuccess(newProject));
+
+  } catch (err) {
+    yield put(addRemoteProjectError(err));
+  }
+}
+
+export function* watchAddRemoteProject() {
+  yield takeLatest(ADD_REMOTE_PROJECT, addRemoteProject);
+}
+
+export function* watchAddRemoteProjectSuccess() {
+  yield takeLatest(ADD_REMOTE_PROJECT_SUCCESS, addRemoteProjectSuccessSaga);
+}
+
+export function* watchAddRemoteProjectError() {
+  yield takeLatest(ADD_REMOTE_PROJECT_ERROR, addRemoteProjectErrorSaga);
+}
+
+export function* deleteRemoteProjects({ payload }) {
+  const { ids } = payload;
+  const userId = yield select(getUserId);
+  try {
+    yield all(
+      _.map(ids, (id) => {
+        return rsf.firestore.deleteDocument(`users/${userId}/projects/${id}`);
+      })
+    );
+    
+  } catch (err) {
+    console.log(err);
+    yield put(deleteRemoteProjectsError())
+  }
+
+  yield all(
+    _.map(ids, (id) => {
+      return rsf.storage.deleteFile(`images/${userId}/projects/${id}.png`);
+    })
+  );
+  yield put(deleteRemoteProjectsSuccess(ids));
+}
+
+export function* watchDeleteRemoteProjects() {
+  yield takeLatest(DELETE_REMOTE_PROJECTS, deleteRemoteProjects);
+}
+
 export default function* rootSaga() {
   yield all([
+    fork(watchAddRemoteProject),
+    fork(watchAddRemoteProjectError),
+    fork(watchAddRemoteProjectSuccess),
     fork(watchSaveRemoteProject),
     fork(watchSaveRemoteProjectSuccess),
+    fork(watchSaveRemoteProjectError),
     fork(watchFetchRemoteProjectList),
-    fork(watchLoadRemoteProject)
+    fork(watchLoadRemoteProject),
+    fork(watchDeleteRemoteProjects)
   ]);
 }

@@ -13,15 +13,22 @@ html {
   height: 100%;
 
   .navbar {
+
+    #iconMenuDropdown {
+      height: 110px;
+    }
+    
     .top-toolbar {
       margin-left: 10px;
       flex-basis: auto;
+
+      
 
       .button-group {
         border-top: 1px solid #dadada;
         border-left: 1px solid #dadada;
         margin-right: 10px;
-      
+
         button.toolbar-item,
         button.toolbar-toggle {
           background: #fff;
@@ -29,13 +36,13 @@ html {
           padding: 0;
           border: none;
           border-radius: 0;
-  
+
           &:hover {
             background: #f4f4f4;
             border-color: #eaeaea;
           }
         }
-  
+
         button.toolbar-item {
           font-size: 32px;
           min-width: 48px;
@@ -43,7 +50,7 @@ html {
           border-bottom: 1px solid #dadada;
           border-right: 1px solid #dadada;
         }
-  
+
         button.toolbar-toggle {
           font-size: 16px;
           width: 24px;
@@ -64,6 +71,12 @@ html {
     }
     .flex-auto {
       flex-basis: auto;
+    }
+
+    .navbar-right {
+      .project-name-badge {
+        font-size: 18px;
+      }
     }
   }
 

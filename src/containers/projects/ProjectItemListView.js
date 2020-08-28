@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import fromUnixTime from 'date-fns/fromUnixTime';
@@ -13,13 +13,24 @@ import {
 } from 'reactstrap';
 import { NavLink, useHistory } from 'react-router-dom';
 import classnames from 'classnames';
+import { storage } from '../../helpers/Firebase';
 import { Colxx } from '../../components/common/CustomBootstrap';
 import * as projectActionsAll from '../../redux/projects/actions';
 
 
-const ProjectItemListView = ({ project, isSelect, onCheckItem, loadRemoteProject }) => {
+
+
+const ProjectItemListView = ({ userId, project, isSelect, onCheckItem, loadRemoteProject }) => {
 
   const history = useHistory();
+
+  const [projectImageSrc, setProjectImageSrc] = useState(null);
+
+  useEffect(() => {
+    storage.ref(`images/${userId}/projects/${project.id}.png`).getDownloadURL()
+      .then(url => setProjectImageSrc(url)) 
+      .catch(error => console.error(error));
+  }, []);
 
   const handleItemClick = (e, item) => {
     e.preventDefault();
@@ -36,8 +47,8 @@ const ProjectItemListView = ({ project, isSelect, onCheckItem, loadRemoteProject
         })}
       >
         <div className="position-relative">
-          <NavLink to={`/planner`} onClick={(e) => handleItemClick(e, project)} className="w-40 w-sm-100">
-            <CardImg top alt={project.name} src='/assets/img/projects/default-thumb.png' />
+          <NavLink to='/planner' onClick={(e) => handleItemClick(e, project)} className="w-40 w-sm-100">
+            {projectImageSrc && <CardImg top alt={project.name} src={projectImageSrc} />}
           </NavLink>
         </div>
         <CardBody>

@@ -19,15 +19,16 @@ const getIndex = (value, arr, prop) => {
 };
 
 const orderOptions = [
-  { column: 'name', label: 'Name' },
-  { column: 'updatedAt.seconds', label: 'Updated at' }
+  { column: 'name', label: 'Name', direction: 'asc' },
+  { column: 'updatedAt.seconds', label: 'Updated at', direction: 'desc' }
 ];
 const pageSizes = [4, 8, 12, 20];
 
 const ProjectList = ({ 
   match,
   isLoading,
-  fetchRemoteProjectList, 
+  fetchRemoteProjectList,
+  deleteRemoteProjects,
   userId, 
   projects 
 }) => {
@@ -36,6 +37,7 @@ const ProjectList = ({
   const [selectedOrderOption, setSelectedOrderOption] = useState({
     column: 'name',
     label: 'Name',
+    direction: 'asc'
   });
 
   const [totalItemCount, setTotalItemCount] = useState(0);
@@ -45,7 +47,7 @@ const ProjectList = ({
   const [lastChecked, setLastChecked] = useState(null);
 
   useEffect(() => {
-    const sortedProjects = _.orderBy(projects, [selectedOrderOption.column], ['asc']);
+    const sortedProjects = _.orderBy(projects, [selectedOrderOption.column], [selectedOrderOption.direction]);
     const startIndex = (currentPage - 1) * selectedPageSize;
     const endIndex = currentPage * selectedPageSize;
     const newItems = _.slice(sortedProjects, startIndex, endIndex);
@@ -111,6 +113,10 @@ const ProjectList = ({
     return false;
   };
 
+  const handleDeleteItems = () => {
+    // const selectedIds = selectedItems
+    deleteRemoteProjects(selectedItems);
+  }
 
 
   const startIndex = (currentPage - 1) * selectedPageSize;
@@ -139,8 +145,10 @@ const ProjectList = ({
             itemsLength={items ? items.length : 0}
             orderOptions={orderOptions}
             pageSizes={pageSizes}
+            handleDeleteItems={handleDeleteItems}
           />
           <ProjectListing
+            userId={userId}
             items={items}
             selectedItems={selectedItems}
             onCheckItem={onCheckItem}

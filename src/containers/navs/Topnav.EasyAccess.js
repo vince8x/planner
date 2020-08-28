@@ -11,34 +11,17 @@ const TopnavEasyAccess = () => {
           <i className="simple-icon-grid" />
         </DropdownToggle>
         <DropdownMenu
-          className="position-absolute mt-3"
+          className="position-absolute mt-3 planner"
           right
           id="iconMenuDropdown"
         >
-          <NavLink to="#" className="icon-menu-item">
-            <i className="iconsminds-shop-4 d-block" />{' '}
-            <IntlMessages id="menu.dashboards" />
+          <NavLink to="/" className="icon-menu-item">
+            <i className="simple-icon-home d-block" />{' '}
+            <IntlMessages id="menu.home" />
           </NavLink>
-
-          <NavLink to="#" className="icon-menu-item">
-            <i className="iconsminds-pantone d-block" />{' '}
-            <IntlMessages id="menu.ui" />
-          </NavLink>
-          <NavLink to="#" className="icon-menu-item">
-            <i className="iconsminds-bar-chart-4 d-block" />{' '}
-            <IntlMessages id="menu.charts" />
-          </NavLink>
-          <NavLink to="#" className="icon-menu-item">
-            <i className="iconsminds-speach-bubble d-block" />{' '}
-            <IntlMessages id="menu.chat" />
-          </NavLink>
-          <NavLink to="#" className="icon-menu-item">
-            <i className="iconsminds-formula d-block" />{' '}
-            <IntlMessages id="menu.survey" />
-          </NavLink>
-          <NavLink to="#" className="icon-menu-item">
-            <i className="iconsminds-check d-block" />{' '}
-            <IntlMessages id="menu.todo" />
+          <NavLink to="/projects" className="icon-menu-item">
+            <i className="iconsminds-library d-block" />{' '}
+            <IntlMessages id="menu.projects" />
           </NavLink>
         </DropdownMenu>
       </UncontrolledDropdown>

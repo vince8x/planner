@@ -14,7 +14,7 @@ import { GeometryUtils } from '../react-planner/utils/export';
 import { UNIT_CENTIMETER } from '../react-planner/constants';
 import { objectsMap } from '../react-planner/utils/objects-utils';
 import actions from '../react-planner/actions/export';
-import SaveProjectModal from '../containers/projects/SaveProjectModal';
+import SaveAsProjectModal from '../containers/projects/SaveAsProjectModal';
 // import Sidebar from '../containers/navs/Sidebar';
 
 const PlannerLayout = ({
@@ -76,7 +76,7 @@ const PlannerLayout = ({
         <div className="container-fluid">{children}</div>
       </main>
       <LengthInputModal autoFocus={false} onSubmitLength={(length, unit) => handleLengthInput(length, unit)} />
-      <SaveProjectModal autoFocus={false} />
+      <SaveAsProjectModal autoFocus={false} />
       <ToastContainer />
     </div>
   );

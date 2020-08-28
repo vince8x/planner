@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import * as _ from 'lodash';
 
@@ -8,13 +8,15 @@ import {
   DropdownToggle,
   DropdownMenu,
   UncontrolledTooltip,
-  Button
+  Button,
+  Badge
 } from 'reactstrap';
 
 import { MdUndo, MdSettings } from 'react-icons/md';
 import { GiSteelDoor, GiWindow, GiGate, GiBrickWall } from 'react-icons/gi';
-import { FaFolderOpen, FaFile, FaSave, FaFileExport } from 'react-icons/fa';
-import { withRouter } from 'react-router-dom';
+import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome } from 'react-icons/fa';
+import { AiOutlineBook } from 'react-icons/ai';
+import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -45,6 +47,8 @@ import { THERMAL_REQUIREMENTS, FIRE_RESISTANCE_REQUIREMENTS, ACOUSTIC_REQUIREMEN
 import { logoutUser, openDialog } from '../../redux/actions';
 import { Project } from '../../react-planner/class/export';
 import TopNavProfileSection from './TopNavProfileSection';
+import { saveRemoteProject } from '../../redux/projects/actions';
+import saveSVGScreenshotToFile from '../../helpers/Screenshot';
 
 
 
@@ -58,7 +62,12 @@ const TopNavPlanner = ({
   holesActions,
   itemsActions,
   statePlanner,
+  loadedProject,
+  saveRemoteProjectAction
 }) => {
+
+  const history = useHistory();
+
   const [isInFullScreen, setIsInFullScreen] = useState(false);
 
   const handleChangeLocale = (_locale, direction) => {
@@ -111,7 +120,20 @@ const TopNavPlanner = ({
   };
 
   const handleSaveProject = () => {
-    showSaveProjectAsDialog();
+    if (loadedProject && loadedProject.id) {
+      // the project is already loaded
+      const { id } = loadedProject;
+
+      const saveRemoteProjectCallback = (imageBlob) => {
+        saveRemoteProjectAction(id, loadedProject, imageBlob);
+      };
+
+      saveSVGScreenshotToFile(saveRemoteProjectCallback);
+    } else {
+      // there's no project, we'll add the project by showing the dialog
+      showSaveProjectAsDialog();
+    }
+
   }
 
   const handleLoadProjectFromFile = () => {
@@ -161,6 +183,32 @@ const TopNavPlanner = ({
   return (
     <nav className="navbar fixed-top">
       <div size='lg' className="d-flex align-items-center navbar-left top-toolbar">
+        <div className='button-group'>
+          <Button id='planner-home' className='toolbar-item'
+            onClick={() => history.push('/')}
+          >
+            <FaHome />
+            <div className="btn-title" >
+              <IntlMessages id='menu.home' />
+            </div>
+            <UncontrolledTooltip placement="right" target="planner-home" >
+              <IntlMessages id='menu.home' />
+            </UncontrolledTooltip>
+          </Button>
+
+          <Button id='planner-projects' className='toolbar-item'
+            onClick={() => history.push('/projects')}
+          >
+            <AiOutlineBook />
+            <div className="btn-title" >
+              <IntlMessages id='menu.projects' />
+            </div>
+            <UncontrolledTooltip placement="right" target="planner-projects" >
+              <IntlMessages id='menu.projects' />
+            </UncontrolledTooltip>
+          </Button>
+        </div>
+
         <div className='button-group'>
           <Button id='planner-new-project' className='toolbar-item'
             onClick={() => projectActions.newProject()}
@@ -374,6 +422,12 @@ const TopNavPlanner = ({
 
       </div>
       <div className="flex-auto navbar-right">
+        {
+          loadedProject && loadedProject.name &&
+          (
+            <Badge className="project-name-badge" color="secondary">{loadedProject.name}</Badge>
+          )
+        }
         <div className="d-inline-block">
           <UncontrolledDropdown className="ml-2">
             <DropdownToggle
@@ -399,7 +453,7 @@ const TopNavPlanner = ({
           </UncontrolledDropdown>
         </div>
         <div className="header-icons d-inline-block align-middle">
-          {/* <TopnavEasyAccess /> */}
+          <TopnavEasyAccess />
           {/* <TopnavNotifications /> */}
           <button
             className="header-icon btn btn-empty d-none d-sm-inline-block"
@@ -422,15 +476,17 @@ const TopNavPlanner = ({
   );
 };
 
-const mapStateToProps = ({ menu, settings, planner }) => {
+const mapStateToProps = ({ menu, settings, planner, projects }) => {
   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
   const { locale } = settings;
+  const { loadedProject } = projects;
   return {
     containerClassnames,
     menuClickCount,
     selectedMenuHasSubItems,
     locale,
     statePlanner: planner,
+    loadedProject
   };
 };
 
@@ -438,7 +494,8 @@ const mapDispatchToProps = (dispatch) => {
   const result = {
     localeActions: bindActionCreators(localeActionsAll, dispatch),
     ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch)),
-    showSaveProjectAsDialog: () => dispatch(openDialog('saveProjectDialog'))
+    showSaveProjectAsDialog: () => dispatch(openDialog('saveAsProjectDialog')),
+    saveRemoteProjectAction: (id, project, imageBlob) => dispatch(saveRemoteProject(id, project, imageBlob))
   }
   return result;
 };

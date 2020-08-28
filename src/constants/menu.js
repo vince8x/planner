@@ -7,7 +7,7 @@ const data = [
   },
   {
     id: 'planner  ',
-    icon: 'iconsminds-home',
+    icon: 'iconsminds-building',
     label: 'menu.planner',
     to: '/planner'
   },

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Row,
   Button,
@@ -20,9 +21,11 @@ import {
 } from '../../components/svg';
 
 
+
 const ProjectListHeading = ({
   intl,
   handleChangeSelectAll,
+  handleDeleteItems,
   changeOrderBy,
   changePageSize,
   selectedPageSize,
@@ -35,6 +38,7 @@ const ProjectListHeading = ({
   orderOptions,
   pageSizes,
 }) => {
+  const history = useHistory();
   const [dropdownSplitOpen, setDropdownSplitOpen] = useState(false);
   const [displayOptionsIsOpen, setDisplayOptionsIsOpen] = useState(false);
   const { messages } = intl;
@@ -52,7 +56,7 @@ const ProjectListHeading = ({
               color="primary"
               size="lg"
               className="top-right-button"
-            // onClick={() => toggleModal()}
+              onClick={() => history.push('/planner')}
             >
               <IntlMessages id="project.add-new" />
             </Button>
@@ -86,7 +90,9 @@ const ProjectListHeading = ({
                 className="dropdown-toggle-split btn-lg"
               />
               <DropdownMenu right>
-                <DropdownItem>
+                <DropdownItem
+                  onClick={() => handleDeleteItems()}
+                >
                   <IntlMessages id="general.delete" />
                 </DropdownItem>
               </DropdownMenu>

@@ -5,22 +5,32 @@ import {
   Button, Label, Select, ModalHeader, ModalBody, ModalFooter,
   Input, FormGroup, Col
 } from 'reactstrap';
+import confirm from "reactstrap-confirm";
 import { Formik, Form, Field, useFormikContext } from 'formik';
 import IntlMessages from "../../helpers/IntlMessages";
 import reduxDialog from '../../components/common/modal/redux-reactstrap-modal';
 import * as projectActionsAll from '../../redux/projects/actions';
 import { Project } from '../../react-planner/class/export';
+import saveSVGScreenshotToFile from "../../helpers/Screenshot";
 
 
-const SaveProjectModal = ({ toggle, planner, projectActions }) => {
+const SaveAsProjectModal = ({ toggle, planner, projectActions }) => {
 
 
   const onSubmit = (values) => {
     const statePlanner = planner.get('react-planner');
     const { updatedState } = Project.unselectAll(statePlanner);
     const projectState = updatedState.get('scene').toJS();
-    projectActions.saveRemoteProject(values.name, projectState);
-    toggle();
+
+    // TODO: logic nested dialog to check the name is existed
+    // let result = await confirm();
+
+    const addRemoteProjectCallback = (imageBlob) => {
+      projectActions.addRemoteProject(values.name, projectState, imageBlob);
+      toggle();
+    };
+
+    saveSVGScreenshotToFile(addRemoteProjectCallback);
   };
 
   const validateName = (value) => {
@@ -85,5 +95,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default reduxDialog(connect, {
-  name: 'saveProjectDialog'
-})(connect(mapStateToProps, mapDispatchToProps)(SaveProjectModal));
+  name: 'saveAsProjectDialog'
+})(connect(mapStateToProps, mapDispatchToProps)(SaveAsProjectModal));

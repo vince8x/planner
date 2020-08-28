@@ -4,6 +4,7 @@ import ProjectItemListView from './ProjectItemListView';
 import Pagination from '../common/Pagination';
 
 const ProjectListing = ({
+  userId,
   items,
   selectedItems,
   onCheckItem,
@@ -17,6 +18,7 @@ const ProjectListing = ({
         return (
           <ProjectItemListView
             key={project.id}
+            userId={userId}
             project={project}
             isSelect={selectedItems.includes(project.id)}
             onCheckItem={onCheckItem}
