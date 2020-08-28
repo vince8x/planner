@@ -1,5 +1,6 @@
 import React from 'react';
 import ContainerDimensions from 'react-container-dimensions';
+import { connect } from 'react-redux';
 
 import {
   ReactPlanner,
@@ -13,13 +14,17 @@ const toolbarButtons = [
   ToolbarScreenshotButton,
 ];
 
-const PlannerPage = () => {
+const PlannerPage = ({ projects }) => {
 
   const plugins = [
     PlannerPlugins.Keyboard(),
     PlannerPlugins.Autosave('react-planner_v0'),
     PlannerPlugins.ConsoleDebugger(),
   ];
+
+  if (!projects || !projects.loadedProject) {
+    plugins.push(PlannerPlugins.Autoload('react-planner_v0'));
+  }
 
   return (
     <ContainerDimensions>
@@ -41,4 +46,8 @@ const PlannerPage = () => {
   );
 }
 
-export default PlannerPage;
+const mapStateToProps = ({ projects }) => {
+  return { projects };
+};
+
+export default connect(mapStateToProps, {})(PlannerPage);

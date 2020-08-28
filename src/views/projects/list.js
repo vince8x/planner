@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import * as _ from 'lodash';
 import * as projectActionsAll from '../../redux/projects/actions';
 import { getAllProjects } from '../../redux/projects/selectors';
 import ProjectListHeading from '../../containers/projects/ProjectListHeading';
@@ -19,12 +20,17 @@ const getIndex = (value, arr, prop) => {
 
 const orderOptions = [
   { column: 'name', label: 'Name' },
-  { column: 'updatedAt', label: 'Updated at' }
+  { column: 'updatedAt.seconds', label: 'Updated at' }
 ];
 const pageSizes = [4, 8, 12, 20];
 
-const ProjectList = ({ match, fetchRemoteProjectList, userId, items }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
+const ProjectList = ({ 
+  match,
+  isLoading,
+  fetchRemoteProjectList, 
+  userId, 
+  projects 
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPageSize, setSelectedPageSize] = useState(8);
   const [selectedOrderOption, setSelectedOrderOption] = useState({
@@ -35,21 +41,27 @@ const ProjectList = ({ match, fetchRemoteProjectList, userId, items }) => {
   const [totalItemCount, setTotalItemCount] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState([]);
-  // const [items, setItems] = useState([]);
+  const [items, setItems] = useState([]);
   const [lastChecked, setLastChecked] = useState(null);
+
+  useEffect(() => {
+    const sortedProjects = _.orderBy(projects, [selectedOrderOption.column], ['asc']);
+    const startIndex = (currentPage - 1) * selectedPageSize;
+    const endIndex = currentPage * selectedPageSize;
+    const newItems = _.slice(sortedProjects, startIndex, endIndex);
+    setItems(newItems);
+    setTotalItemCount(sortedProjects.length);
+    setTotalPage(Math.ceil(sortedProjects.length/selectedPageSize));
+    setSelectedItems([]);
+  }, [projects, selectedPageSize, selectedOrderOption, currentPage]);
+
+  useEffect(() => {
+    fetchRemoteProjectList(userId);
+  }, []);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedPageSize, selectedOrderOption]);
-
-  useEffect(() => {
-    fetchRemoteProjectList(userId);
-          // setTotalPage(data.totalPage);
-          // setItems(data.data.map(x => { return { ...x, img: x.img.replace("img/", "img/products/") } }));
-          // setSelectedItems([]);
-          // setTotalItemCount(data.totalItem);
-          setIsLoaded(true);
-  }, []);
 
   const onCheckItem = (event, id) => {
     if (
@@ -104,7 +116,7 @@ const ProjectList = ({ match, fetchRemoteProjectList, userId, items }) => {
   const startIndex = (currentPage - 1) * selectedPageSize;
   const endIndex = currentPage * selectedPageSize;
 
-  return !isLoaded ? (
+  return isLoading ? (
     <div className="loading" />
   ) : (
       <>
@@ -143,12 +155,14 @@ const ProjectList = ({ match, fetchRemoteProjectList, userId, items }) => {
 
 
 const mapStateToProps = (state) => {
-  const { containerClassnames, authUser } = state;
+  const { containerClassnames, authUser, projects } = state;
+  const { loading } = projects;
   return {
     authUser,
     userId: authUser.user,
     containerClassnames,
-    items: getAllProjects(state)
+    projects: getAllProjects(state),
+    isLoading: loading
   };
 };
 

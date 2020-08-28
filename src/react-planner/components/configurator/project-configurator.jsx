@@ -138,6 +138,7 @@ export default class ProjectConfigurator extends Component {
       thermalRegulation, typeOfGrouping, numberOfFloor, firstFloorType, totalAreaSize,
       region, commune
     } = this.state;
+    const numberOfSquareMeters = numberOfFloor * totalAreaSize;
     let { projectActions, translator } = this.context;
 
     let thermalRegulations = THERMAL_REGULATION.map(item => {
@@ -258,7 +259,7 @@ export default class ProjectConfigurator extends Component {
             </FormLabel>
             <FormTextInput
               id='area'
-              value={(totalAreaSize / 10000).toFixed(2)}
+              value={(numberOfSquareMeters / 10000).toFixed(2)}
               style={{ disabled: 'disabled' }}
               onChange={e => { }}
             />

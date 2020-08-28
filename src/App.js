@@ -98,9 +98,9 @@ class App extends React.Component {
                     component={ViewProjects}
                   />
                   <Route
-                    path="/planner/:id"
+                    path="/planner"
                     authUser={loginUser}
-                    render={(props) => <ViewPlanner {...props} />}
+                    render={(props) => <ViewPlanner {...props} authUser={loginUser} />}
                   />
                   <Route
                     path="/user"

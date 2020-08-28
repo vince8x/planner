@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
 import { auth } from '../../helpers/Firebase';
 import {
   LOGIN_USER,
@@ -7,7 +7,6 @@ import {
   LOGOUT_USER,
   FORGOT_PASSWORD,
   RESET_PASSWORD,
-  GET_USER_PROFILE,
 } from '../actions';
 
 import {

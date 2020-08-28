@@ -1,4 +1,6 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import fromUnixTime from 'date-fns/fromUnixTime';
 import {
   Row,
@@ -9,12 +11,22 @@ import {
   CardText,
   CustomInput,
 } from 'reactstrap';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { Colxx } from '../../components/common/CustomBootstrap';
+import * as projectActionsAll from '../../redux/projects/actions';
 
 
-const ProjectItemListView = ({ project, isSelect, onCheckItem }) => {
+const ProjectItemListView = ({ project, isSelect, onCheckItem, loadRemoteProject }) => {
+
+  const history = useHistory();
+
+  const handleItemClick = (e, item) => {
+    e.preventDefault();
+    const { id } = item;
+    loadRemoteProject(id, history);
+  }
+
   return (
     <Colxx sm="6" lg="4" xl="3" className="mb-3" key={project.id}>
       <Card
@@ -24,7 +36,7 @@ const ProjectItemListView = ({ project, isSelect, onCheckItem }) => {
         })}
       >
         <div className="position-relative">
-          <NavLink to={`/planner/${project.id}`} className="w-40 w-sm-100">
+          <NavLink to={`/planner`} onClick={(e) => handleItemClick(e, project)} className="w-40 w-sm-100">
             <CardImg top alt={project.name} src='/assets/img/projects/default-thumb.png' />
           </NavLink>
         </div>
@@ -53,5 +65,10 @@ const ProjectItemListView = ({ project, isSelect, onCheckItem }) => {
   );
 };
 
-/* React.memo detail : https://reactjs.org/docs/react-api.html#reactpurecomponent  */
-export default React.memo(ProjectItemListView);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ...bindActionCreators(projectActionsAll, dispatch)
+  }
+};
+
+export default connect(null, mapDispatchToProps)(ProjectItemListView);

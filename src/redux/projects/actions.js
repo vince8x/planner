@@ -45,9 +45,9 @@ export const newRemoteProjectError = (message) => ({
   payload: { message },
 });
 
-export const loadRemoteProject = (id) => ({
+export const loadRemoteProject = (id, history) => ({
   type: LOAD_REMOTE_PROJECT,
-  payload: { id },
+  payload: { id, history },
 });
 
 export const loadRemoteProjectSuccess = (project) => ({

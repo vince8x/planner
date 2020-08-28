@@ -31,9 +31,9 @@ export default (state = initialState, action) => {
     case FETCH_REMOTE_PROJECT_LIST_SUCCESS:
       return {
         ...state,
+        ...projectsAdapter.setAll(state, action.payload),
         loading: false,
-        error: '',
-        ...projectsAdapter.setAll(state, action.payload)
+        error: ''
       };
     case LOAD_REMOTE_PROJECT:
       return {
