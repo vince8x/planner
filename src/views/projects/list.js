@@ -126,7 +126,7 @@ const ProjectList = ({
     <div className="loading" />
   ) : (
       <>
-        <div className="disable-text-selection">
+        <div className="disable-text-selection project-list">
           <ProjectListHeading
             handleChangeSelectAll={handleChangeSelectAll}
             changeOrderBy={(column) => {

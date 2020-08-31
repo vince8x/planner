@@ -13,16 +13,13 @@ html {
   height: 100%;
 
   .navbar {
-
     #iconMenuDropdown {
       height: 110px;
     }
-    
+
     .top-toolbar {
       margin-left: 10px;
       flex-basis: auto;
-
-      
 
       .button-group {
         border-top: 1px solid #dadada;
@@ -93,6 +90,22 @@ html {
 
     .planner-wrapper {
       height: 100%;
+    }
+  }
+}
+
+.projects-container {
+  .container-fluid {
+    .project-wrapper {
+      .project-list {
+
+        .position-relative {
+
+          .project-item-img {
+            width: 100%;
+          }
+        }
+      }
     }
   }
 }

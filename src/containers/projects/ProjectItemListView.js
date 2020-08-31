@@ -16,6 +16,7 @@ import classnames from 'classnames';
 import { storage } from '../../helpers/Firebase';
 import { Colxx } from '../../components/common/CustomBootstrap';
 import * as projectActionsAll from '../../redux/projects/actions';
+import ProjectItemImg from './ProjectItemImg';
 
 
 
@@ -48,7 +49,7 @@ const ProjectItemListView = ({ userId, project, isSelect, onCheckItem, loadRemot
       >
         <div className="position-relative">
           <NavLink to='/planner' onClick={(e) => handleItemClick(e, project)} className="w-40 w-sm-100">
-            {projectImageSrc && <CardImg top alt={project.name} src={projectImageSrc} />}
+            {projectImageSrc && <ProjectItemImg alt={project.name} url={projectImageSrc} />}
           </NavLink>
         </div>
         <CardBody>

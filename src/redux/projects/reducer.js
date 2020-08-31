@@ -83,9 +83,9 @@ export default (state = initialState, action) => {
     case DELETE_REMOTE_PROJECTS_SUCCESS:
       return {
         ...state,
+        ...projectsAdapter.removeMany(state, action.payload),
         loading: false,
-        error: '',
-        ...projectsAdapter.removeMany(state, action.payload)
+        error: ''
       };
     case DELETE_REMOTE_PROJECTS_ERROR:
       return {

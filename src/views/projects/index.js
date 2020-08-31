@@ -11,7 +11,7 @@ const ProjectList = React.lazy(() =>
 const App = ({ match }) => {
   return (
     <AppLayout>
-      <div className="dashboard-wrapper">
+      <div className="projects-wrapper">
         <Suspense fallback={<div className="loading" />}>
           <Switch>
             <Redirect exact from={`${match.url}/`} to={`${match.url}/list`} />
