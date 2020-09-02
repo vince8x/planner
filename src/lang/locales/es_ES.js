@@ -186,6 +186,7 @@ module.exports = {
   'planner.save-project-as': 'Guardar proyecto como',
   'planner.project-name': 'Nombre del proyecto',
   'planner.new-project-success': "Éxito del nuevo proyecto",
+  'planner.optimize': 'Optimizar',
 
   /* 06. Project */
   'project.project-list': 'Lista de proyectos',

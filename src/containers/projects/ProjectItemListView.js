@@ -24,13 +24,21 @@ import ProjectItemImg from './ProjectItemImg';
 const ProjectItemListView = ({ userId, project, isSelect, onCheckItem, loadRemoteProject }) => {
 
   const history = useHistory();
-
   const [projectImageSrc, setProjectImageSrc] = useState(null);
 
   useEffect(() => {
+    let isCancelled = false;
     storage.ref(`images/${userId}/projects/${project.id}.png`).getDownloadURL()
-      .then(url => setProjectImageSrc(url)) 
+      .then(url => {
+        if (!isCancelled) {
+          setProjectImageSrc(url)
+        }
+      })
       .catch(error => console.error(error));
+
+      return () => {
+        isCancelled = true;
+      };
   }, []);
 
   const handleItemClick = (e, item) => {

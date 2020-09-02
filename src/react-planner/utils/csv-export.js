@@ -10,8 +10,7 @@ import { THERMAL_REQUIREMENTS, ACOUSTIC_REQUIREMENTS,
   HORIZONTAL_PAIRED_BUILDING, COLLECTIVE_BUILDING 
 } from '../constants';
 
-
-export function exportElementsCsv(scene) {
+export function convertSceneToElements(scene) {
   const csvResult = [];
 
   _.map(scene.layers, layer => {
@@ -102,7 +101,12 @@ export function exportElementsCsv(scene) {
     }
   });
 
-  csvDownload(csvResult);
+  return csvResult;
+}
+
+export function exportElementsCsv(scene) {
+  
+  csvDownload(convertSceneToElements(scene));
 }
 
 export function exportRequirement(scene, type, translateType) {

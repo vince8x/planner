@@ -167,11 +167,11 @@ export default class ProjectConfigurator extends Component {
     let communes = [];
     if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
       communes = _.filter(futureThermalZoneData, item => {
-        return item.regionNum === region
+        return item.regionNum == _.parseInt(region)
       });
     } else {
       communes = _.filter(currentThermalZoneData, item => {
-        return item.regionNum === region
+        return item.regionNum == _.parseInt(region)
       });
     }
 

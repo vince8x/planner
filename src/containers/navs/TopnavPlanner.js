@@ -14,7 +14,7 @@ import {
 
 import { MdUndo, MdSettings } from 'react-icons/md';
 import { GiSteelDoor, GiWindow, GiGate, GiBrickWall } from 'react-icons/gi';
-import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome } from 'react-icons/fa';
+import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome, FaPlay } from 'react-icons/fa';
 import { AiOutlineBook } from 'react-icons/ai';
 import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -42,7 +42,7 @@ import { objectsMap } from '../../react-planner/utils/objects-utils';
 import actions from '../../react-planner/actions/export';
 import IntlMessages from '../../helpers/IntlMessages';
 import { browserDownload, browserUpload } from '../../react-planner/utils/browser';
-import { exportElementsCsv, exportRequirement } from '../../react-planner/utils/csv-export';
+import { exportElementsCsv, exportRequirement, convertSceneToElements } from '../../react-planner/utils/csv-export';
 import { THERMAL_REQUIREMENTS, FIRE_RESISTANCE_REQUIREMENTS, ACOUSTIC_REQUIREMENTS } from '../../react-planner/constants';
 import { logoutUser, openDialog } from '../../redux/actions';
 import { Project } from '../../react-planner/class/export';
@@ -140,6 +140,13 @@ const TopNavPlanner = ({
     browserUpload().then((data) => {
       projectActions.loadProject(JSON.parse(data));
     });
+  }
+
+  const handleOptimize = () => {
+    const state = statePlanner.get('react-planner');
+    const { updatedState } = Project.unselectAll(state);
+    const scene = updatedState.get('scene').toJS();
+    const elements = convertSceneToElements(scene);
   }
 
   const handleSaveProjectElementsToFile = () => {
@@ -243,6 +250,18 @@ const TopNavPlanner = ({
             </div>
             <UncontrolledTooltip placement="right" target="planner-load-project" >
               <IntlMessages id='planner.load-project' />
+            </UncontrolledTooltip>
+          </Button>
+
+          <Button className='toolbar-item' id='planner-optimize-project'
+            onClick={() => handleOptimize()}
+          >
+            <FaPlay />
+            <div className="btn-title" >
+              <IntlMessages id='planner.optimize' />
+            </div>
+            <UncontrolledTooltip placement="right" target="planner-optimize-project" >
+              <IntlMessages id='planner.optimize' />
             </UncontrolledTooltip>
           </Button>
 
