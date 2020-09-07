@@ -7,27 +7,21 @@ export const PLANNER_SAVE_PROJECT = 'PLANNER_SAVE_PROJECT';
 export const PLANNER_SAVE_PROJECT_SUCCESS = 'PLANNER_SAVE_PROJECT_SUCCESS';
 export const PLANNER_SAVE_PROJECT_ERROR = 'PLANNER_SAVE_PROJECT_ERROR';
 
-export const newProject = (name) => ({
-  type: PLANNER_NEW_PROJECT,
-  payload: { name },
+export const OPTIMIZE_PLANNER = 'OPTIMIZE_PLANNER';
+export const OPTIMIZE_PLANNER_SUCCESS = 'OPTIMIZE_PLANNER_SUCCESS';
+export const OPTIMIZE_PLANNER_ERROR = 'OPTIMIZE_PLANNER_ERROR';
+
+export const optimizePlanner = (userId, projectId, elements) => ({
+  type: OPTIMIZE_PLANNER,
+  payload: { userId, projectId, elements }
 });
 
-export const newProjectSuccess = (project) => ({
-  type: PLANNER_NEW_PROJECT_SUCCESS,
-  payload: project,
+export const optimizePlannerSuccess = (status) => ({
+  type: OPTIMIZE_PLANNER_SUCCESS,
+  payload: status
 });
 
-export const newProjectError = (message) => ({
-  type: PLANNER_NEW_PROJECT_ERROR,
-  payload: { message },
-});
-
-export const saveProjectSuccess = (state) => ({
-  type: PLANNER_SAVE_PROJECT_SUCCESS,
-  payload: { state }
-});
-
-export const saveProjectError = (message) => ({
-  type: PLANNER_SAVE_PROJECT_ERROR,
+export const optimizePlannerError = (message) => ({
+  type: OPTIMIZE_PLANNER_ERROR,
   payload: { message }
 });

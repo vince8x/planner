@@ -21,6 +21,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as localeActionsAll from '../../redux/settings/actions';
+import * as plannerActionsAll from '../../redux/planner/actions';
 
 
 import PerimeterWall from '../../catalog/lines/wall/planner-element';
@@ -57,12 +58,14 @@ const TopNavPlanner = ({
   locale,
   localeActions,
   projectActions,
+  plannerActions,
   showSaveProjectAsDialog,
   linesActions,
   holesActions,
   itemsActions,
   statePlanner,
   loadedProject,
+  userId,
   saveRemoteProjectAction
 }) => {
 
@@ -147,6 +150,7 @@ const TopNavPlanner = ({
     const { updatedState } = Project.unselectAll(state);
     const scene = updatedState.get('scene').toJS();
     const elements = convertSceneToElements(scene);
+    plannerActions.optimizePlanner(userId, loadedProject.id, elements);
   }
 
   const handleSaveProjectElementsToFile = () => {
@@ -253,17 +257,19 @@ const TopNavPlanner = ({
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-optimize-project'
-            onClick={() => handleOptimize()}
-          >
-            <FaPlay />
-            <div className="btn-title" >
-              <IntlMessages id='planner.optimize' />
-            </div>
-            <UncontrolledTooltip placement="right" target="planner-optimize-project" >
-              <IntlMessages id='planner.optimize' />
-            </UncontrolledTooltip>
-          </Button>
+          {loadedProject && (
+            <Button className='toolbar-item' id='planner-optimize-project'
+              onClick={() => handleOptimize()}
+            >
+              <FaPlay />
+              <div className="btn-title" >
+                <IntlMessages id='planner.optimize' />
+              </div>
+              <UncontrolledTooltip placement="right" target="planner-optimize-project" >
+                <IntlMessages id='planner.optimize' />
+              </UncontrolledTooltip>
+            </Button>
+          )}
 
           <Button className='toolbar-item' id='planner-export-project'
             onClick={() => handleSaveProjectElementsToFile()}
@@ -495,7 +501,7 @@ const TopNavPlanner = ({
   );
 };
 
-const mapStateToProps = ({ menu, settings, planner, projects }) => {
+const mapStateToProps = ({ menu, settings, planner, projects, authUser }) => {
   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
   const { locale } = settings;
   const { loadedProject } = projects;
@@ -505,7 +511,8 @@ const mapStateToProps = ({ menu, settings, planner, projects }) => {
     selectedMenuHasSubItems,
     locale,
     statePlanner: planner,
-    loadedProject
+    loadedProject,
+    userId: authUser.user
   };
 };
 
@@ -513,6 +520,7 @@ const mapDispatchToProps = (dispatch) => {
   const result = {
     localeActions: bindActionCreators(localeActionsAll, dispatch),
     ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch)),
+    plannerActions: bindActionCreators(plannerActionsAll, dispatch),
     showSaveProjectAsDialog: () => dispatch(openDialog('saveAsProjectDialog')),
     saveRemoteProjectAction: (id, project, imageBlob) => dispatch(saveRemoteProject(id, project, imageBlob))
   }

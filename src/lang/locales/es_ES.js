@@ -48,6 +48,8 @@ module.exports = {
   'menu.blank-page': 'Blank Page',
   'menu.projects': 'Proyectos',
   'menu.planner': 'Planificador',
+  'menu.register': 'Registro',
+  'menu.login': 'Iniciar',
 
   /* 04.Error  */
   'layouts.error-title': 'Vaya, parece que ha ocurrido un error!',

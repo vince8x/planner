@@ -118,6 +118,7 @@ export function exportRequirement(scene, type, translateType) {
 
   let thermalRequirementItem;
     // Check override with pda data
+    console.log(pdaData);
     if (_.find(pdaData, { commune })) {
       thermalRequirementItem = _.find(pdaData, { commune });
     } else {

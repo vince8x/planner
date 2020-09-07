@@ -23,6 +23,14 @@ const TopnavEasyAccess = () => {
             <i className="iconsminds-library d-block" />{' '}
             <IntlMessages id="menu.projects" />
           </NavLink>
+          <NavLink to="/user/register" className="icon-menu-item">
+            <i className="simple-icon-user-follow d-block" />{' '}
+            <IntlMessages id="menu.register" />
+          </NavLink>
+          <NavLink to="/user/login" className="icon-menu-item">
+            <i className="simple-icon-login d-block" />{' '}
+            <IntlMessages id="menu.login" />
+          </NavLink>
         </DropdownMenu>
       </UncontrolledDropdown>
     </div>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import polylabel from 'polylabel';
 import areapolygon from 'area-polygon';
 import * as _ from 'lodash';
 import {
@@ -9,15 +8,14 @@ import {
   FormLabel,
   FormBlock,
   FormSelect,
-  FormNumberInput,
   FormSubmitButton,
   CancelButton,
   FormTextInput
 } from '../style/export';
 import { THERMAL_REGULATION, CURRENT_THERMAL_REGULATION, VENTILATED } from '../../constants';
 import { TYPE_OF_GROUPING, NUMBER_OF_FLOORS, FIRST_FLOOR_TYPE, ISOLATE_BUILDING, FUTURE_THERMAL_REGULATION } from './../../constants';
-import { futureThermalZoneData } from './../../data/thermal-regulations/future';
-import { currentThermalZoneData } from './../../data/thermal-regulations/current';
+import { futureThermalZoneData } from '../../data/thermal-regulations/future';
+import { currentThermalZoneData } from '../../data/thermal-regulations/current';
 import IntlMessages from '../../../helpers/IntlMessages';
 
 export default class ProjectConfigurator extends Component {
@@ -33,8 +31,8 @@ export default class ProjectConfigurator extends Component {
     layers.map(layer => {
       layer.areas.map(area => {
 
-        let polygon = area.vertices.toArray().map(vertexID => {
-          let { x, y } = layer.vertices.get(vertexID);
+        const polygon = area.vertices.toArray().map(vertexID => {
+          const { x, y } = layer.vertices.get(vertexID);
           return [x, y];
         });
 
@@ -42,22 +40,21 @@ export default class ProjectConfigurator extends Component {
 
         area.holes.forEach(holeID => {
 
-          let polygonHole = layer.areas.get(holeID).vertices.toArray().map(vertexID => {
-            let { x, y } = layer.vertices.get(vertexID);
+          const polygonHole = layer.areas.get(holeID).vertices.toArray().map(vertexID => {
+            const { x, y } = layer.vertices.get(vertexID);
             return [x, y];
           });
 
           polygonWithHoles = polygonWithHoles.concat(polygonHole.reverse());
         });
 
-        let center = polylabel([polygonWithHoles], 1.0);
         let areaSize = areapolygon(polygon, false);
 
-        //subtract holes area
+        // subtract holes area
         area.holes.forEach(areaID => {
-          let hole = layer.areas.get(areaID);
-          let holePolygon = hole.vertices.toArray().map(vertexID => {
-            let { x, y } = layer.vertices.get(vertexID);
+          const hole = layer.areas.get(areaID);
+          const holePolygon = hole.vertices.toArray().map(vertexID => {
+            const { x, y } = layer.vertices.get(vertexID);
             return [x, y];
           });
           areaSize -= areapolygon(holePolygon, false);
@@ -88,7 +85,7 @@ export default class ProjectConfigurator extends Component {
       numberOfFloor: scene.numberOfFloor || 1,
       firstFloorType: scene.firstFloorType || VENTILATED,
       totalAreaSize: totalAreaSize || 0,
-      region: scene.region || 15,
+      regionNum: scene.regionNum || 15,
       commune: scene.commune || 'Arica'
     };
 
@@ -98,24 +95,24 @@ export default class ProjectConfigurator extends Component {
   onSubmit(event) {
     event.preventDefault();
 
-    let { projectActions } = this.context;
+    const { projectActions } = this.context;
 
-    let {
+    const {
       thermalRegulation, typeOfGrouping, numberOfFloor, firstFloorType,
-      region, commune
+      regionNum, commune
     } = this.state;
-    let selectedCommune = _.find(currentThermalZoneData, { regionNum: region, commune: commune })
+    let selectedCommune = _.find(currentThermalZoneData, { regionNum, commune })
     if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
-      selectedCommune = _.find(futureThermalZoneData, { regionNum: region, commune: commune })
+      selectedCommune = _.find(futureThermalZoneData, { regionNum, commune })
     }
 
     projectActions.setProjectProperties({
-      thermalRegulation: thermalRegulation,
-      typeOfGrouping: typeOfGrouping,
-      numberOfFloor: numberOfFloor,
-      firstFloorType: firstFloorType,
-      region: region,
-      commune: commune,
+      thermalRegulation,
+      typeOfGrouping,
+      numberOfFloor,
+      firstFloorType,
+      regionNum,
+      commune,
       thermalZone: selectedCommune ? selectedCommune.thermalZone : 1
     });
   }
@@ -125,7 +122,7 @@ export default class ProjectConfigurator extends Component {
   }
 
   onRegionChanged(newRegion) {
-    this.setState({ region: newRegion });
+    this.setState({ regionNum: newRegion });
   }
 
   onCommuneChanged(newCommune) {
@@ -133,45 +130,45 @@ export default class ProjectConfigurator extends Component {
   }
 
   render() {
-    let { width, height } = this.props;
-    let {
+    const { width, height } = this.props;
+    const {
       thermalRegulation, typeOfGrouping, numberOfFloor, firstFloorType, totalAreaSize,
-      region, commune
+      regionNum, commune
     } = this.state;
     const numberOfSquareMeters = numberOfFloor * totalAreaSize;
-    let { projectActions, translator } = this.context;
+    const { projectActions, translator } = this.context;
 
-    let thermalRegulations = THERMAL_REGULATION.map(item => {
+    const thermalRegulations = THERMAL_REGULATION.map(item => {
       return {
         value: item,
         text: translator.t(item)
       };
     });
 
-    let typeOfGroupings = TYPE_OF_GROUPING.map(item => {
+    const typeOfGroupings = TYPE_OF_GROUPING.map(item => {
       return {
         value: item,
         text: translator.t(item)
       };
     });
 
-    let firstFloorTypes = FIRST_FLOOR_TYPE.map(item => {
+    const firstFloorTypes = FIRST_FLOOR_TYPE.map(item => {
       return {
         value: item,
         text: translator.t(item)
       };
     });
 
-    let regions = thermalRegulation === FUTURE_THERMAL_REGULATION ? this.futureRegions : this.currentRegions;
+    const regions = thermalRegulation === FUTURE_THERMAL_REGULATION ? this.futureRegions : this.currentRegions;
 
     let communes = [];
     if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
       communes = _.filter(futureThermalZoneData, item => {
-        return item.regionNum == _.parseInt(region)
+        return item.regionNum == _.parseInt(regionNum)
       });
     } else {
       communes = _.filter(currentThermalZoneData, item => {
-        return item.regionNum == _.parseInt(region)
+        return item.regionNum == _.parseInt(regionNum)
       });
     }
 
@@ -200,7 +197,7 @@ export default class ProjectConfigurator extends Component {
               <IntlMessages id='planner.region' />
             </FormLabel>
             <FormSelect id="region"
-              value={region}
+              value={regionNum}
               onChange={e => this.onRegionChanged(e.target.value)}
             >
               {

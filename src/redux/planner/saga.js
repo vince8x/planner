@@ -1,10 +1,8 @@
-import { put, takeEvery, fork, all, takeLatest, select, call } from 'redux-saga/effects'
-import { success } from 'react-toastify-redux';
-import { database } from '../../helpers/Firebase';
-import { SET_LINES_LENGTH_END_DRAWING, NEW_PROJECT, SAVE_PROJECT } from '../../react-planner/constants'
+import  axios  from  'axios' ;
+import { put, takeEvery, fork, all, call } from 'redux-saga/effects'
+import { SET_LINES_LENGTH_END_DRAWING } from '../../react-planner/constants'
 import { beginDrawingLine, endDrawingLine } from '../../react-planner/actions/lines-actions';
-import { newProjectError, newProjectSuccess, saveProjectSuccess, saveProjectError } from './actions';
-import { getPlannerState }   from './selectors';
+import { OPTIMIZE_PLANNER, optimizePlannerSuccess, optimizePlannerError } from './actions';
 
 export function* endDrawingLineSaga(action) {
   const { linesAttributes, layerID } = action;
@@ -15,53 +13,40 @@ export function* endDrawingLineSaga(action) {
 }
 
 export function* watchSetLinesLengthEndDrawing() {
-  yield takeEvery(SET_LINES_LENGTH_END_DRAWING, endDrawingLineSaga)
+  yield takeEvery(SET_LINES_LENGTH_END_DRAWING, endDrawingLineSaga);
 }
 
-const saveProjectAsync = async(projectId, projectName, plannerState) => {
-  await database.ref('projects/' + projectId).set({
-    name: projectName,
-    planner: plannerState
-  });
-}
 
-export function* saveProject() {
-  const planner = yield select(getPlannerState);
-  const savedProject = yield call(saveProjectAsync, 'abc123', 'abc', planner);
-  if (!savedProject.message) {
-    yield put(saveProjectSuccess(savedProject));
-  } else {
-    yield put(saveProjectError(savedProject.message));
+
+export function* optimizePlannerSaga(action) {
+  const { userId, projectId, elements } = action.payload;
+  const url = 'http://localhost:8070/api/optimize';
+  const apiCall = () => {
+    return axios.post(url, 
+      action.payload,
+   ).then(response => response.data)
+    .catch(err => {
+      throw err;
+    });
   }
-}
 
-// export function* watchSaveProject() {
-//   yield takeLatest(SAVE_PROJECT)
-// }
-
-export function* newProject() {
   try {
-    // @TODO: multi language in saga
-    yield put(success('New project success'));
-    yield put(newProjectSuccess());
+    yield call (apiCall);
+    yield put(optimizePlannerSuccess('success'));
   } catch (err) {
-    yield put(newProjectError(err));
+    yield put(optimizePlannerError(err.message));
   }
   
+
 }
 
-export function* watchSaveProject() {
-  yield takeLatest(SAVE_PROJECT, saveProject);
-}
-
-export function* watchNewProject() {
-  yield takeLatest(NEW_PROJECT, newProject);
+export function* watchOptimizePlanner() {
+  yield takeEvery(OPTIMIZE_PLANNER, optimizePlannerSaga);
 }
 
 export default function* rootSaga() {
   yield all([
     fork(watchSetLinesLengthEndDrawing),
-    fork(watchNewProject),
-    fork(watchSaveProject),
+    fork(watchOptimizePlanner)
   ]);
 }

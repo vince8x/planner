@@ -217,7 +217,7 @@ export class Scene extends Record({
   typeOfGrouping: ISOLATE_BUILDING,
   numberOfFloor: 1,
   firstFloorType: VENTILATED,
-  region: 15,
+  regionNum: 15,
   commune: 'Arica',
   thermalZone: 1
 }, 'Scene') {

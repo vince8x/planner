@@ -48,6 +48,8 @@ module.exports = {
   'menu.blank-page': 'Blank Page',
   'menu.projects': 'Projects',
   'menu.planner': 'Planner',
+  'menu.register': 'Register',
+  'menu.login': 'Login',
 
   /* 04.Error Page */
   'pages.error-title': 'Ooops... looks like an error occurred!',
