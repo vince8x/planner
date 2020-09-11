@@ -178,7 +178,7 @@ export function exportRequirement(scene, type, translateType) {
     });
 
     let fireResistanceItem;
-    if (numberOfFloor <= 2 && totalAreaSize <= 140) {
+    if (numberOfFloor <= 2 && totalAreaSize <= 1400000) {
       fireResistanceItem = _.find(fireResistanceSmall, { 'floorNum': numberOfFloor });
     } else {
       fireResistanceItem = _.find(fireResistanceBig, { 'floorNum': numberOfFloor });
