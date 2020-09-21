@@ -1,8 +1,19 @@
 import  axios  from  'axios' ;
-import { put, takeEvery, fork, all, call } from 'redux-saga/effects'
+import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
 import { SET_LINES_LENGTH_END_DRAWING } from '../../react-planner/constants'
 import { beginDrawingLine, endDrawingLine } from '../../react-planner/actions/lines-actions';
-import { OPTIMIZE_PLANNER, optimizePlannerSuccess, optimizePlannerError } from './actions';
+import { 
+  OPTIMIZE_PLANNER, 
+  optimizePlannerSuccess, 
+  optimizePlannerError,
+  EXPORT_SOLUTIONS,
+  exportSolutionsSuccess,
+  exportSolutionsFailure
+} from './actions';
+import { getPlannerState } from './selectors';
+import { Project } from '../../react-planner/class/export';
+import { getAcousticRequirement, getFireResistanceRequirement, getThermalRequirement } from '../../react-planner/utils/requirement-solutions';
+import environment from '../../environment/environment';
 
 export function* endDrawingLineSaga(action) {
   const { linesAttributes, layerID } = action;
@@ -13,7 +24,7 @@ export function* endDrawingLineSaga(action) {
 }
 
 export function* watchSetLinesLengthEndDrawing() {
-  yield takeEvery(SET_LINES_LENGTH_END_DRAWING, endDrawingLineSaga);
+  yield takeLatest(SET_LINES_LENGTH_END_DRAWING, endDrawingLineSaga);
 }
 
 
@@ -41,12 +52,48 @@ export function* optimizePlannerSaga(action) {
 }
 
 export function* watchOptimizePlanner() {
-  yield takeEvery(OPTIMIZE_PLANNER, optimizePlannerSaga);
+  yield takeLatest(OPTIMIZE_PLANNER, optimizePlannerSaga);
+}
+
+export function* exportSolutions({ payload }) {
+  const { categoryId } = payload;
+  const plannerState = yield select(getPlannerState);
+  const { updatedState } = Project.unselectAll(plannerState);
+  const scene = updatedState.get('scene').toJS();
+  const thermal = getThermalRequirement(scene);
+  const fire = getFireResistanceRequirement(scene);
+  const acoustic = getAcousticRequirement(scene);
+  const url = `${environment.apiEndpoint}/api/filter_solutions`;
+  const data = {
+    categoryId,
+    thermal,
+    fire,
+    acoustic
+  };
+
+  const apiCall = () => {
+    return axios.post(url, data).then(response => response.data)
+    .catch(err => {
+      throw err;
+    });
+  }
+
+  try {
+    const response = yield call (apiCall);
+    yield put(exportSolutionsSuccess(response));
+  } catch (err) {
+    yield put(exportSolutionsFailure(err.message));
+  }
+}
+
+export function* watchExportSolutions() {
+  yield takeLatest(EXPORT_SOLUTIONS, exportSolutions);
 }
 
 export default function* rootSaga() {
   yield all([
     fork(watchSetLinesLengthEndDrawing),
-    fork(watchOptimizePlanner)
+    fork(watchOptimizePlanner),
+    fork(watchExportSolutions)
   ]);
 }

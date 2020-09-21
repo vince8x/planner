@@ -23,6 +23,8 @@ export const DELETE_REMOTE_PROJECTS = 'DELETE_REMOTE_PROJECTS';
 export const DELETE_REMOTE_PROJECTS_SUCCESS = 'DELETE_REMOTE_PROJECTS_SUCCESS';
 export const DELETE_REMOTE_PROJECTS_ERROR = 'DELETE_REMOTE_PROJECTS_ERROR';
 
+
+
 export const addRemoteProject = (name, projectState, imageBlob) => ({
   type: ADD_REMOTE_PROJECT,
   payload: { name, projectState, imageBlob }
@@ -112,5 +114,3 @@ export const deleteRemoteProjectsError = (message) => ({
   type: DELETE_REMOTE_PROJECTS_ERROR,
   payload: { message },
 });
-
-

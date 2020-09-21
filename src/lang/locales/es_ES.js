@@ -189,6 +189,7 @@ module.exports = {
   'planner.project-name': 'Nombre del proyecto',
   'planner.new-project-success': "Éxito del nuevo proyecto",
   'planner.optimize': 'Optimizar',
+  'planner.export-solutions': 'Exportar soluciones',
 
   /* 06. Project */
   'project.project-list': 'Lista de proyectos',

@@ -1,12 +1,11 @@
-import React, { useState, Fragment } from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import {
-  Button, Label, Select, ModalHeader, ModalBody, ModalFooter,
-  Input, FormGroup, Col
+  Button, Label, ModalHeader, ModalBody, ModalFooter,
+  FormGroup
 } from 'reactstrap';
-import confirm from "reactstrap-confirm";
-import { Formik, Form, Field, useFormikContext } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import IntlMessages from "../../helpers/IntlMessages";
 import reduxDialog from '../../components/common/modal/redux-reactstrap-modal';
 import * as projectActionsAll from '../../redux/projects/actions';

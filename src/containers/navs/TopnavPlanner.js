@@ -14,7 +14,7 @@ import {
 
 import { MdUndo, MdSettings } from 'react-icons/md';
 import { GiSteelDoor, GiWindow, GiGate, GiBrickWall } from 'react-icons/gi';
-import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome, FaPlay } from 'react-icons/fa';
+import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome, FaPlay, FaFileDownload } from 'react-icons/fa';
 import { AiOutlineBook } from 'react-icons/ai';
 import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -60,6 +60,7 @@ const TopNavPlanner = ({
   projectActions,
   plannerActions,
   showSaveProjectAsDialog,
+  showExportSolutionsDialog,
   linesActions,
   holesActions,
   itemsActions,
@@ -318,6 +319,18 @@ const TopNavPlanner = ({
               <IntlMessages id='planner.acoustic-requirement' />
             </UncontrolledTooltip>
           </Button>
+
+          <Button className='toolbar-item' id='planner-export-solutions'
+            onClick={() => showExportSolutionsDialog()}
+          >
+            <FaFileDownload />
+            <div className="btn-title" >
+              <IntlMessages id='planner.export-solutions' />
+            </div>
+            <UncontrolledTooltip placement="right" target="planner-export-solutions" >
+              <IntlMessages id='planner.export-solutions' />
+            </UncontrolledTooltip>
+          </Button>
         </div>
 
         <div className='button-group'>
@@ -522,6 +535,7 @@ const mapDispatchToProps = (dispatch) => {
     ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch)),
     plannerActions: bindActionCreators(plannerActionsAll, dispatch),
     showSaveProjectAsDialog: () => dispatch(openDialog('saveAsProjectDialog')),
+    showExportSolutionsDialog: () => dispatch(openDialog('exportSolutionsDialog')),
     saveRemoteProjectAction: (id, project, imageBlob) => dispatch(saveRemoteProject(id, project, imageBlob))
   }
   return result;

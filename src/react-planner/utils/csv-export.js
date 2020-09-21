@@ -119,7 +119,6 @@ export function exportRequirement(scene, type, translateType) {
 
   let thermalRequirementItem;
   // Check override with pda data
-  console.log(pdaData);
   if (_.find(pdaData, { 'commune': commune })) {
     thermalRequirementItem = _.find(pdaData, { 'commune': commune });
   } else {
@@ -187,15 +186,25 @@ export function exportRequirement(scene, type, translateType) {
     }
 
     if (fireResistanceItem) {
+      csvResult.push({
+        'TYPE': 'CATEGORY',
+        'DE PISO': '',
+        'PISO VENTILADO': 1,
+        'ENTREPISO': 2,
+        'TECHUMBRE': 3,
+        'MURO DIVISORIO': 4,
+        'MURO INTERIOR': 5,
+        'MURO PERÍMETRAL': 6
+      })
       const row = {
         'TYPE': translateType,
         'DE PISO': numberOfFloor,
         'PISO VENTILADO': fireResistanceItem.floor,
         'ENTREPISO': fireResistanceItem.mezzanine,
         'TECHUMBRE': fireResistanceItem.ceiling,
-        'MURO PERÍMETRAL': fireResistanceItem.perimeterWall,
         'MURO DIVISORIO': fireResistanceItem.dividingWall,
-        'MURO INTERIOR': fireResistanceItem.interiorWall
+        'MURO INTERIOR': fireResistanceItem.interiorWall,
+        'MURO PERÍMETRAL': fireResistanceItem.perimeterWall
       };
       csvResult.push(row);
     }
