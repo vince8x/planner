@@ -34,6 +34,6 @@ export const exportSolutionsSuccess = (solutions) => ({
 });
 
 export const exportSolutionsFailure = (message) => ({
-  type: EXPORT_SOLUTIONS,
+  type: EXPORT_SOLUTIONS_FAILURE,
   payload: { message }
 });
