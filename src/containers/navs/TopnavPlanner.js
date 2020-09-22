@@ -67,6 +67,8 @@ const TopNavPlanner = ({
   statePlanner,
   loadedProject,
   userId,
+  email,
+  name,
   saveRemoteProjectAction
 }) => {
 
@@ -151,7 +153,7 @@ const TopNavPlanner = ({
     const { updatedState } = Project.unselectAll(state);
     const scene = updatedState.get('scene').toJS();
     const elements = convertSceneToElements(scene);
-    plannerActions.optimizePlanner(userId, loadedProject.id, elements);
+    plannerActions.optimizePlanner(userId, loadedProject.id, elements, email, name);
   }
 
   const handleSaveProjectElementsToFile = () => {
@@ -525,7 +527,9 @@ const mapStateToProps = ({ menu, settings, planner, projects, authUser }) => {
     locale,
     statePlanner: planner,
     loadedProject,
-    userId: authUser.user
+    userId: authUser.user,
+    email: authUser.email,
+    name: authUser.displayName
   };
 };
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as _ from 'lodash';
-import { select, call, put, fork, takeLatest, takeEvery, all } from 'redux-saga/effects';
+import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
 import { SET_LINES_LENGTH_END_DRAWING, SOLUTION_CATEGORIES } from '../../react-planner/constants'
 import { beginDrawingLine, endDrawingLine } from '../../react-planner/actions/lines-actions';
 import {
@@ -31,20 +31,25 @@ export function* watchSetLinesLengthEndDrawing() {
 
 
 export function* optimizePlannerSaga(action) {
-  const { userId, projectId, elements } = action.payload;
-  const url = 'http://localhost:8070/api/optimize';
-  const apiCall = () => {
-    return axios.post(url,
-      action.payload,
-    ).then(response => response.data)
-      .catch(err => {
-        throw err;
-      });
-  }
+  const { userId, projectId, elements, email, name } = action.payload;
+  const url = `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
+  const data = {
+    userId,
+    projectId,
+    elements,
+    email,
+    name
+  };
 
+  const apiCall = () => {
+    return axios.post(url, data).then(response => response.data).catch(error => {
+      throw error;
+    });
+  }
+  
   try {
-    yield call(apiCall);
-    yield put(optimizePlannerSuccess('success'));
+    const response = yield call(apiCall);
+    yield put(optimizePlannerSuccess(response));
   } catch (err) {
     yield put(optimizePlannerError(err.message));
   }
