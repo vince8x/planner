@@ -15,7 +15,7 @@ export const SNAP_MASK = new Map({
   SNAP_SEGMENT : true,
   SNAP_GRID : false,
   SNAP_GUIDE : true,
-  SNAP_ORTHO: true
+  SNAP_ORTHO: false
 });
 
 class PointSnap extends Record({
