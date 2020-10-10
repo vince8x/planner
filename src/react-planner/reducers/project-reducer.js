@@ -66,7 +66,7 @@ export default function (state, action) {
 
     case SET_PROPERTIES:
       state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
-      return Project.setProperties(this.state, state.getIn(['scene', 'selectedLayer']), action.properties).updatedState;
+      return Project.setProperties(state, state.getIn(['scene', 'selectedLayer']), action.properties).updatedState;
 
     case SET_ITEMS_ATTRIBUTES:
       state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
