@@ -101,15 +101,17 @@ export default class ProjectConfigurator extends Component {
       thermalRegulation, typeOfGrouping, numberOfFloor, firstFloorType,
       regionNum, commune
     } = this.state;
-    let selectedCommune = _.find(currentThermalZoneData, { regionNum, commune })
+    const numberOfFloorInt = _.parseInt(numberOfFloor);
+    const regionNumInt = _.parseInt(regionNum)
+    let selectedCommune = _.find(currentThermalZoneData, { 'regionNum': regionNumInt, 'commune': commune })
     if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
-      selectedCommune = _.find(futureThermalZoneData, { regionNum, commune })
+      selectedCommune = _.find(futureThermalZoneData, { 'regionNum': regionNumInt, 'commune': commune })
     }
 
     projectActions.setProjectProperties({
       thermalRegulation,
       typeOfGrouping,
-      numberOfFloor,
+      numberOfFloor: numberOfFloorInt,
       firstFloorType,
       regionNum,
       commune,

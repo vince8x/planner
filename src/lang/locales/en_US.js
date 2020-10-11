@@ -184,11 +184,12 @@ module.exports = {
   'planner.modal.length-input': 'Input length',
   'planner.modal.length': 'Length',
   'planner.modal.submit': 'Submit',
-  'planner.modal.cancel': 'Cancelar',
+  'planner.modal.cancel': 'Cancel',
   'planner.save-project-as': 'Save project as',
   'planner.project-name': 'Project name',
   'planner.new-project-success': 'New project success',
   'planner.optimize': 'Optimize',
+  'planner.export-solutions': 'Export solutions',
 
   /* 06. Project */
   'project.project-list': 'Project list',

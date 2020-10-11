@@ -23,7 +23,7 @@ import {
   ADD_REMOTE_PROJECT_ERROR,
   DELETE_REMOTE_PROJECTS,
   deleteRemoteProjectsSuccess,
-  deleteRemoteProjectsError
+  deleteRemoteProjectsError,
 } from './actions';
 import { loadProject } from '../../react-planner/actions/project-actions';
 

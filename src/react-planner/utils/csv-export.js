@@ -5,9 +5,10 @@ import { GeometryUtils } from './export';
 import { pdaData, currentThermalRequirements } from '../data/thermal-regulations/current';
 import { futureThermalRequirements } from '../data/thermal-regulations/future';
 import { fireResistanceSmall, fireResistanceBig } from '../data/fire-resistance/fire-resistance';
-import { THERMAL_REQUIREMENTS, ACOUSTIC_REQUIREMENTS, 
-  FIRE_RESISTANCE_REQUIREMENTS, FUTURE_THERMAL_REGULATION, 
-  HORIZONTAL_PAIRED_BUILDING, COLLECTIVE_BUILDING 
+import {
+  THERMAL_REQUIREMENTS, ACOUSTIC_REQUIREMENTS,
+  FIRE_RESISTANCE_REQUIREMENTS, FUTURE_THERMAL_REGULATION,
+  HORIZONTAL_PAIRED_BUILDING, COLLECTIVE_BUILDING
 } from '../constants';
 
 export function convertSceneToElements(scene) {
@@ -105,7 +106,7 @@ export function convertSceneToElements(scene) {
 }
 
 export function exportElementsCsv(scene) {
-  
+
   csvDownload(convertSceneToElements(scene));
 }
 
@@ -117,109 +118,120 @@ export function exportRequirement(scene, type, translateType) {
   const csvResult = [];
 
   let thermalRequirementItem;
-    // Check override with pda data
-    console.log(pdaData);
-    if (_.find(pdaData, { commune })) {
-      thermalRequirementItem = _.find(pdaData, { commune });
-    } else {
-      thermalRequirementItem = _.find(currentThermalRequirements, { thermalZone });
-      if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
-        thermalRequirementItem = _.find(futureThermalRequirements, { thermalZone });
-      }
+  // Check override with pda data
+  if (_.find(pdaData, { 'commune': commune })) {
+    thermalRequirementItem = _.find(pdaData, { 'commune': commune });
+  } else {
+    thermalRequirementItem = _.find(currentThermalRequirements, { 'thermalZone': thermalZone });
+    if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
+      thermalRequirementItem = _.find(futureThermalRequirements, { 'thermalZone': thermalZone });
     }
+  }
 
-    if (type === THERMAL_REQUIREMENTS && !_.isNil(thermalRequirementItem)) {
-      const row = {
-        'TYPE': translateType,
-        'TECHUMBRE': thermalRequirementItem.ceiling,
-        'MURO PERÍMETRAL': thermalRequirementItem.wall,
-        'PISO VENTILADO': thermalRequirementItem.floor
-      };
-      csvResult.push(row);
-    } else if (type === FIRE_RESISTANCE_REQUIREMENTS) {
+  if (type === THERMAL_REQUIREMENTS && !_.isNil(thermalRequirementItem)) {
+    const row = {
+      'TYPE': translateType,
+      'TECHUMBRE': thermalRequirementItem.ceiling,
+      'MURO PERÍMETRAL': thermalRequirementItem.wall,
+      'PISO VENTILADO': thermalRequirementItem.floor
+    };
+    csvResult.push(row);
+  } else if (type === FIRE_RESISTANCE_REQUIREMENTS) {
 
-      let totalAreaSize = 0;
+    let totalAreaSize = 0;
 
-      layers.map(layer => {
-        layer.areas.map(area => {
+    layers.map(layer => {
+      layer.areas.map(area => {
 
-          const polygon = area.vertices.toArray().map(vertexID => {
+        const polygon = area.vertices.toArray().map(vertexID => {
+          const { x, y } = layer.vertices.get(vertexID);
+          return [x, y];
+        });
+
+        let polygonWithHoles = polygon;
+
+        area.holes.forEach(holeID => {
+
+          const polygonHole = layer.areas.get(holeID).vertices.toArray().map(vertexID => {
             const { x, y } = layer.vertices.get(vertexID);
             return [x, y];
           });
 
-          let polygonWithHoles = polygon;
-
-          area.holes.forEach(holeID => {
-
-            const polygonHole = layer.areas.get(holeID).vertices.toArray().map(vertexID => {
-              const { x, y } = layer.vertices.get(vertexID);
-              return [x, y];
-            });
-
-            polygonWithHoles = polygonWithHoles.concat(polygonHole.reverse());
-          });
-
-          let areaSize = areapolygon(polygon, false);
-
-          // subtract holes area
-          area.holes.forEach(areaID => {
-            const hole = layer.areas.get(areaID);
-            const holePolygon = hole.vertices.toArray().map(vertexID => {
-              const { x, y } = layer.vertices.get(vertexID);
-              return [x, y];
-            });
-            areaSize -= areapolygon(holePolygon, false);
-          });
-
-          totalAreaSize = areaSize ? totalAreaSize + areaSize : totalAreaSize;
+          polygonWithHoles = polygonWithHoles.concat(polygonHole.reverse());
         });
+
+        let areaSize = areapolygon(polygon, false);
+
+        // subtract holes area
+        area.holes.forEach(areaID => {
+          const hole = layer.areas.get(areaID);
+          const holePolygon = hole.vertices.toArray().map(vertexID => {
+            const { x, y } = layer.vertices.get(vertexID);
+            return [x, y];
+          });
+          areaSize -= areapolygon(holePolygon, false);
+        });
+
+        totalAreaSize = areaSize ? totalAreaSize + areaSize : totalAreaSize;
       });
+    });
 
-      let fireResistanceItem;
-      if (numberOfFloor <= 2 && totalAreaSize <= 140) {
-        fireResistanceItem = _.find(fireResistanceSmall, { floorNum: numberOfFloor});
-      } else {
-        fireResistanceItem = _.find(fireResistanceBig, { floorNum: numberOfFloor});
-      }
-
-      if (fireResistanceItem) {
-        const row = {
-          'TYPE': translateType,
-          'DE PISO': numberOfFloor,
-          'PISO VENTILADO': fireResistanceItem.floor,
-          'ENTREPISO': fireResistanceItem.mezzanine,
-          'TECHUMBRE': fireResistanceItem.ceiling,
-          'MURO PERÍMETRAL': fireResistanceItem.perimeterWall,
-          'MURO DIVISORIO': fireResistanceItem.dividingWall,
-          'MURO INTERIOR': fireResistanceItem.interiorWall
-        };
-        csvResult.push(row);
-      }
-
-    } else if (type === ACOUSTIC_REQUIREMENTS) {
-      if (typeOfGrouping === HORIZONTAL_PAIRED_BUILDING || typeOfGrouping === COLLECTIVE_BUILDING) {
-        csvResult.push({
-          'TYPE': 'Requerimiento acústico aéreo',
-          'VALUE': 45
-        });
-        csvResult.push({
-          'TYPE': 'Requerimiento acústico de impacto',
-          'VALUE': 75
-        });
-      } else {
-        csvResult.push({
-          'TYPE': 'Requerimiento acústico aéreo',
-          'VALUE': 0
-        });
-        csvResult.push({
-          'TYPE': 'Requerimiento acústico de impacto',
-          'VALUE': 0
-        });
-      }
+    let fireResistanceItem;
+    if ((numberOfFloor <= 2 && totalAreaSize <= 1400000) && 
+      (typeOfGrouping !== HORIZONTAL_PAIRED_BUILDING) &&
+      (typeOfGrouping !== COLLECTIVE_BUILDING)) {
+      fireResistanceItem = _.find(fireResistanceSmall, { 'floorNum': numberOfFloor });
+    } else {
+      fireResistanceItem = _.find(fireResistanceBig, { 'floorNum': numberOfFloor });
     }
 
-    const filename = `${type  }_${  Date.now()  }.csv`;
+    if (fireResistanceItem) {
+      csvResult.push({
+        'TYPE': 'CATEGORY',
+        'DE PISO': '',
+        'PISO VENTILADO': 1,
+        'ENTREPISO': 2,
+        'TECHUMBRE': 3,
+        'MURO DIVISORIO': 4,
+        'MURO INTERIOR': 5,
+        'MURO PERÍMETRAL': 6
+      })
+      const row = {
+        'TYPE': translateType,
+        'DE PISO': numberOfFloor,
+        'PISO VENTILADO': fireResistanceItem.floor,
+        'ENTREPISO': fireResistanceItem.mezzanine,
+        'TECHUMBRE': fireResistanceItem.ceiling,
+        'MURO DIVISORIO': fireResistanceItem.dividingWall,
+        'MURO INTERIOR': fireResistanceItem.interiorWall,
+        'MURO PERÍMETRAL': fireResistanceItem.perimeterWall
+      };
+      csvResult.push(row);
+    }
 
-    csvDownload(csvResult, filename);
+  } else if (type === ACOUSTIC_REQUIREMENTS) {
+    if (typeOfGrouping === HORIZONTAL_PAIRED_BUILDING || typeOfGrouping === COLLECTIVE_BUILDING) {
+      csvResult.push({
+        'TYPE': 'Requerimiento acústico aéreo',
+        'VALUE': 45
+      });
+      csvResult.push({
+        'TYPE': 'Requerimiento acústico de impacto',
+        'VALUE': 75
+      });
+    } else {
+      csvResult.push({
+        'TYPE': 'Requerimiento acústico aéreo',
+        'VALUE': 0
+      });
+      csvResult.push({
+        'TYPE': 'Requerimiento acústico de impacto',
+        'VALUE': 0
+      });
+    }
+  }
+
+  const filename = `${type}_${Date.now()}.csv`;
+
+  csvDownload(csvResult, filename);
 }

@@ -44,24 +44,24 @@ export function csvDownload(json, filename) {
     return;
   }
 
-  let exportFileName = filename ? filename : 'result_generate_' + Date.now() + '.csv';
+  const exportFileName = filename || 'result_generate_' + Date.now() + '.csv';
 
   const headers = Object.keys(json[0]);
 
   let csvContent = "";
 
-  csvContent += headers.join(',');
+  csvContent += headers.join(';');
   csvContent += "\r\n";
 
   _.map(json, row => {
-    let rowArray = [];
+    const rowArray = [];
     _.map(headers, header => {
       rowArray.push(row[header]);
     });
-    let rowStr = rowArray.join(',');
+    const rowStr = rowArray.join(';');
     csvContent += rowStr + "\r\n";
   });
 
-  var blob = new Blob([csvContent], { type: "data:text/csv;charset=utf-8" });
+  const blob = new Blob([csvContent], { type: "data:text/csv;charset=utf-8" });
   saveAs(blob, exportFileName);
 }

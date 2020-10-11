@@ -14,7 +14,7 @@ import {
 
 import { MdUndo, MdSettings } from 'react-icons/md';
 import { GiSteelDoor, GiWindow, GiGate, GiBrickWall } from 'react-icons/gi';
-import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome, FaPlay } from 'react-icons/fa';
+import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome, FaPlay, FaFileDownload } from 'react-icons/fa';
 import { AiOutlineBook } from 'react-icons/ai';
 import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -60,12 +60,15 @@ const TopNavPlanner = ({
   projectActions,
   plannerActions,
   showSaveProjectAsDialog,
+  showExportSolutionsDialog,
   linesActions,
   holesActions,
   itemsActions,
   statePlanner,
   loadedProject,
   userId,
+  email,
+  name,
   saveRemoteProjectAction
 }) => {
 
@@ -150,7 +153,7 @@ const TopNavPlanner = ({
     const { updatedState } = Project.unselectAll(state);
     const scene = updatedState.get('scene').toJS();
     const elements = convertSceneToElements(scene);
-    plannerActions.optimizePlanner(userId, loadedProject.id, elements);
+    plannerActions.optimizePlanner(userId, loadedProject.id, elements, email, name);
   }
 
   const handleSaveProjectElementsToFile = () => {
@@ -316,6 +319,18 @@ const TopNavPlanner = ({
             </div>
             <UncontrolledTooltip placement="right" target="planner-acoustic-requirement" >
               <IntlMessages id='planner.acoustic-requirement' />
+            </UncontrolledTooltip>
+          </Button>
+
+          <Button className='toolbar-item' id='planner-export-solutions'
+            onClick={() => showExportSolutionsDialog()}
+          >
+            <FaFileDownload />
+            <div className="btn-title" >
+              <IntlMessages id='planner.export-solutions' />
+            </div>
+            <UncontrolledTooltip placement="right" target="planner-export-solutions" >
+              <IntlMessages id='planner.export-solutions' />
             </UncontrolledTooltip>
           </Button>
         </div>
@@ -512,7 +527,9 @@ const mapStateToProps = ({ menu, settings, planner, projects, authUser }) => {
     locale,
     statePlanner: planner,
     loadedProject,
-    userId: authUser.user
+    userId: authUser.user,
+    email: authUser.email,
+    name: authUser.displayName
   };
 };
 
@@ -522,6 +539,7 @@ const mapDispatchToProps = (dispatch) => {
     ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch)),
     plannerActions: bindActionCreators(plannerActionsAll, dispatch),
     showSaveProjectAsDialog: () => dispatch(openDialog('saveAsProjectDialog')),
+    showExportSolutionsDialog: () => dispatch(openDialog('exportSolutionsDialog')),
     saveRemoteProjectAction: (id, project, imageBlob) => dispatch(saveRemoteProject(id, project, imageBlob))
   }
   return result;

@@ -15,6 +15,7 @@ import { UNIT_CENTIMETER } from '../react-planner/constants';
 import { objectsMap } from '../react-planner/utils/objects-utils';
 import actions from '../react-planner/actions/export';
 import SaveAsProjectModal from '../containers/projects/SaveAsProjectModal';
+import ExportSolutionsModal from '../containers/projects/ExportSolutionsModal';
 // import Sidebar from '../containers/navs/Sidebar';
 
 const PlannerLayout = ({
@@ -77,6 +78,7 @@ const PlannerLayout = ({
       </main>
       <LengthInputModal autoFocus={false} onSubmitLength={(length, unit) => handleLengthInput(length, unit)} />
       <SaveAsProjectModal autoFocus={false} />
+      <ExportSolutionsModal autoFocus={false} />
       <ToastContainer />
     </div>
   );

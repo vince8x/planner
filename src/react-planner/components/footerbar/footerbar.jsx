@@ -7,7 +7,7 @@ import {
 import If from '../../utils/react-if';
 import FooterToggleButton from './footer-toggle-button';
 import FooterContentButton from './footer-content-button';
-import { SNAP_POINT, SNAP_LINE, SNAP_SEGMENT, SNAP_GRID, SNAP_GUIDE } from '../../utils/snap';
+import { SNAP_POINT, SNAP_LINE, SNAP_SEGMENT, SNAP_GRID, SNAP_GUIDE, SNAP_ORTHO } from '../../utils/snap';
 import { MODE_SNAPPING } from '../../constants';
 import * as SharedStyle from '../../shared-style';
 import { VERSION } from '../../version';
@@ -101,7 +101,7 @@ export default class FooterBar extends Component {
               toggleOn={() => { updateSnapMask({ SNAP_ORTHO: true }); }}
               toggleOff={() => { updateSnapMask({ SNAP_ORTHO: false }); }}
               text="Ortho"
-              toggleState={globalState.snapMask.get(SNAP_POINT)}
+              toggleState={globalState.snapMask.get(SNAP_ORTHO)}
               title={intl.formatMessage({id:'planner.orthogonal'})}
             />
             <FooterToggleButton
