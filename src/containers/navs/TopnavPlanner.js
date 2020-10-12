@@ -178,6 +178,8 @@ const TopNavPlanner = ({
   }
 
   const handleSelectToolDrawing = (element) => {
+    projectActions.rollback();
+    projectActions.unselectAll();
     switch (element.prototype) {
       case 'lines':
         linesActions.selectToolDrawingLine(element.name);
