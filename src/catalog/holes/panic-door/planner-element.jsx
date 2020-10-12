@@ -292,14 +292,6 @@ export default {
         unit: 'cm'
       }
     },
-    thickness: {
-      label: 'thickness',
-      type: 'length-measure',
-      defaultValue: {
-        length: 30,
-        unit: 'cm'
-      }
-    },
     altitude: {
       label: 'altitude',
       type: 'length-measure',

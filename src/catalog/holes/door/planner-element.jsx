@@ -44,13 +44,6 @@ export default {
         length: 0
       }
     },
-    thickness: {
-      label: 'Thickness',
-      type: 'length-measure',
-      defaultValue: {
-        length: 30
-      }
-    },
     flip_orizzontal: {
       label: 'flip orizzontale',
       type: 'checkbox',

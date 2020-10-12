@@ -37,13 +37,6 @@ export default {
       defaultValue: {
         length: 90
       }
-    },
-    thickness: {
-      label: "Thickness",
-      type: "length-measure",
-      defaultValue: {
-        length: 10
-      }
     }
   },
 
