@@ -51,8 +51,6 @@ import TopNavProfileSection from './TopNavProfileSection';
 import { saveRemoteProject } from '../../redux/projects/actions';
 import saveSVGScreenshotToFile from '../../helpers/Screenshot';
 
-
-
 const TopNavPlanner = ({
   intl,
   locale,
@@ -127,11 +125,19 @@ const TopNavPlanner = ({
 
   const handleSaveProject = () => {
     if (loadedProject && loadedProject.id) {
-      // the project is already loaded
-      const { id } = loadedProject;
+      const planner = statePlanner.get('react-planner');
+      const { updatedState } = Project.unselectAll(planner);
+      const projectState = updatedState.get('scene').toJS();
+      
+      const project = {
+        ...loadedProject,
+        state: projectState
+      };
 
+      // the project is already loaded
+      const { id } = project;
       const saveRemoteProjectCallback = (imageBlob) => {
-        saveRemoteProjectAction(id, loadedProject, imageBlob);
+        saveRemoteProjectAction(id, project, imageBlob);
       };
 
       saveSVGScreenshotToFile(saveRemoteProjectCallback);
