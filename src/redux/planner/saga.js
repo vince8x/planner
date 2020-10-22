@@ -33,12 +33,24 @@ export function* watchSetLinesLengthEndDrawing() {
 export function* optimizePlannerSaga(action) {
   const { userId, projectId, elements, email, name } = action.payload;
   const url = `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
+
+  const plannerState = yield select(getPlannerState);
+  const { updatedState } = Project.unselectAll(plannerState);
+  const scene = updatedState.get('scene');
+
+  const thermal = getThermalRequirement(scene);
+  const fire = getFireResistanceRequirement(scene);
+  const acoustic = getAcousticRequirement(scene);
+
   const data = {
     userId,
     projectId,
     elements,
     email,
-    name
+    name,
+    thermal,
+    fire,
+    acoustic
   };
 
   const apiCall = () => {
