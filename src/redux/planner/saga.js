@@ -1,10 +1,12 @@
 import axios from 'axios';
 import * as _ from 'lodash';
+import { success } from 'react-toastify-redux';
 import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
 import { SET_LINES_LENGTH_END_DRAWING, SOLUTION_CATEGORIES } from '../../react-planner/constants'
 import { beginDrawingLine, endDrawingLine } from '../../react-planner/actions/lines-actions';
 import {
   OPTIMIZE_PLANNER,
+  OPTIMIZE_PLANNER_SUCCESS,
   optimizePlannerSuccess,
   optimizePlannerError,
   EXPORT_SOLUTIONS,
@@ -65,12 +67,18 @@ export function* optimizePlannerSaga(action) {
   } catch (err) {
     yield put(optimizePlannerError(err.message));
   }
+}
 
-
+export function* optimizePlannerSuccessSaga() {
+  yield put(success('Request accepted. The result will be sent to your email'));
 }
 
 export function* watchOptimizePlanner() {
   yield takeLatest(OPTIMIZE_PLANNER, optimizePlannerSaga);
+}
+
+export function* watchOptimizePlannerSuccess() {
+  yield takeLatest(OPTIMIZE_PLANNER_SUCCESS, optimizePlannerSuccessSaga);
 }
 
 export function* exportSolutions({ payload }) {
@@ -142,6 +150,7 @@ export default function* rootSaga() {
   yield all([
     fork(watchSetLinesLengthEndDrawing),
     fork(watchOptimizePlanner),
-    fork(watchExportSolutions)
+    fork(watchExportSolutions),
+    fork(watchOptimizePlannerSuccess)
   ]);
 }
