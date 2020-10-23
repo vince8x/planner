@@ -88,6 +88,7 @@ export default class ElementEditor extends Component {
           vertexOne: v_a,
           vertexTwo: v_b,
           lineLength: new Map({length: distance, _length, _unit}),
+          type: element.type
         });
       }
       case 'holes': {

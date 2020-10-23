@@ -412,3 +412,10 @@ export const SOLUTION_CATEGORIES = [
   CATEGORY_MUSO_INTERIOR,
   CATEGORY_MUSO_PERIMETRAL
 ];
+
+export const WALL_TYPE = {
+  "perimeter-wall": "planner.perimeter-wall",
+  "interior-wall": "planner.interior-wall",
+  "dividing-wall": "planner.dividing-wall",
+  "wall": "planner.wall",
+};

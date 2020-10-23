@@ -38,9 +38,9 @@ export default function WallFactory(name, info, textures, properties) {
       }
     },
 
-    render2D: function (element, layer, scene) {
-      let { x: x1, y: y1 } = layer.vertices.get(element.vertices.get(0));
-      let { x: x2, y: y2 } = layer.vertices.get(element.vertices.get(1));
+    render2D (element, layer, scene) {
+      const { x: x1, y: y1 } = layer.vertices.get(element.vertices.get(0));
+      const { x: x2, y: y2 } = layer.vertices.get(element.vertices.get(1));
 
       let length = Geometry.pointsDistance(x1, y1, x2, y2);
       let length_5 = length / 5;
@@ -55,7 +55,6 @@ export default function WallFactory(name, info, textures, properties) {
       const wallType = element.get('type');
       let styleRect = wallType === 'interior-wall' ? STYLE_RECT_RED :
         wallType === 'dividing-wall' ? STYLE_RECT_GREEN : STYLE_RECT;
-
       let styleRectSelect = { ...styleRect, stroke: SharedStyle.LINE_MESH_COLOR.selected };
 
       return (element.selected) ?
@@ -68,7 +67,7 @@ export default function WallFactory(name, info, textures, properties) {
         <rect x="0" y={-half_thickness} width={length} height={thickness} style={styleRect} />
     },
 
-    render3D: function (element, layer, scene) {
+    render3D (element, layer, scene) {
       return buildWall(element, layer, scene, textures);
     },
 
