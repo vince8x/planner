@@ -1,7 +1,8 @@
 import { ElementsFactories } from '../../../react-planner';
+import { DEFAULT_WALL_TITLE } from '../../../react-planner/constants';
 
 const info = {
-  title: 'PERIMETER WALL',
+  title: DEFAULT_WALL_TITLE.wall,
   tag: ['wall'],
   description: '',
   image: require('./wall.png'),

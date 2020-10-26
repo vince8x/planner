@@ -27,6 +27,7 @@ import * as plannerActionsAll from '../../redux/planner/actions';
 import PerimeterWall from '../../catalog/lines/wall/planner-element';
 import InteriorWall from '../../catalog/lines/interior-wall/planner-element';
 import DividingWall from '../../catalog/lines/dividing-wall/planner-element';
+import Separator from '../../catalog/lines/separator/planner-element';
 import Door from '../../catalog/holes/door/planner-element';
 import Window from '../../catalog/holes/window/planner-element';
 import Gate from '../../catalog/holes/gate/planner-element';
@@ -417,7 +418,7 @@ const TopNavPlanner = ({
           </Button>
 
           <Button className='toolbar-item' id='planner-separator'
-            onClick={() => handleSelectToolDrawing(DividingWall)}
+            onClick={() => handleSelectToolDrawing(Separator)}
           >
             <GiBrickWall />
             <div className="btn-title" >

@@ -414,8 +414,15 @@ export const SOLUTION_CATEGORIES = [
 ];
 
 export const WALL_TYPE = {
-  "perimeter-wall": "planner.perimeter-wall",
+  "wall": "planner.perimeter-wall",
   "interior-wall": "planner.interior-wall",
   "dividing-wall": "planner.dividing-wall",
-  "wall": "planner.wall",
+  "separator": "planner.separator",
+};
+
+export const DEFAULT_WALL_TITLE = {
+  "wall": "PERIMETER WALL",
+  "interior-wall": "INTERIOR WALL",
+  "dividing-wall": "DIVIDING WALL",
+  "separator": "SEPARATOR",
 };
