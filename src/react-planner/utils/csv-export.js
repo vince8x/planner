@@ -26,18 +26,25 @@ export function convertSceneToElements(scene) {
         if (_.isNil(line.vertices[0]) || _.isNil(layerVertices[line.vertices[0]])) continue;
         if (_.isNil(line.vertices[1]) || _.isNil(layerVertices[line.vertices[1]])) continue;
 
+
+        let wallType = null;
+        if (line.type === 'interior-wall') {
+          wallType = 'Interior';
+        } else if (line.type === 'wall' || line.type === 'dividing-wall') {
+          wallType = 'Perimeter';
+        }
+
         const row = {
           Id: line.id,
           Sx: _.get(layerVertices[line.vertices[0]], 'x', 0),
           Sy: _.get(layerVertices[line.vertices[0]], 'y', 0),
           Ex: _.get(layerVertices[line.vertices[1]], 'x', 0),
           Ey: _.get(layerVertices[line.vertices[1]], 'y', 0),
-          H: line.properties.height && line.properties.height.length ? line.properties.height.length : 300,
           Type: line.type,
-          Wall_Type: 'Perimeter',
-          Wall_Face_A: line.properties.textureA,
-          Wall_Face_B: line.properties.textureB,
-          Associated_Wall: ''
+          Wall_Type: wallType,
+          Wall_Face_A: line.properties.textureA[0].toUpperCase() + line.properties.textureA.slice(1),
+          Wall_Face_B: line.properties.textureB[0].toUpperCase() + line.properties.textureB.slice(1),
+          Associated_Wall: null
         };
         csvResult.push(row);
       }
@@ -90,11 +97,10 @@ export function convertSceneToElements(scene) {
           Sy: startAtY,
           Ex: endAtX,
           Ey: endAtY,
-          H: hole.properties.height && line.properties.height.length ? line.properties.height.length : 300,
           Type: hole.type,
-          Wall_Type: '',
-          Wall_Face_A: line.properties.textureA,
-          Wall_Face_B: line.properties.textureB,
+          Wall_Type: null,
+          Wall_Face_A: null,
+          Wall_Face_B: null,
           Associated_Wall: line.id
         };
         csvResult.push(row);

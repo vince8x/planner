@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import * as _ from 'lodash';
+import classNames from 'classnames/bind';
 
 import {
   UncontrolledDropdown,
@@ -23,10 +24,11 @@ import { bindActionCreators } from 'redux';
 import * as localeActionsAll from '../../redux/settings/actions';
 import * as plannerActionsAll from '../../redux/planner/actions';
 
-
+import * as plannerConstants from '../../react-planner/constants';
 import PerimeterWall from '../../catalog/lines/wall/planner-element';
 import InteriorWall from '../../catalog/lines/interior-wall/planner-element';
 import DividingWall from '../../catalog/lines/dividing-wall/planner-element';
+import Separator from '../../catalog/lines/separator/planner-element';
 import Door from '../../catalog/holes/door/planner-element';
 import Window from '../../catalog/holes/window/planner-element';
 import Gate from '../../catalog/holes/gate/planner-element';
@@ -50,6 +52,7 @@ import { Project } from '../../react-planner/class/export';
 import TopNavProfileSection from './TopNavProfileSection';
 import { saveRemoteProject } from '../../redux/projects/actions';
 import saveSVGScreenshotToFile from '../../helpers/Screenshot';
+import { getPlannerState } from '../../redux/planner/selectors';
 
 const TopNavPlanner = ({
   intl,
@@ -67,6 +70,8 @@ const TopNavPlanner = ({
   userId,
   email,
   name,
+  mode,
+  selectedElement,
   saveRemoteProjectAction
 }) => {
 
@@ -344,7 +349,10 @@ const TopNavPlanner = ({
         </div>
 
         <div className='button-group'>
-          <Button className='toolbar-item' id='planner-door'
+          <Button className={classNames({
+            'toolbar-item': true,
+            "active": mode === plannerConstants.MODE_DRAWING_HOLE && selectedElement && selectedElement.name === Door.name
+          })} id='planner-door'
             onClick={() => handleSelectToolDrawing(Door)}
           >
             <GiSteelDoor />
@@ -356,7 +364,10 @@ const TopNavPlanner = ({
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-window'
+          <Button className={classNames({
+            'toolbar-item': true,
+            "active": mode === plannerConstants.MODE_DRAWING_HOLE && selectedElement && selectedElement.name === Window.name
+          })} id='planner-window'
             onClick={() => handleSelectToolDrawing(Window)}
           >
             <GiWindow />
@@ -368,7 +379,10 @@ const TopNavPlanner = ({
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-gate'
+          <Button className={classNames({
+            'toolbar-item': true,
+            "active": mode === plannerConstants.MODE_DRAWING_HOLE && selectedElement && selectedElement.name === Gate.name
+          })} id='planner-gate'
             onClick={() => handleSelectToolDrawing(Gate)}
           >
             <GiGate />
@@ -380,7 +394,10 @@ const TopNavPlanner = ({
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-perimeter-wall'
+          <Button className={classNames({
+            'toolbar-item': true,
+            "active": mode === plannerConstants.MODE_WAITING_DRAWING_LINE && selectedElement && selectedElement.name === PerimeterWall.name
+          })} id='planner-perimeter-wall'
             onClick={() => handleSelectToolDrawing(PerimeterWall)}
           >
             <GiBrickWall />
@@ -392,7 +409,10 @@ const TopNavPlanner = ({
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-interior-wall'
+          <Button className={classNames({
+            'toolbar-item': true,
+            "active": mode === plannerConstants.MODE_WAITING_DRAWING_LINE && selectedElement && selectedElement.name === InteriorWall.name
+          })} id='planner-interior-wall'
             onClick={() => handleSelectToolDrawing(InteriorWall)}
           >
             <GiBrickWall />
@@ -404,7 +424,10 @@ const TopNavPlanner = ({
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-dividing-wall'
+          <Button className={classNames({
+            'toolbar-item': true,
+            "active": mode === plannerConstants.MODE_WAITING_DRAWING_LINE && selectedElement && selectedElement.name === DividingWall.name
+          })} id='planner-dividing-wall'
             onClick={() => handleSelectToolDrawing(DividingWall)}
           >
             <GiBrickWall />
@@ -416,8 +439,11 @@ const TopNavPlanner = ({
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-separator'
-            onClick={() => handleSelectToolDrawing(DividingWall)}
+          <Button className={classNames({
+            'toolbar-item': true,
+            "active": mode === plannerConstants.MODE_WAITING_DRAWING_LINE && selectedElement && selectedElement.name === Separator.name
+          })} id='planner-separator'
+            onClick={() => handleSelectToolDrawing(Separator)}
           >
             <GiBrickWall />
             <div className="btn-title" >
@@ -524,10 +550,12 @@ const TopNavPlanner = ({
   );
 };
 
-const mapStateToProps = ({ menu, settings, planner, projects, authUser }) => {
+const mapStateToProps = (state) => {
+  const { menu, settings, planner, projects, authUser } = state;
   const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
   const { locale } = settings;
   const { loadedProject } = projects;
+  const plannerState = getPlannerState(state);
   return {
     containerClassnames,
     menuClickCount,
@@ -537,7 +565,9 @@ const mapStateToProps = ({ menu, settings, planner, projects, authUser }) => {
     loadedProject,
     userId: authUser.user,
     email: authUser.email,
-    name: authUser.displayName
+    name: authUser.displayName,
+    mode: plannerState.get('mode'),
+    selectedElement: plannerState.get('selectedElementsHistory').first()
   };
 };
 
