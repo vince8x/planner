@@ -367,6 +367,20 @@ export const NUMBER_OF_FLOORS = [
   1, 2, 3, 4, 5, 6
 ];
 
+export const SOIL_TYPES = [
+  'A', 'B', 'C', 'D', 'E', 'F'
+];
+
+export const SEISMIC_ZONES = [
+  1, 2, 3
+];
+
+export const BUILDING_TYPES = [
+  1, 2, 3, 4
+];
+
+
+
 export const VENTILATED = "Ventilated";
 export const RADIER = "Radier";
 export const FIRST_FLOOR_TYPE = [

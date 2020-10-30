@@ -161,6 +161,9 @@ module.exports = {
   'planner.ventilated': 'Ventilated',
   'planner.radier': 'Radier',
   'planner.number-of-square-meters-of-the-building': 'Number of square meters of the building (m2)',
+  'planner.soil-type': 'Soil type',
+  'planner.seismic-zone': 'Seismic zone',
+  'planner.building-type': 'Building Type',
   'planner.thermal-requirement': 'Thermal Requirement',
   'planner.thermal': 'Thermal',
   'planner.fire-resistance-requirement': 'Fire Resistance Requirement',
@@ -189,6 +192,7 @@ module.exports = {
   'planner.project-name': 'Project name',
   'planner.new-project-success': 'New project success',
   'planner.optimize': 'Optimize',
+  'planner.test-optimize': 'Test Optimize',
   'planner.export-solutions': 'Export solutions',
 
   /* 06. Project */

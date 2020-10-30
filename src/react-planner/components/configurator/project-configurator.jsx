@@ -12,8 +12,10 @@ import {
   CancelButton,
   FormTextInput
 } from '../style/export';
-import { THERMAL_REGULATION, CURRENT_THERMAL_REGULATION, VENTILATED } from '../../constants';
-import { TYPE_OF_GROUPING, NUMBER_OF_FLOORS, FIRST_FLOOR_TYPE, ISOLATE_BUILDING, FUTURE_THERMAL_REGULATION } from './../../constants';
+import { THERMAL_REGULATION, CURRENT_THERMAL_REGULATION, VENTILATED, SEISMIC_ZONE } from '../../constants';
+import { TYPE_OF_GROUPING, NUMBER_OF_FLOORS, SOIL_TYPES, 
+  FIRST_FLOOR_TYPE, ISOLATE_BUILDING, SEISMIC_ZONES,
+  FUTURE_THERMAL_REGULATION, BUILDING_TYPES } from './../../constants';
 import { futureThermalZoneData } from '../../data/thermal-regulations/future';
 import { currentThermalZoneData } from '../../data/thermal-regulations/current';
 import IntlMessages from '../../../helpers/IntlMessages';
@@ -83,6 +85,9 @@ export default class ProjectConfigurator extends Component {
       thermalRegulation: scene.thermalRegulation || CURRENT_THERMAL_REGULATION,
       typeOfGrouping: scene.typeOfGrouping || ISOLATE_BUILDING,
       numberOfFloor: scene.numberOfFloor || 1,
+      soilType: scene.soilType || 'A',
+      buildingType: scene.buildingType || 1,
+      seismicZone: scene.seismicZone || 1,
       firstFloorType: scene.firstFloorType || VENTILATED,
       totalAreaSize: totalAreaSize || 0,
       regionNum: scene.regionNum || 15,
@@ -98,11 +103,14 @@ export default class ProjectConfigurator extends Component {
     const { projectActions } = this.context;
 
     const {
-      thermalRegulation, typeOfGrouping, numberOfFloor, firstFloorType,
-      regionNum, commune
+      thermalRegulation, typeOfGrouping, 
+      numberOfFloor, soilType, seismicZone, buildingType,
+      firstFloorType, regionNum, commune
     } = this.state;
     const numberOfFloorInt = _.parseInt(numberOfFloor);
-    const regionNumInt = _.parseInt(regionNum)
+    const buildingTypeInt = _.parseInt(buildingType);
+    const seismicZoneInt = _.parseInt(seismicZone);
+    const regionNumInt = _.parseInt(regionNum);
     let selectedCommune = _.find(currentThermalZoneData, { 'regionNum': regionNumInt, 'commune': commune })
     if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
       selectedCommune = _.find(futureThermalZoneData, { 'regionNum': regionNumInt, 'commune': commune })
@@ -111,7 +119,10 @@ export default class ProjectConfigurator extends Component {
     projectActions.setProjectProperties({
       thermalRegulation,
       typeOfGrouping,
+      soilType,
       numberOfFloor: numberOfFloorInt,
+      seismicZone: seismicZoneInt,
+      buildingType: buildingTypeInt,
       firstFloorType,
       regionNum,
       commune,
@@ -134,7 +145,9 @@ export default class ProjectConfigurator extends Component {
   render() {
     const { width, height } = this.props;
     const {
-      thermalRegulation, typeOfGrouping, numberOfFloor, firstFloorType, totalAreaSize,
+      thermalRegulation, typeOfGrouping, 
+      numberOfFloor, soilType, seismicZone, buildingType,
+      firstFloorType, totalAreaSize,
       regionNum, commune
     } = this.state;
     const numberOfSquareMeters = numberOfFloor * totalAreaSize;
@@ -166,11 +179,11 @@ export default class ProjectConfigurator extends Component {
     let communes = [];
     if (thermalRegulation === FUTURE_THERMAL_REGULATION) {
       communes = _.filter(futureThermalZoneData, item => {
-        return item.regionNum == _.parseInt(regionNum)
+        return item.regionNum === _.parseInt(regionNum)
       });
     } else {
       communes = _.filter(currentThermalZoneData, item => {
-        return item.regionNum == _.parseInt(regionNum)
+        return item.regionNum === _.parseInt(regionNum)
       });
     }
 
@@ -221,6 +234,48 @@ export default class ProjectConfigurator extends Component {
                 communes.map(el => <option key={el.commune} value={el.commune}>{el.commune}</option>)
               }
 
+            </FormSelect>
+          </FormBlock>
+
+          <FormBlock>
+            <FormLabel htmlFor='soil-type'>
+              <IntlMessages id='planner.soil-type' />
+            </FormLabel>
+            <FormSelect id="soil-type"
+              value={soilType}
+              onChange={e => this.setState({ soilType: e.target.value })}
+            >
+              {
+                SOIL_TYPES.map(el => <option key={el} value={el}>{el}</option>)
+              }
+            </FormSelect>
+          </FormBlock>
+
+          <FormBlock>
+            <FormLabel htmlFor='seismic-zone'>
+              <IntlMessages id='planner.seismic-zone' />
+            </FormLabel>
+            <FormSelect id="seismic-zone"
+              value={seismicZone}
+              onChange={e => this.setState({ seismicZone: e.target.value })}
+            >
+              {
+                SEISMIC_ZONES.map(el => <option key={el} value={el}>{el}</option>)
+              }
+            </FormSelect>
+          </FormBlock>
+
+          <FormBlock>
+            <FormLabel htmlFor='building-type'>
+              <IntlMessages id='planner.building-type' />
+            </FormLabel>
+            <FormSelect id="building-type"
+              value={buildingType}
+              onChange={e => this.setState({ buildingType: e.target.value })}
+            >
+              {
+                BUILDING_TYPES.map(el => <option key={el} value={el}>{el}</option>)
+              }
             </FormSelect>
           </FormBlock>
 

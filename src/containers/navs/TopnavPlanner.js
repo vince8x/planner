@@ -159,12 +159,24 @@ const TopNavPlanner = ({
     });
   }
 
-  const handleOptimize = () => {
+  const handleOptimize = (isTest) => {
     const state = statePlanner.get('react-planner');
     const { updatedState } = Project.unselectAll(state);
     const scene = updatedState.get('scene').toJS();
     const elements = convertSceneToElements(scene);
-    plannerActions.optimizePlanner(userId, loadedProject.id, elements, email, name);
+    const { numberOfFloor, totalAreaSize, firstFloorType } = scene;
+    const numberOfSquareMeters = ((numberOfFloor * totalAreaSize) / 10000).toFixed(2);
+
+    const projectParams = {
+      soilType: scene.soilType,
+      seismicZone: scene.seismicZone,
+      buildingType: scene.buildingType,
+      area: numberOfSquareMeters,
+      numberOfFloor,
+      isVentilatedFloor: firstFloorType === plannerConstants.VENTILATED ? 1 : 0
+    };
+
+    plannerActions.optimizePlanner(userId, loadedProject.id, elements, email, name, projectParams, isTest);
   }
 
   const handleSaveProjectElementsToFile = () => {
@@ -275,7 +287,7 @@ const TopNavPlanner = ({
 
           {loadedProject && (
             <Button className='toolbar-item' id='planner-optimize-project'
-              onClick={() => handleOptimize()}
+              onClick={() => handleOptimize(false)}
             >
               <FaPlay />
               <div className="btn-title" >
@@ -286,6 +298,18 @@ const TopNavPlanner = ({
               </UncontrolledTooltip>
             </Button>
           )}
+
+          {loadedProject && (<Button className='toolbar-item' id='planner-test-optimize-project'
+            onClick={() => handleOptimize(true)}
+          >
+            <FaPlay />
+            <div className="btn-title" >
+              <IntlMessages id='planner.test-optimize' />
+            </div>
+            <UncontrolledTooltip placement="right" target="planner-test-optimize-project" >
+              <IntlMessages id='planner.test-optimize' />
+            </UncontrolledTooltip>
+          </Button>)}
 
           <Button className='toolbar-item' id='planner-export-project'
             onClick={() => handleSaveProjectElementsToFile()}

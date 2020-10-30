@@ -33,8 +33,10 @@ export function* watchSetLinesLengthEndDrawing() {
 
 
 export function* optimizePlannerSaga(action) {
-  const { userId, projectId, elements, email, name } = action.payload;
-  const url = `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
+  const { userId, projectId, elements, email, name, projectParams, isTest } = action.payload;
+
+  const url = isTest ? `${process.env.REACT_APP_API_ENDPOINT}/api/test_process_data` :
+   `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
 
   const plannerState = yield select(getPlannerState);
   const { updatedState } = Project.unselectAll(plannerState);
@@ -52,7 +54,8 @@ export function* optimizePlannerSaga(action) {
     name,
     thermal,
     fire,
-    acoustic
+    acoustic,
+    projectParams
   };
 
   const apiCall = () => {
@@ -64,6 +67,10 @@ export function* optimizePlannerSaga(action) {
   try {
     const response = yield call(apiCall);
     yield put(optimizePlannerSuccess(response));
+    if (isTest) {
+      const filename = `optimize_result_${Date.now()}.csv`;
+      yield csvDownload(response, filename);
+    }
   } catch (err) {
     yield put(optimizePlannerError(err.message));
   }

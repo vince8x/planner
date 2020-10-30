@@ -8,9 +8,9 @@ export const OPTIMIZE_PLANNER = 'OPTIMIZE_PLANNER';
 export const OPTIMIZE_PLANNER_SUCCESS = 'OPTIMIZE_PLANNER_SUCCESS';
 export const OPTIMIZE_PLANNER_ERROR = 'OPTIMIZE_PLANNER_ERROR';
 
-export const optimizePlanner = (userId, projectId, elements, email, name) => ({
+export const optimizePlanner = (userId, projectId, elements, email, name, projectParams, isTest) => ({
   type: OPTIMIZE_PLANNER,
-  payload: { userId, projectId, elements, email, name }
+  payload: { userId, projectId, elements, email, name, projectParams, isTest }
 });
 
 export const optimizePlannerSuccess = (status) => ({
