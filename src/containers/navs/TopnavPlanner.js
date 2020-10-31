@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import * as _ from 'lodash';
 import classNames from 'classnames/bind';
+import areapolygon from 'area-polygon';
 
 import {
   UncontrolledDropdown,
@@ -162,10 +163,50 @@ const TopNavPlanner = ({
   const handleOptimize = (isTest) => {
     const state = statePlanner.get('react-planner');
     const { updatedState } = Project.unselectAll(state);
+    const { numberOfFloor, firstFloorType, layers } = updatedState.get('scene');
     const scene = updatedState.get('scene').toJS();
     const elements = convertSceneToElements(scene);
-    const { numberOfFloor, totalAreaSize, firstFloorType } = scene;
-    const numberOfSquareMeters = ((numberOfFloor * totalAreaSize) / 10000).toFixed(2);
+    
+
+    let totalAreaSize = 0;
+
+    layers.map(layer => {
+      layer.areas.map(area => {
+
+        const polygon = area.vertices.toArray().map(vertexID => {
+          const { x, y } = layer.vertices.get(vertexID);
+          return [x, y];
+        });
+
+        let polygonWithHoles = polygon;
+
+        area.holes.forEach(holeID => {
+
+          const polygonHole = layer.areas.get(holeID).vertices.toArray().map(vertexID => {
+            const { x, y } = layer.vertices.get(vertexID);
+            return [x, y];
+          });
+
+          polygonWithHoles = polygonWithHoles.concat(polygonHole.reverse());
+        });
+
+        let areaSize = areapolygon(polygon, false);
+
+        // subtract holes area
+        area.holes.forEach(areaID => {
+          const hole = layer.areas.get(areaID);
+          const holePolygon = hole.vertices.toArray().map(vertexID => {
+            const { x, y } = layer.vertices.get(vertexID);
+            return [x, y];
+          });
+          areaSize -= areapolygon(holePolygon, false);
+        });
+
+        totalAreaSize = areaSize ? totalAreaSize + areaSize : totalAreaSize;
+      });
+    });
+
+    const numberOfSquareMeters = ((numberOfFloor * (totalAreaSize || 0)) / 10000)
 
     const projectParams = {
       soilType: scene.soilType,
