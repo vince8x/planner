@@ -12,6 +12,14 @@ import {
   CATEGORY_MUSO_DIVISORIO
 } from '../constants';
 
+// piso ventilado: floor
+// Entrepisos: Mezzanines
+// Techumbre: Roofing, ceiling
+// Muro Perímetral: Perimeter wall
+// Muro Interior: interiorWall
+// Muro Divisorio: dividingWall
+
+
 export function getThermalRequirement(scene) {
 
   const { thermalRegulation, commune, thermalZone } = scene;
@@ -85,7 +93,7 @@ export function getFireResistanceRequirement(scene) {
   });
 
   let fireResistanceItem;
-  if ((numberOfFloor <= 2 && totalAreaSize <= 1400000) &&
+  if ((numberOfFloor <= 2 && (totalAreaSize * numberOfFloor) <= 1400000) &&
     (typeOfGrouping !== HORIZONTAL_PAIRED_BUILDING) &&
     (typeOfGrouping !== COLLECTIVE_BUILDING)) {
     fireResistanceItem = _.find(fireResistanceSmall, { 'floorNum': numberOfFloor });
