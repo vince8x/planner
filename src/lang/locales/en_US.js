@@ -194,6 +194,7 @@ module.exports = {
   'planner.optimize': 'Optimize',
   'planner.test-optimize': 'Test Optimize',
   'planner.export-solutions': 'Export solutions',
+  'planner.no-records-result': 'There are no records in the result',
 
   /* 06. Project */
   'project.project-list': 'Project list',

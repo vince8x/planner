@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as _ from 'lodash';
-import { success } from 'react-toastify-redux';
+import { success, message } from 'react-toastify-redux';
 import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
 import { SET_LINES_LENGTH_END_DRAWING, SOLUTION_CATEGORIES } from '../../react-planner/constants'
 import { beginDrawingLine, endDrawingLine } from '../../react-planner/actions/lines-actions';
@@ -142,7 +142,11 @@ export function* exportSolutions({ payload }) {
     const response = yield call(apiCall);
     const filename = `${category.NAME}_soluciones_${Date.now()}.csv`;
     yield put(exportSolutionsSuccess(response));
-    yield csvDownload(response, filename);
+    if (_.isNil(response) || _.isNil(response[0])) {
+      yield put(message('No result record'));
+    } else {
+      yield csvDownload(response, filename);
+    }
   } catch (error) {
     yield put(exportSolutionsFailure(error.message));
   }

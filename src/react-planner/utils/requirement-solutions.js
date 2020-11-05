@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import areapolygon from 'area-polygon';
-import { CATEGORY_MUSO_INTERIOR, CATEGORY_PISO_VENTILADOR, CATEGORY_TECHUMBRE } from '../constants';
+import { CATEGORY_MURO_INTERIOR, CATEGORY_PISO_VENTILADOR, CATEGORY_TECHUMBRE } from '../constants';
 import { pdaData, currentThermalRequirements } from '../data/thermal-regulations/current';
 import { futureThermalRequirements } from '../data/thermal-regulations/future';
 import { fireResistanceSmall, fireResistanceBig } from '../data/fire-resistance/fire-resistance';
@@ -8,8 +8,8 @@ import {
   THERMAL_REQUIREMENTS, ACOUSTIC_REQUIREMENTS,
   FIRE_RESISTANCE_REQUIREMENTS, FUTURE_THERMAL_REGULATION,
   HORIZONTAL_PAIRED_BUILDING, COLLECTIVE_BUILDING,
-  CATEGORY_MUSO_PERIMETRAL, CATEGORY_ENTREPISO,
-  CATEGORY_MUSO_DIVISORIO
+  CATEGORY_MURO_PERIMETRAL, CATEGORY_ENTREPISO,
+  CATEGORY_MURO_DIVISORIO
 } from '../constants';
 
 // piso ventilado: floor
@@ -43,7 +43,7 @@ export function getThermalRequirement(scene) {
       categoryId: CATEGORY_TECHUMBRE.ID,
       value: thermalRequirementItem.ceiling
     }, {
-      categoryId: CATEGORY_MUSO_PERIMETRAL.ID,
+      categoryId: CATEGORY_MURO_PERIMETRAL.ID,
       value: thermalRequirementItem.wall
     }];
   }
@@ -116,15 +116,15 @@ export function getFireResistanceRequirement(scene) {
         value: fireResistanceItem.ceiling
       },
       {
-        categoryId: CATEGORY_MUSO_DIVISORIO.ID,
+        categoryId: CATEGORY_MURO_DIVISORIO.ID,
         value: fireResistanceItem.dividingWall
       },
       {
-        categoryId: CATEGORY_MUSO_INTERIOR.ID,
+        categoryId: CATEGORY_MURO_INTERIOR.ID,
         value: fireResistanceItem.interiorWall
       },
       {
-        categoryId: CATEGORY_MUSO_PERIMETRAL.ID,
+        categoryId: CATEGORY_MURO_PERIMETRAL.ID,
         value: fireResistanceItem.perimeterWall
       }
     ];
