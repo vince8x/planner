@@ -39,7 +39,9 @@ export default function keyboard() {
           }
         case KEYBOARD_BUTTON_CODE.ESC:
           {
-            store.dispatch(rollback());
+            if (![MODE_IDLE].includes(mode))
+              store.dispatch(rollback());
+              
             break;
           }
         case KEYBOARD_BUTTON_CODE.Z:
