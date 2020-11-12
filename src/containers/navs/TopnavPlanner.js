@@ -166,6 +166,7 @@ const TopNavPlanner = ({
     const { numberOfFloor, firstFloorType, layers } = updatedState.get('scene');
     const scene = updatedState.get('scene').toJS();
     const elements = convertSceneToElements(scene);
+    const projectName = loadedProject ? loadedProject.name : '';
     
 
     let totalAreaSize = 0;
@@ -209,6 +210,7 @@ const TopNavPlanner = ({
     const numberOfSquareMeters = ((numberOfFloor * (totalAreaSize || 0)) / 10000)
 
     const projectParams = {
+      projectName,
       soilType: scene.soilType,
       seismicZone: scene.seismicZone,
       buildingType: scene.buildingType,
