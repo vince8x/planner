@@ -2,21 +2,15 @@ import { saveAs } from 'file-saver';
 import * as _ from 'lodash';
 
 export function browserDownload(json) {
-  let fileOutputLink = document.createElement('a');
 
   let filename = 'output' + Date.now() + '.json';
   filename = window.prompt('Insert output filename', filename);
   if (!filename) return;
 
-  let output = JSON.stringify(json);
-  let data = new Blob([output], { type: 'text/plain' });
-  let url = window.URL.createObjectURL(data);
-  fileOutputLink.setAttribute('download', filename);
-  fileOutputLink.href = url;
-  fileOutputLink.style.display = 'none';
-  document.body.appendChild(fileOutputLink);
-  fileOutputLink.click();
-  document.body.removeChild(fileOutputLink);
+  const output = JSON.stringify(json);
+
+  const file = new File([output], filename, {type: "text/plain;charset=utf-8"});
+  saveAs(file);
 }
 
 export function browserUpload() {

@@ -16,7 +16,7 @@ import {
 
 import { MdUndo, MdSettings } from 'react-icons/md';
 import { GiSteelDoor, GiWindow, GiGate, GiBrickWall } from 'react-icons/gi';
-import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome, FaPlay, FaFileDownload } from 'react-icons/fa';
+import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome, FaPlay, FaFileDownload, FaFileImport } from 'react-icons/fa';
 import { AiOutlineBook } from 'react-icons/ai';
 import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -222,6 +222,18 @@ const TopNavPlanner = ({
     plannerActions.optimizePlanner(userId, loadedProject.id, elements, email, name, projectParams, isTest);
   }
 
+  const handleSaveProjectElementsToJsonFile = () => {
+    const state = statePlanner.get('react-planner');
+    const { updatedState } = Project.unselectAll(state);
+    browserDownload(updatedState.get('scene').toJS());
+  }
+
+  const handleImportProjectFromJson = () => {
+    browserUpload().then((data) => {
+      projectActions.loadProject(JSON.parse(data));
+    });
+  }
+
   const handleSaveProjectElementsToFile = () => {
     const state = statePlanner.get('react-planner');
     const { updatedState } = Project.unselectAll(state);
@@ -353,15 +365,39 @@ const TopNavPlanner = ({
             </UncontrolledTooltip>
           </Button>)}
 
+          <Button className='toolbar-item' id='planner-export-json'
+            onClick={() => handleSaveProjectElementsToJsonFile()}
+          >
+            <FaFolderOpen />
+            <div className="btn-title" >
+              <IntlMessages id='planner.export-json' />
+            </div>
+            <UncontrolledTooltip placement="right" target="planner-export-json" >
+              <IntlMessages id='planner.export-json' />
+            </UncontrolledTooltip>
+          </Button>
+
+          <Button className='toolbar-item' id='planner-import-json'
+            onClick={() => handleImportProjectFromJson()}
+          >
+            <FaFileImport />
+            <div className="btn-title" >
+              <IntlMessages id='planner.import-json' />
+            </div>
+            <UncontrolledTooltip placement="right" target="planner-import-json" >
+              <IntlMessages id='planner.import-json' />
+            </UncontrolledTooltip>
+          </Button>
+
           <Button className='toolbar-item' id='planner-export-project'
             onClick={() => handleSaveProjectElementsToFile()}
           >
             <FaFolderOpen />
             <div className="btn-title" >
-              <IntlMessages id='planner.export' />
+              <IntlMessages id='planner.export-csv' />
             </div>
             <UncontrolledTooltip placement="right" target="planner-export-project" >
-              <IntlMessages id='planner.export-project' />
+              <IntlMessages id='planner.export-csv' />
             </UncontrolledTooltip>
           </Button>
 
