@@ -19,6 +19,7 @@ import { TYPE_OF_GROUPING, NUMBER_OF_FLOORS, SOIL_TYPES,
 import { futureThermalZoneData } from '../../data/thermal-regulations/future';
 import { currentThermalZoneData } from '../../data/thermal-regulations/current';
 import IntlMessages from '../../../helpers/IntlMessages';
+import calculateArea from '../../utils/calculation';
 
 export default class ProjectConfigurator extends Component {
 
@@ -32,37 +33,7 @@ export default class ProjectConfigurator extends Component {
     let totalAreaSize = 0;
     layers.map(layer => {
       layer.areas.map(area => {
-
-        const polygon = area.vertices.toArray().map(vertexID => {
-          const { x, y } = layer.vertices.get(vertexID);
-          return [x, y];
-        });
-
-        let polygonWithHoles = polygon;
-
-        area.holes.forEach(holeID => {
-
-          const polygonHole = layer.areas.get(holeID).vertices.toArray().map(vertexID => {
-            const { x, y } = layer.vertices.get(vertexID);
-            return [x, y];
-          });
-
-          polygonWithHoles = polygonWithHoles.concat(polygonHole.reverse());
-        });
-
-        let areaSize = areapolygon(polygon, false);
-
-        // subtract holes area
-        area.holes.forEach(areaID => {
-          const hole = layer.areas.get(areaID);
-          const holePolygon = hole.vertices.toArray().map(vertexID => {
-            const { x, y } = layer.vertices.get(vertexID);
-            return [x, y];
-          });
-          areaSize -= areapolygon(holePolygon, false);
-        });
-
-        totalAreaSize = areaSize ? totalAreaSize + areaSize : totalAreaSize;
+        totalAreaSize = calculateArea(area, layer);
       });
 
     });

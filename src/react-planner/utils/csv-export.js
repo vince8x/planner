@@ -10,6 +10,7 @@ import {
   FIRE_RESISTANCE_REQUIREMENTS, FUTURE_THERMAL_REGULATION,
   HORIZONTAL_PAIRED_BUILDING, COLLECTIVE_BUILDING
 } from '../constants';
+import calculateArea from './calculation';
 
 export function convertSceneToElements(scene) {
   const csvResult = [];
@@ -111,9 +112,27 @@ export function convertSceneToElements(scene) {
   return csvResult;
 }
 
+export function convertAreaToCSv(areas) {
+  const csvResult = [];
+
+  _.map(areas, item => {
+    const row = {
+      Id: item.area.id,
+      size: item.size
+    };
+    csvResult.push(row);
+  });
+
+  return csvResult;
+}
+
 export function exportElementsCsv(scene) {
 
   csvDownload(convertSceneToElements(scene));
+}
+
+export function exportAreaCsv(areas) {
+  csvDownload(convertAreaToCSv(areas));
 }
 
 export function exportRequirement(scene, type, translateType) {
@@ -148,37 +167,7 @@ export function exportRequirement(scene, type, translateType) {
 
     layers.map(layer => {
       layer.areas.map(area => {
-
-        const polygon = area.vertices.toArray().map(vertexID => {
-          const { x, y } = layer.vertices.get(vertexID);
-          return [x, y];
-        });
-
-        let polygonWithHoles = polygon;
-
-        area.holes.forEach(holeID => {
-
-          const polygonHole = layer.areas.get(holeID).vertices.toArray().map(vertexID => {
-            const { x, y } = layer.vertices.get(vertexID);
-            return [x, y];
-          });
-
-          polygonWithHoles = polygonWithHoles.concat(polygonHole.reverse());
-        });
-
-        let areaSize = areapolygon(polygon, false);
-
-        // subtract holes area
-        area.holes.forEach(areaID => {
-          const hole = layer.areas.get(areaID);
-          const holePolygon = hole.vertices.toArray().map(vertexID => {
-            const { x, y } = layer.vertices.get(vertexID);
-            return [x, y];
-          });
-          areaSize -= areapolygon(holePolygon, false);
-        });
-
-        totalAreaSize = areaSize ? totalAreaSize + areaSize : totalAreaSize;
+        totalAreaSize = calculateArea(area, layer);
       });
     });
 

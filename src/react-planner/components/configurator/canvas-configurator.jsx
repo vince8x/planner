@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import polylabel from 'polylabel';
 import areapolygon from 'area-polygon';
 import * as _ from 'lodash';
+
 import {
   ContentTitle,
   ContentContainer,
@@ -13,6 +14,7 @@ import {
   FormTextInput
 } from '../style/export';
 import IntlMessages from '../../../helpers/IntlMessages';
+import calculateArea from '../../utils/calculation';
 
 export default class CanvasConfigurator extends Component {
 
@@ -26,38 +28,7 @@ export default class CanvasConfigurator extends Component {
     let totalAreaSize = 0;
     layers.map(layer => {
       layer.areas.map(area => {
-
-        let polygon = area.vertices.toArray().map(vertexID => {
-          let { x, y } = layer.vertices.get(vertexID);
-          return [x, y];
-        });
-
-        let polygonWithHoles = polygon;
-
-        area.holes.forEach(holeID => {
-
-          let polygonHole = layer.areas.get(holeID).vertices.toArray().map(vertexID => {
-            let { x, y } = layer.vertices.get(vertexID);
-            return [x, y];
-          });
-
-          polygonWithHoles = polygonWithHoles.concat(polygonHole.reverse());
-        });
-
-        let center = polylabel([polygonWithHoles], 1.0);
-        let areaSize = areapolygon(polygon, false);
-
-        //subtract holes area
-        area.holes.forEach(areaID => {
-          let hole = layer.areas.get(areaID);
-          let holePolygon = hole.vertices.toArray().map(vertexID => {
-            let { x, y } = layer.vertices.get(vertexID);
-            return [x, y];
-          });
-          areaSize -= areapolygon(holePolygon, false);
-        });
-
-        totalAreaSize = areaSize ? totalAreaSize + areaSize : totalAreaSize;
+        totalAreaSize = calculateArea(area, layer);
       });
 
     });

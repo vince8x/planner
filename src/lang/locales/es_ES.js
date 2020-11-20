@@ -144,6 +144,7 @@ module.exports = {
   'planner.export-project': 'Proyecto de exportación',
   'planner.export': 'exportación',
   'planner.export-csv': 'Exportar csv',
+  'planner.export-area': 'Exportar area',
   'planner.export-json': 'Exportar json',
   'planner.import-json': 'Importar json',
   'planner.default-wall-height': 'Altura de muro por default',

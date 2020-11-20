@@ -11,12 +11,21 @@ import {
   DropdownMenu,
   UncontrolledTooltip,
   Button,
-  Badge
+  Badge,
 } from 'reactstrap';
 
 import { MdUndo, MdSettings } from 'react-icons/md';
 import { GiSteelDoor, GiWindow, GiGate, GiBrickWall } from 'react-icons/gi';
-import { FaFolderOpen, FaFile, FaSave, FaFileExport, FaHome, FaPlay, FaFileDownload, FaFileImport } from 'react-icons/fa';
+import {
+  FaFolderOpen,
+  FaFile,
+  FaSave,
+  FaFileExport,
+  FaHome,
+  FaPlay,
+  FaFileDownload,
+  FaFileImport,
+} from 'react-icons/fa';
 import { AiOutlineBook } from 'react-icons/ai';
 import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -34,9 +43,7 @@ import Door from '../../catalog/holes/door/planner-element';
 import Window from '../../catalog/holes/window/planner-element';
 import Gate from '../../catalog/holes/gate/planner-element';
 
-import {
-  localeOptions,
-} from '../../constants/defaultValues';
+import { localeOptions } from '../../constants/defaultValues';
 
 import TopnavEasyAccess from './Topnav.EasyAccess';
 import TopnavNotifications from './Topnav.Notifications';
@@ -45,15 +52,29 @@ import { getDirection, setDirection } from '../../helpers/Utils';
 import { objectsMap } from '../../react-planner/utils/objects-utils';
 import actions from '../../react-planner/actions/export';
 import IntlMessages from '../../helpers/IntlMessages';
-import { browserDownload, browserUpload } from '../../react-planner/utils/browser';
-import { exportElementsCsv, exportRequirement, convertSceneToElements } from '../../react-planner/utils/csv-export';
-import { THERMAL_REQUIREMENTS, FIRE_RESISTANCE_REQUIREMENTS, ACOUSTIC_REQUIREMENTS } from '../../react-planner/constants';
+import {
+  browserDownload,
+  browserUpload,
+} from '../../react-planner/utils/browser';
+import {
+  exportElementsCsv,
+  exportAreaCsv,
+  exportRequirement,
+  convertSceneToElements,
+} from '../../react-planner/utils/csv-export';
+
+import {
+  THERMAL_REQUIREMENTS,
+  FIRE_RESISTANCE_REQUIREMENTS,
+  ACOUSTIC_REQUIREMENTS,
+} from '../../react-planner/constants';
 import { logoutUser, openDialog } from '../../redux/actions';
 import { Project } from '../../react-planner/class/export';
 import TopNavProfileSection from './TopNavProfileSection';
 import { saveRemoteProject } from '../../redux/projects/actions';
 import saveSVGScreenshotToFile from '../../helpers/Screenshot';
 import { getPlannerState } from '../../redux/planner/selectors';
+import calculateArea from '../../react-planner/utils/calculation';
 
 const TopNavPlanner = ({
   intl,
@@ -73,9 +94,8 @@ const TopNavPlanner = ({
   name,
   mode,
   selectedElement,
-  saveRemoteProjectAction
+  saveRemoteProjectAction,
 }) => {
-
   const history = useHistory();
 
   const [isInFullScreen, setIsInFullScreen] = useState(false);
@@ -134,10 +154,10 @@ const TopNavPlanner = ({
       const planner = statePlanner.get('react-planner');
       const { updatedState } = Project.unselectAll(planner);
       const projectState = updatedState.get('scene').toJS();
-      
+
       const project = {
         ...loadedProject,
-        state: projectState
+        state: projectState,
       };
 
       // the project is already loaded
@@ -151,14 +171,13 @@ const TopNavPlanner = ({
       // there's no project, we'll add the project by showing the dialog
       showSaveProjectAsDialog();
     }
-
-  }
+  };
 
   const handleLoadProjectFromFile = () => {
     browserUpload().then((data) => {
       projectActions.loadProject(JSON.parse(data));
     });
-  }
+  };
 
   const handleOptimize = (isTest) => {
     const state = statePlanner.get('react-planner');
@@ -167,47 +186,16 @@ const TopNavPlanner = ({
     const scene = updatedState.get('scene').toJS();
     const elements = convertSceneToElements(scene);
     const projectName = loadedProject ? loadedProject.name : '';
-    
 
     let totalAreaSize = 0;
 
-    layers.map(layer => {
-      layer.areas.map(area => {
-
-        const polygon = area.vertices.toArray().map(vertexID => {
-          const { x, y } = layer.vertices.get(vertexID);
-          return [x, y];
-        });
-
-        let polygonWithHoles = polygon;
-
-        area.holes.forEach(holeID => {
-
-          const polygonHole = layer.areas.get(holeID).vertices.toArray().map(vertexID => {
-            const { x, y } = layer.vertices.get(vertexID);
-            return [x, y];
-          });
-
-          polygonWithHoles = polygonWithHoles.concat(polygonHole.reverse());
-        });
-
-        let areaSize = areapolygon(polygon, false);
-
-        // subtract holes area
-        area.holes.forEach(areaID => {
-          const hole = layer.areas.get(areaID);
-          const holePolygon = hole.vertices.toArray().map(vertexID => {
-            const { x, y } = layer.vertices.get(vertexID);
-            return [x, y];
-          });
-          areaSize -= areapolygon(holePolygon, false);
-        });
-
-        totalAreaSize = areaSize ? totalAreaSize + areaSize : totalAreaSize;
+    layers.map((layer) => {
+      layer.areas.map((area) => {
+        totalAreaSize = calculateArea(area, layer);
       });
     });
 
-    const numberOfSquareMeters = ((numberOfFloor * (totalAreaSize || 0)) / 10000)
+    const numberOfSquareMeters = (numberOfFloor * (totalAreaSize || 0)) / 10000;
 
     const projectParams = {
       projectName,
@@ -216,29 +204,56 @@ const TopNavPlanner = ({
       buildingType: scene.buildingType,
       area: numberOfSquareMeters,
       numberOfFloor,
-      isVentilatedFloor: firstFloorType === plannerConstants.VENTILATED ? 1 : 0
+      isVentilatedFloor: firstFloorType === plannerConstants.VENTILATED ? 1 : 0,
     };
 
-    plannerActions.optimizePlanner(userId, loadedProject.id, elements, email, name, projectParams, isTest);
-  }
+    plannerActions.optimizePlanner(
+      userId,
+      loadedProject.id,
+      elements,
+      email,
+      name,
+      projectParams,
+      isTest
+    );
+  };
 
   const handleSaveProjectElementsToJsonFile = () => {
     const state = statePlanner.get('react-planner');
     const { updatedState } = Project.unselectAll(state);
     browserDownload(updatedState.get('scene').toJS());
-  }
+  };
 
   const handleImportProjectFromJson = () => {
     browserUpload().then((data) => {
       projectActions.loadProject(JSON.parse(data));
     });
-  }
+  };
 
   const handleSaveProjectElementsToFile = () => {
     const state = statePlanner.get('react-planner');
     const { updatedState } = Project.unselectAll(state);
     exportElementsCsv(updatedState.get('scene').toJS());
-  }
+  };
+
+  const handleSaveAreaToFile = () => {
+    const state = statePlanner.get('react-planner');
+    const { updatedState } = Project.unselectAll(state);
+    const { layers } = updatedState.get('scene');
+    const allAreas = [];
+    let totalAreaSize = 0;
+    layers.map((layer) => {
+      layer.areas.map((area) => {
+        totalAreaSize = calculateArea(area, layer);
+        allAreas.push({
+          area,
+          size: totalAreaSize
+        })
+      });
+    });
+    
+    exportAreaCsv(allAreas);
+  };
 
   const handleSaveProjectRequirementsToFile = (type) => {
     const state = statePlanner.get('react-planner');
@@ -248,12 +263,16 @@ const TopNavPlanner = ({
     if (type === THERMAL_REQUIREMENTS) {
       translateType = intl.formatMessage({ id: 'planner.thermal-requirement' });
     } else if (type === FIRE_RESISTANCE_REQUIREMENTS) {
-      translateType = intl.formatMessage({ id: 'planner.fire-resistance-requirement' });
+      translateType = intl.formatMessage({
+        id: 'planner.fire-resistance-requirement',
+      });
     } else if (type === ACOUSTIC_REQUIREMENTS) {
-      translateType = intl.formatMessage({ id: 'planner.acoustic-requirement' });
+      translateType = intl.formatMessage({
+        id: 'planner.acoustic-requirement',
+      });
     }
     exportRequirement(updatedState.get('scene'), type, translateType);
-  }
+  };
 
   const handleSelectToolDrawing = (element) => {
     projectActions.unselectAll();
@@ -271,339 +290,475 @@ const TopNavPlanner = ({
         break;
     }
     projectActions.pushLastSelectedCatalogElementToHistory(element);
-  }
+  };
 
   return (
     <nav className="navbar fixed-top">
-      <div size='lg' className="d-flex align-items-center navbar-left top-toolbar">
-        <div className='button-group'>
-          <Button id='planner-home' className='toolbar-item'
+      <div
+        size="lg"
+        className="d-flex align-items-center navbar-left top-toolbar"
+      >
+        <div className="button-group">
+          <Button
+            id="planner-home"
+            className="toolbar-item"
             onClick={() => history.push('/')}
           >
             <FaHome />
-            <div className="btn-title" >
-              <IntlMessages id='menu.home' />
+            <div className="btn-title">
+              <IntlMessages id="menu.home" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-home" >
-              <IntlMessages id='menu.home' />
+            <UncontrolledTooltip placement="right" target="planner-home">
+              <IntlMessages id="menu.home" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button id='planner-projects' className='toolbar-item'
+          <Button
+            id="planner-projects"
+            className="toolbar-item"
             onClick={() => history.push('/projects')}
           >
             <AiOutlineBook />
-            <div className="btn-title" >
-              <IntlMessages id='menu.projects' />
+            <div className="btn-title">
+              <IntlMessages id="menu.projects" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-projects" >
-              <IntlMessages id='menu.projects' />
+            <UncontrolledTooltip placement="right" target="planner-projects">
+              <IntlMessages id="menu.projects" />
             </UncontrolledTooltip>
           </Button>
         </div>
 
-        <div className='button-group'>
-          <Button id='planner-new-project' className='toolbar-item'
+        <div className="button-group">
+          <Button
+            id="planner-new-project"
+            className="toolbar-item"
             onClick={() => projectActions.newProject()}
           >
             <FaFile />
-            <div className="btn-title" >
-              <IntlMessages id='planner.new' />
+            <div className="btn-title">
+              <IntlMessages id="planner.new" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-new-project" >
-              <IntlMessages id='planner.new-project' />
+            <UncontrolledTooltip placement="right" target="planner-new-project">
+              <IntlMessages id="planner.new-project" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-save-project'
+          <Button
+            className="toolbar-item"
+            id="planner-save-project"
             onClick={() => handleSaveProject()}
           >
             <FaSave />
-            <div className="btn-title" >
-              <IntlMessages id='planner.save' />
+            <div className="btn-title">
+              <IntlMessages id="planner.save" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-save-project" >
-              <IntlMessages id='planner.save-project' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-save-project"
+            >
+              <IntlMessages id="planner.save-project" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-load-project'
+          <Button
+            className="toolbar-item"
+            id="planner-load-project"
             onClick={() => handleLoadProjectFromFile()}
           >
             <FaFolderOpen />
-            <div className="btn-title" >
-              <IntlMessages id='planner.load' />
+            <div className="btn-title">
+              <IntlMessages id="planner.load" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-load-project" >
-              <IntlMessages id='planner.load-project' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-load-project"
+            >
+              <IntlMessages id="planner.load-project" />
             </UncontrolledTooltip>
           </Button>
 
           {loadedProject && (
-            <Button className='toolbar-item' id='planner-optimize-project'
+            <Button
+              className="toolbar-item"
+              id="planner-optimize-project"
               onClick={() => handleOptimize(false)}
             >
               <FaPlay />
-              <div className="btn-title" >
-                <IntlMessages id='planner.optimize' />
+              <div className="btn-title">
+                <IntlMessages id="planner.optimize" />
               </div>
-              <UncontrolledTooltip placement="right" target="planner-optimize-project" >
-                <IntlMessages id='planner.optimize' />
+              <UncontrolledTooltip
+                placement="right"
+                target="planner-optimize-project"
+              >
+                <IntlMessages id="planner.optimize" />
               </UncontrolledTooltip>
             </Button>
           )}
 
-          {loadedProject && (<Button className='toolbar-item' id='planner-test-optimize-project'
-            onClick={() => handleOptimize(true)}
-          >
-            <FaPlay />
-            <div className="btn-title" >
-              <IntlMessages id='planner.test-optimize' />
-            </div>
-            <UncontrolledTooltip placement="right" target="planner-test-optimize-project" >
-              <IntlMessages id='planner.test-optimize' />
-            </UncontrolledTooltip>
-          </Button>)}
+          {loadedProject && (
+            <Button
+              className="toolbar-item"
+              id="planner-test-optimize-project"
+              onClick={() => handleOptimize(true)}
+            >
+              <FaPlay />
+              <div className="btn-title">
+                <IntlMessages id="planner.test-optimize" />
+              </div>
+              <UncontrolledTooltip
+                placement="right"
+                target="planner-test-optimize-project"
+              >
+                <IntlMessages id="planner.test-optimize" />
+              </UncontrolledTooltip>
+            </Button>
+          )}
 
-          <Button className='toolbar-item' id='planner-export-json'
+          <Button
+            className="toolbar-item"
+            id="planner-export-json"
             onClick={() => handleSaveProjectElementsToJsonFile()}
           >
             <FaFolderOpen />
-            <div className="btn-title" >
-              <IntlMessages id='planner.export-json' />
+            <div className="btn-title">
+              <IntlMessages id="planner.export-json" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-export-json" >
-              <IntlMessages id='planner.export-json' />
+            <UncontrolledTooltip placement="right" target="planner-export-json">
+              <IntlMessages id="planner.export-json" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-import-json'
+          <Button
+            className="toolbar-item"
+            id="planner-import-json"
             onClick={() => handleImportProjectFromJson()}
           >
             <FaFileImport />
-            <div className="btn-title" >
-              <IntlMessages id='planner.import-json' />
+            <div className="btn-title">
+              <IntlMessages id="planner.import-json" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-import-json" >
-              <IntlMessages id='planner.import-json' />
+            <UncontrolledTooltip placement="right" target="planner-import-json">
+              <IntlMessages id="planner.import-json" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-export-project'
+          <Button
+            className="toolbar-item"
+            id="planner-export-project"
             onClick={() => handleSaveProjectElementsToFile()}
           >
             <FaFolderOpen />
-            <div className="btn-title" >
-              <IntlMessages id='planner.export-csv' />
+            <div className="btn-title">
+              <IntlMessages id="planner.export-csv" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-export-project" >
-              <IntlMessages id='planner.export-csv' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-export-project"
+            >
+              <IntlMessages id="planner.export-csv" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-thermal-requirement'
-            onClick={() => handleSaveProjectRequirementsToFile(THERMAL_REQUIREMENTS)}
+          <Button
+            className="toolbar-item"
+            id="planner-export-area"
+            onClick={() => handleSaveAreaToFile()}
+          >
+            <FaFolderOpen />
+            <div className="btn-title">
+              <IntlMessages id="planner.export-area" />
+            </div>
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-export-area"
+            >
+              <IntlMessages id="planner.export-area" />
+            </UncontrolledTooltip>
+          </Button>
+
+          <Button
+            className="toolbar-item"
+            id="planner-thermal-requirement"
+            onClick={() =>
+              handleSaveProjectRequirementsToFile(THERMAL_REQUIREMENTS)
+            }
           >
             <FaFileExport />
-            <div className="btn-title" >
-              <IntlMessages id='planner.thermal' />
+            <div className="btn-title">
+              <IntlMessages id="planner.thermal" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-thermal-requirement" >
-              <IntlMessages id='planner.thermal-requirement' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-thermal-requirement"
+            >
+              <IntlMessages id="planner.thermal-requirement" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-fire-resistance-requirement'
-            onClick={() => handleSaveProjectRequirementsToFile(FIRE_RESISTANCE_REQUIREMENTS)}
+          <Button
+            className="toolbar-item"
+            id="planner-fire-resistance-requirement"
+            onClick={() =>
+              handleSaveProjectRequirementsToFile(FIRE_RESISTANCE_REQUIREMENTS)
+            }
           >
             <FaFileExport />
-            <div className="btn-title" >
-              <IntlMessages id='planner.fire-resistance' />
+            <div className="btn-title">
+              <IntlMessages id="planner.fire-resistance" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-fire-resistance-requirement" >
-              <IntlMessages id='planner.fire-resistance-requirement' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-fire-resistance-requirement"
+            >
+              <IntlMessages id="planner.fire-resistance-requirement" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-acoustic-requirement'
-            onClick={() => handleSaveProjectRequirementsToFile(ACOUSTIC_REQUIREMENTS)}
+          <Button
+            className="toolbar-item"
+            id="planner-acoustic-requirement"
+            onClick={() =>
+              handleSaveProjectRequirementsToFile(ACOUSTIC_REQUIREMENTS)
+            }
           >
             <FaFileExport />
-            <div className="btn-title" >
-              <IntlMessages id='planner.acoustic' />
+            <div className="btn-title">
+              <IntlMessages id="planner.acoustic" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-acoustic-requirement" >
-              <IntlMessages id='planner.acoustic-requirement' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-acoustic-requirement"
+            >
+              <IntlMessages id="planner.acoustic-requirement" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-export-solutions'
+          <Button
+            className="toolbar-item"
+            id="planner-export-solutions"
             onClick={() => showExportSolutionsDialog()}
           >
             <FaFileDownload />
-            <div className="btn-title" >
-              <IntlMessages id='planner.export-solutions' />
+            <div className="btn-title">
+              <IntlMessages id="planner.export-solutions" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-export-solutions" >
-              <IntlMessages id='planner.export-solutions' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-export-solutions"
+            >
+              <IntlMessages id="planner.export-solutions" />
             </UncontrolledTooltip>
           </Button>
         </div>
 
-        <div className='button-group'>
-          <Button className={classNames({
-            'toolbar-item': true,
-            "active": mode === plannerConstants.MODE_DRAWING_HOLE && selectedElement && selectedElement.name === Door.name
-          })} id='planner-door'
+        <div className="button-group">
+          <Button
+            className={classNames({
+              'toolbar-item': true,
+              active:
+                mode === plannerConstants.MODE_DRAWING_HOLE &&
+                selectedElement &&
+                selectedElement.name === Door.name,
+            })}
+            id="planner-door"
             onClick={() => handleSelectToolDrawing(Door)}
           >
             <GiSteelDoor />
-            <div className="btn-title" >
-              <IntlMessages id='planner.door' />
+            <div className="btn-title">
+              <IntlMessages id="planner.door" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-door" >
-              <IntlMessages id='planner.door' />
+            <UncontrolledTooltip placement="right" target="planner-door">
+              <IntlMessages id="planner.door" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className={classNames({
-            'toolbar-item': true,
-            "active": mode === plannerConstants.MODE_DRAWING_HOLE && selectedElement && selectedElement.name === Window.name
-          })} id='planner-window'
+          <Button
+            className={classNames({
+              'toolbar-item': true,
+              active:
+                mode === plannerConstants.MODE_DRAWING_HOLE &&
+                selectedElement &&
+                selectedElement.name === Window.name,
+            })}
+            id="planner-window"
             onClick={() => handleSelectToolDrawing(Window)}
           >
             <GiWindow />
-            <div className="btn-title" >
-              <IntlMessages id='planner.window' />
+            <div className="btn-title">
+              <IntlMessages id="planner.window" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-window" >
-              <IntlMessages id='planner.window' />
+            <UncontrolledTooltip placement="right" target="planner-window">
+              <IntlMessages id="planner.window" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className={classNames({
-            'toolbar-item': true,
-            "active": mode === plannerConstants.MODE_DRAWING_HOLE && selectedElement && selectedElement.name === Gate.name
-          })} id='planner-gate'
+          <Button
+            className={classNames({
+              'toolbar-item': true,
+              active:
+                mode === plannerConstants.MODE_DRAWING_HOLE &&
+                selectedElement &&
+                selectedElement.name === Gate.name,
+            })}
+            id="planner-gate"
             onClick={() => handleSelectToolDrawing(Gate)}
           >
             <GiGate />
-            <div className="btn-title" >
-              <IntlMessages id='planner.gate' />
+            <div className="btn-title">
+              <IntlMessages id="planner.gate" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-gate" >
-              <IntlMessages id='planner.gate' />
+            <UncontrolledTooltip placement="right" target="planner-gate">
+              <IntlMessages id="planner.gate" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className={classNames({
-            'toolbar-item': true,
-            "active": mode === plannerConstants.MODE_WAITING_DRAWING_LINE && selectedElement && selectedElement.name === PerimeterWall.name
-          })} id='planner-perimeter-wall'
+          <Button
+            className={classNames({
+              'toolbar-item': true,
+              active:
+                mode === plannerConstants.MODE_WAITING_DRAWING_LINE &&
+                selectedElement &&
+                selectedElement.name === PerimeterWall.name,
+            })}
+            id="planner-perimeter-wall"
             onClick={() => handleSelectToolDrawing(PerimeterWall)}
           >
             <GiBrickWall />
-            <div className="btn-title" >
-              <IntlMessages id='planner.perimeter' />
+            <div className="btn-title">
+              <IntlMessages id="planner.perimeter" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-perimeter-wall" >
-              <IntlMessages id='planner.perimeter-wall' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-perimeter-wall"
+            >
+              <IntlMessages id="planner.perimeter-wall" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className={classNames({
-            'toolbar-item': true,
-            "active": mode === plannerConstants.MODE_WAITING_DRAWING_LINE && selectedElement && selectedElement.name === InteriorWall.name
-          })} id='planner-interior-wall'
+          <Button
+            className={classNames({
+              'toolbar-item': true,
+              active:
+                mode === plannerConstants.MODE_WAITING_DRAWING_LINE &&
+                selectedElement &&
+                selectedElement.name === InteriorWall.name,
+            })}
+            id="planner-interior-wall"
             onClick={() => handleSelectToolDrawing(InteriorWall)}
           >
             <GiBrickWall />
-            <div className="btn-title" >
-              <IntlMessages id='planner.interior' />
+            <div className="btn-title">
+              <IntlMessages id="planner.interior" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-interior-wall" >
-              <IntlMessages id='planner.interior-wall' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-interior-wall"
+            >
+              <IntlMessages id="planner.interior-wall" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className={classNames({
-            'toolbar-item': true,
-            "active": mode === plannerConstants.MODE_WAITING_DRAWING_LINE && selectedElement && selectedElement.name === DividingWall.name
-          })} id='planner-dividing-wall'
+          <Button
+            className={classNames({
+              'toolbar-item': true,
+              active:
+                mode === plannerConstants.MODE_WAITING_DRAWING_LINE &&
+                selectedElement &&
+                selectedElement.name === DividingWall.name,
+            })}
+            id="planner-dividing-wall"
             onClick={() => handleSelectToolDrawing(DividingWall)}
           >
             <GiBrickWall />
-            <div className="btn-title" >
-              <IntlMessages id='planner.dividing' />
+            <div className="btn-title">
+              <IntlMessages id="planner.dividing" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-dividing-wall" >
-              <IntlMessages id='planner.dividing-wall' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-dividing-wall"
+            >
+              <IntlMessages id="planner.dividing-wall" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className={classNames({
-            'toolbar-item': true,
-            "active": mode === plannerConstants.MODE_WAITING_DRAWING_LINE && selectedElement && selectedElement.name === Separator.name
-          })} id='planner-separator'
+          <Button
+            className={classNames({
+              'toolbar-item': true,
+              active:
+                mode === plannerConstants.MODE_WAITING_DRAWING_LINE &&
+                selectedElement &&
+                selectedElement.name === Separator.name,
+            })}
+            id="planner-separator"
             onClick={() => handleSelectToolDrawing(Separator)}
           >
             <GiBrickWall />
-            <div className="btn-title" >
-              <IntlMessages id='planner.separator' />
+            <div className="btn-title">
+              <IntlMessages id="planner.separator" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-separator" >
-              <IntlMessages id='planner.separator' />
+            <UncontrolledTooltip placement="right" target="planner-separator">
+              <IntlMessages id="planner.separator" />
             </UncontrolledTooltip>
           </Button>
         </div>
 
-        <div className='button-group'>
-
-          <Button className='toolbar-item' id='planner-undo'
+        <div className="button-group">
+          <Button
+            className="toolbar-item"
+            id="planner-undo"
             onClick={() => projectActions.undo()}
           >
             <MdUndo />
-            <div className="btn-title" >
-              <IntlMessages id='planner.undo' />
+            <div className="btn-title">
+              <IntlMessages id="planner.undo" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-undo" >
-              <IntlMessages id='planner.undo' />
+            <UncontrolledTooltip placement="right" target="planner-undo">
+              <IntlMessages id="planner.undo" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-configure-project'
+          <Button
+            className="toolbar-item"
+            id="planner-configure-project"
             onClick={() => projectActions.openProjectConfigurator()}
           >
             <MdSettings />
-            <div className="btn-title" >
-              <IntlMessages id='planner.configure-project' />
+            <div className="btn-title">
+              <IntlMessages id="planner.configure-project" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-configure-project" >
-              <IntlMessages id='planner.configure-project' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-configure-project"
+            >
+              <IntlMessages id="planner.configure-project" />
             </UncontrolledTooltip>
           </Button>
 
-          <Button className='toolbar-item' id='planner-configure-canvas'
+          <Button
+            className="toolbar-item"
+            id="planner-configure-canvas"
             onClick={() => projectActions.openCanvasConfigurator()}
           >
             <MdSettings />
-            <div className="btn-title" >
-              <IntlMessages id='planner.configure-canvas' />
+            <div className="btn-title">
+              <IntlMessages id="planner.configure-canvas" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-configure-canvas" >
-              <IntlMessages id='planner.configure-canvas' />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-configure-canvas"
+            >
+              <IntlMessages id="planner.configure-canvas" />
             </UncontrolledTooltip>
           </Button>
         </div>
-
       </div>
       <div className="flex-auto navbar-right">
-        {
-          loadedProject && loadedProject.name &&
-          (
-            <Badge className="project-name-badge" color="secondary">{loadedProject.name}</Badge>
-          )
-        }
+        {loadedProject && loadedProject.name && (
+          <Badge className="project-name-badge" color="secondary">
+            {loadedProject.name}
+          </Badge>
+        )}
         <div className="d-inline-block">
           <UncontrolledDropdown className="ml-2">
             <DropdownToggle
@@ -640,15 +795,15 @@ const TopNavPlanner = ({
             {isInFullScreen ? (
               <i className="simple-icon-size-actual d-block" />
             ) : (
-                <i className="simple-icon-size-fullscreen d-block" />
-              )}
+              <i className="simple-icon-size-fullscreen d-block" />
+            )}
           </button>
         </div>
         <div className="user d-inline-block">
           <TopNavProfileSection />
         </div>
       </div>
-    </nav >
+    </nav>
   );
 };
 
@@ -669,22 +824,26 @@ const mapStateToProps = (state) => {
     email: authUser.email,
     name: authUser.displayName,
     mode: plannerState.get('mode'),
-    selectedElement: plannerState.get('selectedElementsHistory').first()
+    selectedElement: plannerState.get('selectedElementsHistory').first(),
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   const result = {
     localeActions: bindActionCreators(localeActionsAll, dispatch),
-    ...objectsMap(actions, actionNamespace => bindActionCreators(actions[actionNamespace], dispatch)),
+    ...objectsMap(actions, (actionNamespace) =>
+      bindActionCreators(actions[actionNamespace], dispatch)
+    ),
     plannerActions: bindActionCreators(plannerActionsAll, dispatch),
     showSaveProjectAsDialog: () => dispatch(openDialog('saveAsProjectDialog')),
-    showExportSolutionsDialog: () => dispatch(openDialog('exportSolutionsDialog')),
-    saveRemoteProjectAction: (id, project, imageBlob) => dispatch(saveRemoteProject(id, project, imageBlob))
-  }
+    showExportSolutionsDialog: () =>
+      dispatch(openDialog('exportSolutionsDialog')),
+    saveRemoteProjectAction: (id, project, imageBlob) =>
+      dispatch(saveRemoteProject(id, project, imageBlob)),
+  };
   return result;
 };
 
-export default withRouter(injectIntl(
-  connect(mapStateToProps, mapDispatchToProps)(TopNavPlanner))
+export default withRouter(
+  injectIntl(connect(mapStateToProps, mapDispatchToProps)(TopNavPlanner))
 );
