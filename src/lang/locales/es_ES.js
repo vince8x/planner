@@ -197,7 +197,7 @@ module.exports = {
   'planner.new-project-success': "Éxito del nuevo proyecto",
   'planner.optimize': 'Optimizar',
   'planner.test-optimize': 'Probar optimizar',
-  'planner.export-solutions': 'Exportar soluciones',
+  'planner.export-solutions': 'Exportar imagen',
   'planner.no-records-result': 'No hay registros en el resultado',
 
   /* 06. Project */

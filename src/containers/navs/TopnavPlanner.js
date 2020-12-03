@@ -75,6 +75,7 @@ import { saveRemoteProject } from '../../redux/projects/actions';
 import saveSVGScreenshotToFile from '../../helpers/Screenshot';
 import { getPlannerState } from '../../redux/planner/selectors';
 import calculateArea from '../../react-planner/utils/calculation';
+import exportImage from '../../react-planner/utils/image-export';
 
 const TopNavPlanner = ({
   intl,
@@ -236,6 +237,25 @@ const TopNavPlanner = ({
     exportElementsCsv(updatedState.get('scene').toJS());
   };
 
+  const handleSaveDrawingToImage = () => {
+    const planner = statePlanner.get('react-planner');
+      const { updatedState } = Project.unselectAll(planner);
+      const projectState = updatedState.get('scene').toJS();
+
+      const project = {
+        ...loadedProject,
+        state: projectState,
+      };
+
+      // the project is already loaded
+    const projectName = project?.name;
+    const saveRemoteProjectCallback = (imageBlob) => {
+      exportImage(imageBlob, projectName);
+    };
+
+    saveSVGScreenshotToFile(saveRemoteProjectCallback);
+  };
+
   const handleSaveAreaToFile = () => {
     const state = statePlanner.get('react-planner');
     const { updatedState } = Project.unselectAll(state);
@@ -247,11 +267,11 @@ const TopNavPlanner = ({
         totalAreaSize = calculateArea(area, layer);
         allAreas.push({
           area,
-          size: totalAreaSize
-        })
+          size: totalAreaSize,
+        });
       });
     });
-    
+
     exportAreaCsv(allAreas);
   };
 
@@ -469,10 +489,7 @@ const TopNavPlanner = ({
             <div className="btn-title">
               <IntlMessages id="planner.export-area" />
             </div>
-            <UncontrolledTooltip
-              placement="right"
-              target="planner-export-area"
-            >
+            <UncontrolledTooltip placement="right" target="planner-export-area">
               <IntlMessages id="planner.export-area" />
             </UncontrolledTooltip>
           </Button>
@@ -548,6 +565,23 @@ const TopNavPlanner = ({
               target="planner-export-solutions"
             >
               <IntlMessages id="planner.export-solutions" />
+            </UncontrolledTooltip>
+          </Button>
+
+          <Button
+            className="toolbar-item"
+            id="planner-export-image"
+            onClick={() => handleSaveDrawingToImage()}
+          >
+            <FaFileDownload />
+            <div className="btn-title">
+              <IntlMessages id="planner.export-image" />
+            </div>
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-export-image"
+            >
+              <IntlMessages id="planner.export-image" />
             </UncontrolledTooltip>
           </Button>
         </div>

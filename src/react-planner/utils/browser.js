@@ -59,3 +59,11 @@ export function csvDownload(json, filename) {
   const blob = new Blob([csvContent], { type: "data:text/csv;charset=utf-8" });
   saveAs(blob, exportFileName);
 }
+
+export function blobDownload(blob, filename) {
+  if (_.isNil(blob)) {
+    return;
+  }
+  const exportFileName = filename || 'result_generate_' + Date.now();
+  saveAs(blob, exportFileName);
+}
