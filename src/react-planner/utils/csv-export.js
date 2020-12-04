@@ -14,6 +14,7 @@ import calculateArea from './calculation';
 
 export function convertSceneToElements(scene) {
   const csvResult = [];
+  const {defaultWallHeight} = scene;
 
   _.map(scene.layers, layer => {
     const layerVertices = layer.vertices;
@@ -26,7 +27,6 @@ export function convertSceneToElements(scene) {
         if (_.isNil(line)) continue;
         if (_.isNil(line.vertices[0]) || _.isNil(layerVertices[line.vertices[0]])) continue;
         if (_.isNil(line.vertices[1]) || _.isNil(layerVertices[line.vertices[1]])) continue;
-
 
         let wallType = null;
         if (line.type === 'interior-wall') {
@@ -45,6 +45,7 @@ export function convertSceneToElements(scene) {
           Wall_Type: wallType,
           Wall_Face_A: line.properties.textureA[0].toUpperCase() + line.properties.textureA.slice(1),
           Wall_Face_B: line.properties.textureB[0].toUpperCase() + line.properties.textureB.slice(1),
+          Default_Wall_Height: defaultWallHeight,
           Associated_Wall: null
         };
         csvResult.push(row);
