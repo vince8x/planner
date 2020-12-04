@@ -129,6 +129,7 @@ module.exports = {
   'planner.snap-to-segment':'Snap a Segmentos',
   'planner.orthogonal': 'Ortogonal',
   'planner.texture':'textura',
+  'planner.areaType':'Tipo de área',
   'planner.thickness':'Espesor',
   'planner.toggle-group-visibility':'Activar-Desactivar Visibilidad en Grupos',
   'planner.un-chain-all-group-elements-and-remove-group':'Desencadenar todos los elementos del grupo y eliminar el grupo',

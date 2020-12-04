@@ -129,6 +129,7 @@ module.exports = {
   'planner.snap-to-segment':'Snap to Segment',
   'planner.orthogonal': 'Orthogonal',
   'planner.texture':'texture',
+  'planner.areaType':'Area type',
   'planner.thickness':'thickness',
   'planner.toggle-group-visibility':'Toggle Group Visibility',
   'planner.un-chain-all-group-elements-and-remove-group':'Un-chain all Group\'s Elements and remove Group',

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import * as _ from 'lodash';
-import { success, message } from 'react-toastify-redux';
+import { success, message, error } from 'react-toastify-redux';
 import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
-import { SET_LINES_LENGTH_END_DRAWING, SOLUTION_CATEGORIES } from '../../react-planner/constants'
+import { SET_HEIGHT_FAILURE, SET_LINES_LENGTH_END_DRAWING, SOLUTION_CATEGORIES } from '../../react-planner/constants'
 import { beginDrawingLine, endDrawingLine } from '../../react-planner/actions/lines-actions';
 import {
   OPTIMIZE_PLANNER,
@@ -59,8 +59,8 @@ export function* optimizePlannerSaga(action) {
   };
 
   const apiCall = () => {
-    return axios.post(url, data).then(response => response.data).catch(error => {
-      throw error;
+    return axios.post(url, data).then(response => response.data).catch(err => {
+      throw err;
     });
   }
   
@@ -133,8 +133,8 @@ export function* exportSolutions({ payload }) {
   };
 
   const apiCall = () => {
-    return axios.post(url, data).then(response => response.data).catch(error => {
-      throw error;
+    return axios.post(url, data).then(response => response.data).catch(err => {
+      throw err;
     });
   }
 
@@ -147,10 +147,18 @@ export function* exportSolutions({ payload }) {
     } else {
       yield csvDownload(response, filename);
     }
-  } catch (error) {
-    yield put(exportSolutionsFailure(error.message));
+  } catch (err) {
+    yield put(exportSolutionsFailure(err.message));
   }
   
+}
+
+export function* setHeightFailure() {
+  yield put(error('Default Wall Height value must between 230 cm and 244 cm.'));
+}
+
+export function* watchSetHeightFailure() {
+  yield takeLatest(SET_HEIGHT_FAILURE, setHeightFailure);
 }
 
 export function* watchExportSolutions() {
@@ -162,6 +170,7 @@ export default function* rootSaga() {
     fork(watchSetLinesLengthEndDrawing),
     fork(watchOptimizePlanner),
     fork(watchExportSolutions),
-    fork(watchOptimizePlannerSuccess)
+    fork(watchOptimizePlannerSuccess),
+    fork(watchSetHeightFailure)
   ]);
 }

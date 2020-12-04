@@ -108,6 +108,7 @@ export default {
   "gate": "gate",
   "PERIMETER WALL": "PERIMETER WALL",
   "INTERIOR  WALL": "INTERIOR  WALL",
-  "DIVIDING  WALL": "DIVIDING  WALL"
+  "DIVIDING  WALL": "DIVIDING  WALL",
+  'areaType':'Area type'
 
 };

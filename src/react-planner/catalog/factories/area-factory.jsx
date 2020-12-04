@@ -68,16 +68,16 @@ export default function AreaFactory(name, info, textures) {
 
   if (textures && textures !== {}) {
 
-    let textureValues = { 'none': 'None' };
+    let textureValues = { 'area': 'Area' };
 
     for (let textureName in textures) {
       textureValues[textureName] = textures[textureName].name
     }
 
     areaElement.properties.texture = {
-      label: translator.t('texture'),
+      label: translator.t('areaType'),
       type: 'enum',
-      defaultValue: 'none',
+      defaultValue: 'area',
       values: textureValues
     };
 

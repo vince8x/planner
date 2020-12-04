@@ -22,13 +22,13 @@ export default function WallFactory(name, info, textures, properties) {
     prototype: 'lines',
     info,
     properties: {
-      height: {
-        label: translator.t('height'),
-        type: 'length-measure',
-        defaultValue: {
-          length: 300,
-        }
-      },
+      // height: {
+      //   label: translator.t('height'),
+      //   type: 'length-measure',
+      //   defaultValue: {
+      //     length: 230,
+      //   }
+      // },
       thickness: {
         label: translator.t('thickness'),
         type: 'length-measure',

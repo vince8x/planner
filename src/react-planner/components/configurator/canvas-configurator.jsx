@@ -36,7 +36,6 @@ export default class CanvasConfigurator extends Component {
     this.state = {
       dataWidth: scene.width,
       dataHeight: scene.height,
-      dataDefaultWallHeight: scene.defaultWallHeight || 300,
       dataDefaultWallWidth: scene.defaultWallWidth || 20
     };
 
@@ -49,12 +48,11 @@ export default class CanvasConfigurator extends Component {
     let { projectActions } = this.context;
 
     let {
-      dataWidth, dataHeight, dataDefaultWallWidth, dataDefaultWallHeight
+      dataWidth, dataHeight, dataDefaultWallWidth
     } = this.state;
     dataHeight = _.isNumber(parseInt(dataHeight)) ? parseInt(dataHeight) : 2000;
     dataWidth = _.isNumber(parseInt(dataWidth)) ? parseInt(dataWidth) : 3000;
     dataDefaultWallWidth = _.isNumber(parseInt(dataDefaultWallWidth)) ? parseInt(dataDefaultWallWidth) : 20;
-    dataDefaultWallHeight = _.isNumber(parseInt(dataDefaultWallHeight)) ? parseInt(dataDefaultWallHeight) : 300;
 
     if (dataWidth <= 100 || dataHeight <= 100) {
       alert('Scene size too small');
@@ -62,8 +60,7 @@ export default class CanvasConfigurator extends Component {
       projectActions.setProjectProperties({
         width: dataWidth,
         height: dataHeight,
-        defaultWallWidth: dataDefaultWallWidth,
-        defaultWallHeight: dataDefaultWallHeight
+        defaultWallWidth: dataDefaultWallWidth
       });
     }
   }
@@ -71,7 +68,7 @@ export default class CanvasConfigurator extends Component {
   render() {
     let { width, height } = this.props;
     let {
-      dataWidth, dataHeight, dataDefaultWallHeight
+      dataWidth, dataHeight
     } = this.state;
     let { projectActions } = this.context;
 
@@ -101,18 +98,6 @@ export default class CanvasConfigurator extends Component {
               placeholder='height'
               value={dataHeight}
               onChange={e => this.setState({ dataHeight: e.target.value })}
-            />
-          </FormBlock>
-
-          <FormBlock>
-            <FormLabel htmlFor='default-wall-height'>
-              <IntlMessages id='planner.default-wall-height' />
-            </FormLabel>
-            <FormTextInput
-              id='default-wall-height'
-              placeholder='default-wall-height'
-              value={dataDefaultWallHeight}
-              onChange={e => this.setState({ dataDefaultWallHeight: e.target.value })}
             />
           </FormBlock>
 

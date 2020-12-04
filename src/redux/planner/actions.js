@@ -7,6 +7,7 @@ export const EXPORT_SOLUTIONS_FAILURE = 'EXPORT_SOLUTIONS_FAILURE';
 export const OPTIMIZE_PLANNER = 'OPTIMIZE_PLANNER';
 export const OPTIMIZE_PLANNER_SUCCESS = 'OPTIMIZE_PLANNER_SUCCESS';
 export const OPTIMIZE_PLANNER_ERROR = 'OPTIMIZE_PLANNER_ERROR';
+export const SET_HEIGHT_FAILURE = 'SET_HEIGHT_FAILURE';
 
 export const optimizePlanner = (userId, projectId, elements, email, name, projectParams, isTest) => ({
   type: OPTIMIZE_PLANNER,
@@ -37,3 +38,9 @@ export const exportSolutionsFailure = (message) => ({
   type: EXPORT_SOLUTIONS_FAILURE,
   payload: { message }
 });
+
+export function setHeightFailure() {
+  return {
+    type: SET_HEIGHT_FAILURE
+  };
+}

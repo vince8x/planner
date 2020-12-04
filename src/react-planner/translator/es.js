@@ -109,5 +109,6 @@ export default {
   "gate": "puerta",
   "PERIMETER WALL": "MURO PERÍMETRAL",
   "INTERIOR  WALL": "MURO INTERIOR",
-  "DIVIDING  WALL": "MURO DIVISORIO"
+  "DIVIDING  WALL": "MURO DIVISORIO",
+  'areaType':'Tipo de área'
 };

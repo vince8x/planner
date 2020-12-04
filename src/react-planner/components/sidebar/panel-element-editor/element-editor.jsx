@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Map, fromJS } from 'immutable';
+import convert from 'convert-units';
 import AttributesEditor from './attributes-editor/attributes-editor';
 import { GeometryUtils, MathUtils } from '../../../utils/export';
 import * as SharedStyle from '../../../shared-style';
-import convert from 'convert-units';
 import { MdContentCopy, MdContentPaste } from 'react-icons/md';
 import { DEFAULT_WALL_TITLE } from '../../../constants';
 
@@ -228,15 +228,18 @@ export default class ElementEditor extends Component {
             break;
           }
           case 'type': {
-            const currentType = attributesFormData.get("type");
-            if (currentType)
-            {
-              const currentDefaultName = DEFAULT_WALL_TITLE[attributesFormData.get("type")];
+            const currentType = attributesFormData.get('type');
+            if (currentType) {
+              const currentDefaultName =
+                DEFAULT_WALL_TITLE[attributesFormData.get('type')];
               const currentName = attributesFormData.has('name')
-              ? attributesFormData.get('name')
-              : this.props.element.name;
+                ? attributesFormData.get('name')
+                : this.props.element.name;
               if (currentDefaultName === currentName) {
-                attributesFormData = attributesFormData.set("name", DEFAULT_WALL_TITLE[value]);
+                attributesFormData = attributesFormData.set(
+                  'name',
+                  DEFAULT_WALL_TITLE[value]
+                );
               }
             }
             attributesFormData = attributesFormData.set(attributeName, value);
@@ -417,10 +420,29 @@ export default class ElementEditor extends Component {
     let {
       state: { propertiesFormData },
     } = this;
-    propertiesFormData = propertiesFormData.setIn(
-      [propertyName, 'currentValue'],
-      value
-    );
+
+    switch (propertyName) {
+      case 'texture': {
+        if (value === 'shaft') {
+          propertiesFormData = propertiesFormData.setIn(
+            ['patternColor', 'currentValue'],
+            '#FF0000' // Red
+          );
+        }
+        propertiesFormData = propertiesFormData.setIn(
+          [propertyName, 'currentValue'],
+          value
+        );
+        break;
+      }
+      default: {
+        propertiesFormData = propertiesFormData.setIn(
+          [propertyName, 'currentValue'],
+          value
+        );
+      }
+    }
+
     this.setState({ propertiesFormData });
     this.save({ propertiesFormData });
   }

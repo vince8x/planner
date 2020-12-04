@@ -118,6 +118,7 @@ export function convertAreaToCSv(areas) {
   _.map(areas, item => {
     const row = {
       Id: item.area.id,
+      AreaType: item.area.properties.get('texture'),
       size: item.size
     };
     csvResult.push(row);
