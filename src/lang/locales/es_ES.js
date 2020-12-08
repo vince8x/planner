@@ -77,6 +77,7 @@ module.exports = {
   'planner.configure-layer': 'Configuracion de layer',
   'planner.configure-project': 'Configuracion de projecto',
   'planner.configure-canvas': 'Configuracion de lona',
+  'planner.optimization-bar': 'Barra de optimización',
   'planner.confirm': 'Confirmar',
   'planner.copy':'Copiar',
   'planner.delete-group-and-all-elements':'Borrar grupo y todos los Elementos',

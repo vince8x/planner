@@ -5,6 +5,7 @@ export const MENU_CLICK_MOBILE_MENU = 'MENU_CLICK_MOBILE_MENU';
 export const MENU_CHANGE_DEFAULT_CLASSES = 'MENU_CHANGE_DEFAULT_CLASSES';
 export const MENU_CHANGE_HAS_SUB_ITEM_STATUS =
   'MENU_CHANGE_HAS_SUB_ITEM_STATUS';
+export const TOGGLE_OPTIMIZATION_BAR = 'TOGGLE_OPTIMIZATION_BAR';
 
 export const changeSelectedMenuHasSubItems = (payload) => {
   return {
@@ -140,3 +141,7 @@ export const setContainerClassnames = (
     payload: { containerClassnames: nextClasses, menuClickCount: clickIndex },
   };
 };
+
+export const toggleOptimizationBar = () => ({
+  type: TOGGLE_OPTIMIZATION_BAR,
+});

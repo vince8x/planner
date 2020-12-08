@@ -38,6 +38,7 @@ html {
             background: #f4f4f4;
             border-color: #eaeaea;
           }
+
           &.active {
             background: #f4f4f4;
             border-color: #eaeaea;
@@ -57,6 +58,7 @@ html {
           width: 24px;
           border-bottom: 1px solid #dadada;
           border-right: 1px solid #dadada;
+
           &:after {
             margin-left: 0;
           }
@@ -70,6 +72,7 @@ html {
         }
       }
     }
+
     .flex-auto {
       flex-basis: auto;
     }
@@ -78,6 +81,7 @@ html {
       .project-name-badge {
         font-size: 18px;
       }
+
       .user {
         margin-right: 20px;
       }
@@ -94,10 +98,38 @@ html {
 
   .container-fluid {
     height: 100%;
+    position: relative;
+    left: 0px;
+    transition: transform 300ms;
 
     .planner-wrapper {
       height: 100%;
     }
+  }
+
+  #optimization-bar {
+    width: 500px;
+    background: white;
+    z-index: 2;
+    position: fixed;
+    left: -500px;
+    border-left: 1px solid #f3f3f3;
+    box-shadow: 0 3px 30px rgba(0, 0, 0, 0.1), 0 3px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 300ms;
+    height: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 0;
+  }
+}
+
+#planner-container.bar-show {
+  main {
+    // transform: translateX(500px);    
+    margin-left: 500px;
+  }
+  #optimization-bar {
+    transform: translateX(500px);
   }
 }
 

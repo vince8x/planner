@@ -33,6 +33,7 @@ import { bindActionCreators } from 'redux';
 
 import * as localeActionsAll from '../../redux/settings/actions';
 import * as plannerActionsAll from '../../redux/planner/actions';
+import * as menuActionsAll from '../../redux/menu/actions';
 
 import * as plannerConstants from '../../react-planner/constants';
 import PerimeterWall from '../../catalog/lines/wall/planner-element';
@@ -83,6 +84,7 @@ const TopNavPlanner = ({
   localeActions,
   projectActions,
   plannerActions,
+  menuActions,
   showSaveProjectAsDialog,
   showExportSolutionsDialog,
   linesActions,
@@ -239,15 +241,15 @@ const TopNavPlanner = ({
 
   const handleSaveDrawingToImage = () => {
     const planner = statePlanner.get('react-planner');
-      const { updatedState } = Project.unselectAll(planner);
-      const projectState = updatedState.get('scene').toJS();
+    const { updatedState } = Project.unselectAll(planner);
+    const projectState = updatedState.get('scene').toJS();
 
-      const project = {
-        ...loadedProject,
-        state: projectState,
-      };
+    const project = {
+      ...loadedProject,
+      state: projectState,
+    };
 
-      // the project is already loaded
+    // the project is already loaded
     const projectName = project?.name;
     const saveRemoteProjectCallback = (imageBlob) => {
       exportImage(imageBlob, projectName);
@@ -785,6 +787,23 @@ const TopNavPlanner = ({
               <IntlMessages id="planner.configure-canvas" />
             </UncontrolledTooltip>
           </Button>
+
+          <Button
+            className="toolbar-item"
+            id="planner-optimization-bar"
+            onClick={() => menuActions.toggleOptimizationBar()}
+          >
+            <FaPlay />
+            <div className="btn-title">
+              <IntlMessages id="planner.optimization-bar" />
+            </div>
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-optimization-bar"
+            >
+              <IntlMessages id="planner.optimization-bar" />
+            </UncontrolledTooltip>
+          </Button>
         </div>
       </div>
       <div className="flex-auto navbar-right">
@@ -869,6 +888,7 @@ const mapDispatchToProps = (dispatch) => {
       bindActionCreators(actions[actionNamespace], dispatch)
     ),
     plannerActions: bindActionCreators(plannerActionsAll, dispatch),
+    menuActions: bindActionCreators(menuActionsAll, dispatch),
     showSaveProjectAsDialog: () => dispatch(openDialog('saveAsProjectDialog')),
     showExportSolutionsDialog: () =>
       dispatch(openDialog('exportSolutionsDialog')),

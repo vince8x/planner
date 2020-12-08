@@ -4,6 +4,7 @@ import {
   MENU_CLICK_MOBILE_MENU,
   MENU_CHANGE_DEFAULT_CLASSES,
   MENU_CHANGE_HAS_SUB_ITEM_STATUS,
+  TOGGLE_OPTIMIZATION_BAR
 } from '../actions';
 
 import {
@@ -18,6 +19,7 @@ const INIT_STATE = {
   menuHiddenBreakpoint,
   menuClickCount: 0,
   selectedMenuHasSubItems: defaultMenuType === 'menu-default', // if you use menu-sub-hidden as default menu type, set value of this variable to false
+  showOptimizationBar: false,
 };
 
 export default (state = INIT_STATE, action) => {
@@ -44,6 +46,9 @@ export default (state = INIT_STATE, action) => {
 
     case MENU_CHANGE_DEFAULT_CLASSES:
       return { ...state, containerClassnames: action.payload };
+      
+    case TOGGLE_OPTIMIZATION_BAR:
+      return { ...state, showOptimizationBar: !state.showOptimizationBar };
 
     default:
       return { ...state };
