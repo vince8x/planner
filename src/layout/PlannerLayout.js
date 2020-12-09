@@ -8,6 +8,7 @@ import convert from 'convert-units';
 import { Map } from 'immutable';
 import { ToastContainer } from 'react-toastify-redux';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-progress-bar-plus/lib/progress-bar.css';
 import TopnavPlanner from '../containers/navs/TopnavPlanner';
 import LengthInputModal from '../components/common/modal/LengthInputModal';
 import { GeometryUtils } from '../react-planner/utils/export';
@@ -70,8 +71,14 @@ const PlannerLayout = ({
     }
   }
 
+  const ProgressBar = require('react-progress-bar-plus');
+
   return (
     <div id="planner-container" className={containerClassnames}>
+      <ProgressBar percent={0}
+        autoIncrement={true}
+        intervalTime={10}
+        spinner={false} />
       <TopnavPlanner history={history} />
       <main>
         <div className="container-fluid">{children}</div>
