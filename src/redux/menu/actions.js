@@ -6,6 +6,13 @@ export const MENU_CHANGE_DEFAULT_CLASSES = 'MENU_CHANGE_DEFAULT_CLASSES';
 export const MENU_CHANGE_HAS_SUB_ITEM_STATUS =
   'MENU_CHANGE_HAS_SUB_ITEM_STATUS';
 export const TOGGLE_OPTIMIZATION_BAR = 'TOGGLE_OPTIMIZATION_BAR';
+export const OPEN_OPTIMIZATION_BAR = 'OPEN_OPTIMIZATION_BAR';
+export const CLOSE_OPTIMIZATION_BAR = 'CLOSE_OPTIMIZATION_BAR';
+
+export const START_PROGRESS_BAR = 'START_PROGRESS_BAR';
+export const STOP_PROGRESS_BAR = 'STOP_PROGRESS_BAR';
+export const CLEANUP_OPTIMIZE_DATA = 'CLEANUP_OPTIMIZE_DATA';
+export const POPULATE_OPTIMIZE_DATA = 'POPULATE_OPTIMIZE_DATA';
 
 export const changeSelectedMenuHasSubItems = (payload) => {
   return {
@@ -144,4 +151,29 @@ export const setContainerClassnames = (
 
 export const toggleOptimizationBar = () => ({
   type: TOGGLE_OPTIMIZATION_BAR,
+});
+
+export const openOptimizationBar = () => ({
+  type: OPEN_OPTIMIZATION_BAR,
+});
+
+export const closeOptimizationBar = () => ({
+  type: CLOSE_OPTIMIZATION_BAR,
+});
+
+export const startProgressBar = () => ({
+  type: START_PROGRESS_BAR
+});
+
+export const stopProgressBar = () => ({
+  type: STOP_PROGRESS_BAR
+});
+
+export const cleanupOptimizeData = () => ({
+  type: CLEANUP_OPTIMIZE_DATA
+});
+
+export const populateOptimizeData = (status) => ({
+  type: POPULATE_OPTIMIZE_DATA,
+  payload: status
 });

@@ -25,7 +25,9 @@ import {
   deleteRemoteProjectsSuccess,
   deleteRemoteProjectsError,
 } from './actions';
+import { LOAD_PROJECT, NEW_PROJECT } from '../../react-planner/constants';
 import { loadProject } from '../../react-planner/actions/project-actions';
+import { cleanupOptimizeData, closeOptimizationBar, stopProgressBar } from '../menu/actions';
 
 function* saveRemoteProject({ payload }) {
   const { id, imageBlob } = payload;
@@ -47,8 +49,6 @@ function* saveRemoteProject({ payload }) {
     yield put(saveRemoteProjectError(err));
   }
 }
-
-
 
 export function* watchSaveRemoteProject() {
   yield takeLatest(SAVE_REMOTE_PROJECT, saveRemoteProject);
@@ -112,6 +112,18 @@ export function* loadRemoteProject({ payload }) {
   } catch (err) {
     yield put(loadRemoteProjectError(err));
   }
+}
+
+export function* loadProjectSaga() {
+  yield put(stopProgressBar());
+  yield put(cleanupOptimizeData());
+  yield put(closeOptimizationBar());
+}
+
+export function* newProjectSaga() {
+  yield put(stopProgressBar());
+  yield put(cleanupOptimizeData());
+  yield put(closeOptimizationBar());
 }
 
 export function* addRemoteProjectSuccessSaga() {
@@ -191,6 +203,14 @@ export function* watchDeleteRemoteProjects() {
   yield takeLatest(DELETE_REMOTE_PROJECTS, deleteRemoteProjects);
 }
 
+export function* watchLoadProject() {
+  yield takeLatest(LOAD_PROJECT, loadProjectSaga);
+}
+
+export function* watchNewProject() {
+  yield takeLatest(NEW_PROJECT, newProjectSaga);
+}
+
 export default function* rootSaga() {
   yield all([
     fork(watchAddRemoteProject),
@@ -201,6 +221,8 @@ export default function* rootSaga() {
     fork(watchSaveRemoteProjectError),
     fork(watchFetchRemoteProjectList),
     fork(watchLoadRemoteProject),
-    fork(watchDeleteRemoteProjects)
+    fork(watchDeleteRemoteProjects),
+    fork(watchLoadProject),
+    fork(watchNewProject)
   ]);
 }

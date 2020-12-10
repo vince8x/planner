@@ -9,6 +9,7 @@ import { Map } from 'immutable';
 import classNames from 'classnames/bind';
 import { ToastContainer } from 'react-toastify-redux';
 import 'react-toastify/dist/ReactToastify.css';
+// import 'react-progress-bar-plus/lib/progress-bar.css';
 import TopnavPlanner from '../containers/navs/TopnavPlanner';
 import LengthInputModal from '../components/common/modal/LengthInputModal';
 import { GeometryUtils } from '../react-planner/utils/export';
@@ -97,7 +98,7 @@ const PlannerLayout = ({
       'bar-show': showOptimizationBar
       })}>
       <TopnavPlanner history={history} />
-      <OptimizationSidebar />
+      <OptimizationSidebar showOptimizationBar={showOptimizationBar}/>
       <main>
         <div className="container-fluid">{children}</div>
       </main>

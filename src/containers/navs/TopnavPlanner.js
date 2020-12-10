@@ -98,6 +98,7 @@ const TopNavPlanner = ({
   mode,
   selectedElement,
   saveRemoteProjectAction,
+  optimizing,
 }) => {
   const history = useHistory();
 
@@ -325,6 +326,7 @@ const TopNavPlanner = ({
             id="planner-home"
             className="toolbar-item"
             onClick={() => history.push('/')}
+            disabled={optimizing}
           >
             <FaHome />
             <div className="btn-title">
@@ -339,6 +341,7 @@ const TopNavPlanner = ({
             id="planner-projects"
             className="toolbar-item"
             onClick={() => history.push('/projects')}
+            disabled={optimizing}
           >
             <AiOutlineBook />
             <div className="btn-title">
@@ -355,6 +358,7 @@ const TopNavPlanner = ({
             id="planner-new-project"
             className="toolbar-item"
             onClick={() => projectActions.newProject()}
+            disabled={optimizing}
           >
             <FaFile />
             <div className="btn-title">
@@ -369,6 +373,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-save-project"
             onClick={() => handleSaveProject()}
+            disabled={optimizing}
           >
             <FaSave />
             <div className="btn-title">
@@ -386,6 +391,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-load-project"
             onClick={() => handleLoadProjectFromFile()}
+            disabled={optimizing}
           >
             <FaFolderOpen />
             <div className="btn-title">
@@ -404,6 +410,7 @@ const TopNavPlanner = ({
               className="toolbar-item"
               id="planner-optimize-project"
               onClick={() => handleOptimize(false)}
+              disabled={optimizing}
             >
               <FaPlay />
               <div className="btn-title">
@@ -423,6 +430,7 @@ const TopNavPlanner = ({
               className="toolbar-item"
               id="planner-test-optimize-project"
               onClick={() => handleOptimize(true)}
+              disabled={optimizing}
             >
               <FaPlay />
               <div className="btn-title">
@@ -441,6 +449,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-export-json"
             onClick={() => handleSaveProjectElementsToJsonFile()}
+            disabled={optimizing}
           >
             <FaFolderOpen />
             <div className="btn-title">
@@ -455,6 +464,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-import-json"
             onClick={() => handleImportProjectFromJson()}
+            disabled={optimizing}
           >
             <FaFileImport />
             <div className="btn-title">
@@ -469,6 +479,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-export-project"
             onClick={() => handleSaveProjectElementsToFile()}
+            disabled={optimizing}
           >
             <FaFolderOpen />
             <div className="btn-title">
@@ -486,6 +497,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-export-area"
             onClick={() => handleSaveAreaToFile()}
+            disabled={optimizing}
           >
             <FaFolderOpen />
             <div className="btn-title">
@@ -502,6 +514,7 @@ const TopNavPlanner = ({
             onClick={() =>
               handleSaveProjectRequirementsToFile(THERMAL_REQUIREMENTS)
             }
+            disabled={optimizing}
           >
             <FaFileExport />
             <div className="btn-title">
@@ -521,6 +534,7 @@ const TopNavPlanner = ({
             onClick={() =>
               handleSaveProjectRequirementsToFile(FIRE_RESISTANCE_REQUIREMENTS)
             }
+            disabled={optimizing}
           >
             <FaFileExport />
             <div className="btn-title">
@@ -540,6 +554,7 @@ const TopNavPlanner = ({
             onClick={() =>
               handleSaveProjectRequirementsToFile(ACOUSTIC_REQUIREMENTS)
             }
+            disabled={optimizing}
           >
             <FaFileExport />
             <div className="btn-title">
@@ -557,6 +572,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-export-solutions"
             onClick={() => showExportSolutionsDialog()}
+            disabled={optimizing}
           >
             <FaFileDownload />
             <div className="btn-title">
@@ -574,6 +590,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-export-image"
             onClick={() => handleSaveDrawingToImage()}
+            disabled={optimizing}
           >
             <FaFileDownload />
             <div className="btn-title">
@@ -599,6 +616,7 @@ const TopNavPlanner = ({
             })}
             id="planner-door"
             onClick={() => handleSelectToolDrawing(Door)}
+            disabled={optimizing}
           >
             <GiSteelDoor />
             <div className="btn-title">
@@ -619,6 +637,7 @@ const TopNavPlanner = ({
             })}
             id="planner-window"
             onClick={() => handleSelectToolDrawing(Window)}
+            disabled={optimizing}
           >
             <GiWindow />
             <div className="btn-title">
@@ -639,6 +658,7 @@ const TopNavPlanner = ({
             })}
             id="planner-gate"
             onClick={() => handleSelectToolDrawing(Gate)}
+            disabled={optimizing}
           >
             <GiGate />
             <div className="btn-title">
@@ -659,6 +679,7 @@ const TopNavPlanner = ({
             })}
             id="planner-perimeter-wall"
             onClick={() => handleSelectToolDrawing(PerimeterWall)}
+            disabled={optimizing}
           >
             <GiBrickWall />
             <div className="btn-title">
@@ -682,6 +703,7 @@ const TopNavPlanner = ({
             })}
             id="planner-interior-wall"
             onClick={() => handleSelectToolDrawing(InteriorWall)}
+            disabled={optimizing}
           >
             <GiBrickWall />
             <div className="btn-title">
@@ -705,6 +727,7 @@ const TopNavPlanner = ({
             })}
             id="planner-dividing-wall"
             onClick={() => handleSelectToolDrawing(DividingWall)}
+            disabled={optimizing}
           >
             <GiBrickWall />
             <div className="btn-title">
@@ -728,6 +751,7 @@ const TopNavPlanner = ({
             })}
             id="planner-separator"
             onClick={() => handleSelectToolDrawing(Separator)}
+            disabled={optimizing}
           >
             <GiBrickWall />
             <div className="btn-title">
@@ -744,6 +768,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-undo"
             onClick={() => projectActions.undo()}
+            disabled={optimizing}
           >
             <MdUndo />
             <div className="btn-title">
@@ -758,6 +783,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-configure-project"
             onClick={() => projectActions.openProjectConfigurator()}
+            disabled={optimizing}
           >
             <MdSettings />
             <div className="btn-title">
@@ -775,6 +801,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-configure-canvas"
             onClick={() => projectActions.openCanvasConfigurator()}
+            disabled={optimizing}
           >
             <MdSettings />
             <div className="btn-title">
@@ -792,6 +819,7 @@ const TopNavPlanner = ({
             className="toolbar-item"
             id="planner-optimization-bar"
             onClick={() => menuActions.toggleOptimizationBar()}
+            disabled={optimizing}
           >
             <FaPlay />
             <div className="btn-title">
@@ -862,7 +890,7 @@ const TopNavPlanner = ({
 
 const mapStateToProps = (state) => {
   const { menu, settings, planner, projects, authUser } = state;
-  const { containerClassnames, menuClickCount, selectedMenuHasSubItems } = menu;
+  const { containerClassnames, menuClickCount, selectedMenuHasSubItems, loading } = menu;
   const { locale } = settings;
   const { loadedProject } = projects;
   const plannerState = getPlannerState(state);
@@ -878,6 +906,7 @@ const mapStateToProps = (state) => {
     name: authUser.displayName,
     mode: plannerState.get('mode'),
     selectedElement: plannerState.get('selectedElementsHistory').first(),
+    optimizing: loading.isLoading,
   };
 };
 

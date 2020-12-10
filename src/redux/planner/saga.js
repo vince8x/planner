@@ -17,6 +17,7 @@ import { getPlannerState } from './selectors';
 import { Project } from '../../react-planner/class/export';
 import { getAcousticRequirement, getFireResistanceRequirement, getThermalRequirement } from '../../react-planner/utils/requirement-solutions';
 import { csvDownload } from '../../react-planner/utils/browser';
+import { populateOptimizeData, cleanupOptimizeData, openOptimizationBar, startProgressBar, stopProgressBar } from '../menu/actions';
 
 export function* endDrawingLineSaga(action) {
   const { linesAttributes, layerID } = action;
@@ -29,8 +30,6 @@ export function* endDrawingLineSaga(action) {
 export function* watchSetLinesLengthEndDrawing() {
   yield takeLatest(SET_LINES_LENGTH_END_DRAWING, endDrawingLineSaga);
 }
-
-
 
 export function* optimizePlannerSaga(action) {
   const { userId, projectId, elements, email, name, projectParams, isTest } = action.payload;
@@ -65,11 +64,20 @@ export function* optimizePlannerSaga(action) {
   }
   
   try {
+    if (!isTest) {
+      yield put(openOptimizationBar());
+      yield put(cleanupOptimizeData());
+    }
+    yield put(startProgressBar());
     const response = yield call(apiCall);
+    yield put(stopProgressBar());
     yield put(optimizePlannerSuccess(response));
     if (isTest) {
       const filename = `optimize_result_${Date.now()}.csv`;
       yield csvDownload(response, filename);
+    }
+    else {
+      yield put(populateOptimizeData(response));
     }
   } catch (err) {
     yield put(optimizePlannerError(err.message));
