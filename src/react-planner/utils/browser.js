@@ -9,7 +9,7 @@ export function browserDownload(json) {
 
   const output = JSON.stringify(json);
 
-  const file = new File([output], filename, {type: "text/plain;charset=utf-8"});
+  const file = new File([output], filename, { type: "text/plain;charset=utf-8" });
   saveAs(file);
 }
 
@@ -50,7 +50,9 @@ export function csvDownload(json, filename) {
   _.map(json, row => {
     const rowArray = [];
     _.map(headers, header => {
-      rowArray.push(row[header]);
+      const contentData = row[header];
+      const rowContent = _.isString(contentData) ? _.trim(contentData) : contentData;
+      rowArray.push(rowContent);
     });
     const rowStr = rowArray.join(';');
     csvContent += rowStr + "\r\n";

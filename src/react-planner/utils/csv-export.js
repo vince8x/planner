@@ -45,7 +45,7 @@ export function convertSceneToElements(scene) {
           Wall_Type: wallType,
           Wall_Face_A: line.properties.textureA[0].toUpperCase() + line.properties.textureA.slice(1),
           Wall_Face_B: line.properties.textureB[0].toUpperCase() + line.properties.textureB.slice(1),
-          Default_Wall_Height: defaultWallHeight,
+          Height: defaultWallHeight,
           Associated_Wall: null
         };
         csvResult.push(row);
