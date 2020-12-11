@@ -8790,7 +8790,6 @@ i.large-icon {
 body {
     min-height: calc(100% - 150px);
     position: relative;
-    padding-bottom: 90px;
 
     @include respond-below(xl) {
         min-height: calc(100% - 130px);
@@ -8821,7 +8820,7 @@ footer.page-footer {
     padding-bottom: 2.2rem;
     border-top: 1px solid $separator-color;
     width: 100%;
-    position: absolute;
+    position: relative;
     bottom: 0;
     width: 100%;
     height: 90px;
