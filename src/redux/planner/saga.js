@@ -64,7 +64,7 @@ export function* optimizePlannerSaga(action) {
   }
   
   try {
-    if (!isTest) {
+    if (isTest) {
       yield put(openOptimizationBar());
       yield put(cleanupOptimizeData());
     }
@@ -75,10 +75,11 @@ export function* optimizePlannerSaga(action) {
     if (isTest) {
       const filename = `optimize_result_${Date.now()}.csv`;
       yield csvDownload(response, filename);
-    }
-    else {
       yield put(populateOptimizeData(response));
     }
+    // else {
+    //   yield put(populateOptimizeData(response));
+    // }
   } catch (err) {
     yield put(optimizePlannerError(err.message));
   }

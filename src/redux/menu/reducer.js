@@ -30,7 +30,7 @@ const INIT_STATE = {
     percent: -1,
     autoIncrement: false,
   },
-  status: null,
+  optimizeData: null,
 };
 
 export default (state = INIT_STATE, action) => {
@@ -87,9 +87,9 @@ export default (state = INIT_STATE, action) => {
         },
       };
     case POPULATE_OPTIMIZE_DATA:
-      return { ...state, status: action.payload };
+      return { ...state, optimizeData: action.payload };
     case CLEANUP_OPTIMIZE_DATA:
-      return { ...state, status: null };
+      return { ...state, optimizeData: null };
 
     default:
       return { ...state };
