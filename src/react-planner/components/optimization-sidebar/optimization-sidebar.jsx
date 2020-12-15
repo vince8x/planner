@@ -4,53 +4,107 @@ import { withRouter } from 'react-router-dom';
 import { Card, CardBody, CardTitle } from 'reactstrap';
 import IntlMessages from '../../../helpers/IntlMessages';
 import LineChart from './line-chart';
+import { CHART_COLOR_LIST } from '../../constants';
 
 const OptimizationSidebar = ({ showOptimizationBar, optimizeData }) => {
-  const lineChartData = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    datasets: [
-      {
-        label: '1',
-        data: [54, 63, 60, 65, 60, 68, 60],
-        borderColor: '#145388',
-        pointBackgroundColor: 'white',
-        pointBorderColor: '#145388',
-        pointHoverBackgroundColor: '#145388',
-        pointHoverBorderColor: 'white',
-        pointRadius: 6,
-        pointBorderWidth: 2,
-        pointHoverRadius: 8,
-        fill: false,
-      },
-      {
-        label: '2',
-        data: [50, 56, 60, 51, 55, 57, 69],
-        borderColor: '#ed7117',
-        pointBackgroundColor: 'white',
-        pointBorderColor: '#ed7117',
-        pointHoverBackgroundColor: '#ed7117',
-        pointHoverBorderColor: 'white',
-        pointRadius: 6,
-        pointBorderWidth: 2,
-        pointHoverRadius: 8,
-        fill: false,
-      },
-      {
-        label: '3',
-        data: [52, 53, 54, 50, 50, 61, 62],
-        borderColor: '#6fb327',
-        pointBackgroundColor: 'white',
-        pointBorderColor: '#6fb327',
-        pointHoverBackgroundColor: '#6fb327',
-        pointHoverBorderColor: 'white',
-        pointRadius: 6,
-        pointBorderWidth: 2,
-        pointHoverRadius: 8,
-        fill: false,
-      },
-    ],
+
+  let lineChartData = {};
+
+  const newLegendClickHandler = function (e, legendItem) {
+    const selectedIndex = legendItem.datasetIndex;
+    const isSelectedDataSetHidden = this.chart.getDatasetMeta(selectedIndex).hidden !== null && this.chart.getDatasetMeta(selectedIndex).hidden;
+    for (let index = 0; index < this.chart.data.datasets.length; index++) {
+      const dataSet = this.chart.getDatasetMeta(index);
+      if (selectedIndex === index) {
+        dataSet.hidden = false
+      } else if (isSelectedDataSetHidden) {
+        dataSet.hidden = selectedIndex !== index;
+      }
+      else {
+        dataSet.hidden = !dataSet.hidden;
+      }
+    }
+    this.chart.update();
   };
 
+  const onClickHandler = function (e, element) {
+    if (element.length > 0) {
+      var ind = element[0]._index;
+      alert(ind);
+    }
+  };
+
+  const lineChartOptions = {
+    events: ['click'],
+    onClick: onClickHandler,
+    legend: {
+      display: true,
+      onClick: newLegendClickHandler
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    tooltips: {
+      borderWidth: 0.5,
+      bodySpacing: 10,
+      xPadding: 15,
+      yPadding: 15,
+      cornerRadius: 0.15,
+    },
+    plugins: {
+      datalabels: {
+        display: false,
+      },
+    },
+    scales: {
+      yAxes: [
+        {
+          gridLines: {
+            display: true,
+            lineWidth: 1,
+            color: 'rgba(0,0,0,0.1)',
+            drawBorder: false,
+          },
+          ticks: {
+            beginAtZero: true,
+            padding: 20,
+          },
+        },
+      ],
+      xAxes: [
+        {
+          gridLines: {
+            display: false,
+          },
+        },
+      ],
+    },
+  };
+
+  if (optimizeData != null) {
+    const firstProps = optimizeData['paretoPoints'][Object.keys(optimizeData['paretoPoints'])[0]];
+    const labels = Object.keys(firstProps);
+    let i = 0;
+    lineChartData = {
+      labels: labels,
+      datasets: Object.keys(optimizeData['paretoPoints'])
+        .map(pareto => {
+          let dataTable = Object.values(optimizeData['paretoPoints'][pareto]);
+          return {
+            label: pareto,
+            data: dataTable,
+            borderColor: CHART_COLOR_LIST[i],
+            pointBackgroundColor: 'white',
+            pointBorderColor: CHART_COLOR_LIST[i],
+            pointHoverBackgroundColor: CHART_COLOR_LIST[i],
+            pointHoverBorderColor: CHART_COLOR_LIST[i++],
+            pointRadius: 6,
+            pointBorderWidth: 2,
+            pointHoverRadius: 8,
+            fill: false,
+          }
+        })
+    }
+  }
   return (
     <div id="optimization-bar">
       {showOptimizationBar && optimizeData == null && (
@@ -63,7 +117,7 @@ const OptimizationSidebar = ({ showOptimizationBar, optimizeData }) => {
               <IntlMessages id="planner.optimization-bar" />
             </CardTitle>
             <div className="dashboard-line-chart">
-              <LineChart shadow data={lineChartData} />
+              <LineChart shadow data={lineChartData} options={lineChartOptions} />
             </div>
           </CardBody>
         </Card>

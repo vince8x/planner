@@ -442,15 +442,15 @@ export const DEFAULT_WALL_TITLE = {
   "separator": "SEPARATOR",
 };
 
-export const CHART_COLOR_LIST = {
-  "color-purple-monster": "#922c88",
-  "color-blue-navy": "#00365a",
-  "color-blue-yale": "#145388",
-  "color-blue-olympic": "#008ecc",
-  "color-green-moss": "#576a3d",
-  "color-green-lime": "#6fb327",
-  "color-orange-carrot": "#ed7117",
-  "color-red-ruby": "#900604",
-  "color-yellow-granola": "#c0a145",
-  "color-grey-steel": "#48494b",
-}
+export const CHART_COLOR_LIST = [
+  "#922c88",
+  "#00365a",
+  "#145388",
+  "#008ecc",
+  "#576a3d",
+  "#6fb327",
+  "#ed7117",
+  "#900604",
+  "#c0a145",
+  "#48494b",
+]
