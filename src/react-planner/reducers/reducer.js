@@ -21,7 +21,8 @@ import {
   ReactPlannerSceneReducer,
   ReactPlannerVerticesReducer,
   ReactPlannerViewer2dReducer,
-  ReactPlannerViewer3dReducer
+  ReactPlannerViewer3dReducer,
+  ReactPlannerOptimizationReducer
 } from './export';
 
 import {State} from '../models';
@@ -39,6 +40,7 @@ export default function appReducer(state, action) {
   if( GROUP_ACTIONS[action.type] ) return ReactPlannerGroupsReducer(...arguments);
   if( SCENE_ACTIONS[action.type] ) return ReactPlannerSceneReducer(...arguments);
   if( VERTEX_ACTIONS[action.type] ) return ReactPlannerVerticesReducer(...arguments);
-
+  if( [action.type] ) return ReactPlannerOptimizationReducer(...arguments);
+  
   return state || initialState;
 };

@@ -5,7 +5,6 @@ import { Chart } from 'chart.js';
 const LineChart = ({ data, options, shadow = false }) => {
   const chartContainer = useRef(null);
   const [, setChartInstance] = useState(null);
-
   useEffect(() => {
     if (chartContainer && chartContainer.current) {
       if (shadow) {

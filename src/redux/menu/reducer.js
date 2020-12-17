@@ -16,7 +16,11 @@ import {
   POPULATE_OPTIMIZE_DATA,
   START_PROGRESS_BAR,
   STOP_PROGRESS_BAR,
+  SELECTED_OPTIMIZE_PLAN,
 } from './actions';
+
+import { history } from '../../react-planner/utils/export';
+import { Line } from '../../react-planner/class/export';
 
 const INIT_STATE = {
   containerClassnames: defaultMenuType,
@@ -90,7 +94,6 @@ export default (state = INIT_STATE, action) => {
       return { ...state, optimizeData: action.payload };
     case CLEANUP_OPTIMIZE_DATA:
       return { ...state, optimizeData: null };
-
     default:
       return { ...state };
   }

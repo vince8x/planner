@@ -1,36 +1,60 @@
 import { connect } from 'react-redux';
-import React from 'react';
+import { bindActionCreators } from 'redux';
+import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Card, CardBody, CardTitle } from 'reactstrap';
 import IntlMessages from '../../../helpers/IntlMessages';
 import LineChart from './line-chart';
 import { CHART_COLOR_LIST } from '../../constants';
+import * as optimizationActionsAll from '../../actions/optimization-actions';
 
-const OptimizationSidebar = ({ showOptimizationBar, optimizeData }) => {
-
-  let lineChartData = {};
-
-  const newLegendClickHandler = function (e, legendItem) {
-    const selectedIndex = legendItem.datasetIndex;
-    const isSelectedDataSetHidden = this.chart.getDatasetMeta(selectedIndex).hidden !== null && this.chart.getDatasetMeta(selectedIndex).hidden;
-    for (let index = 0; index < this.chart.data.datasets.length; index++) {
-      const dataSet = this.chart.getDatasetMeta(index);
-      if (selectedIndex === index) {
-        dataSet.hidden = false
-      } else if (isSelectedDataSetHidden) {
-        dataSet.hidden = selectedIndex !== index;
-      }
-      else {
-        dataSet.hidden = !dataSet.hidden;
-      }
+function OptimizationSidebar({
+  optimizationActions,
+  statePlanner,
+  showOptimizationBar,
+  optimizeData,
+}) {
+  const [lineChartData, setLineChartData] = useState({})
+  useEffect(() => {
+    if (optimizeData != null) {
+      const firstProps =
+        optimizeData.paretoPoints[Object.keys(optimizeData.paretoPoints)[0]];
+      const labels = Object.keys(firstProps);
+      let i = 0;
+      setLineChartData({
+        labels,
+        datasets: Object.keys(optimizeData.paretoPoints).map((pareto) => {
+          const dataTable = Object.values(optimizeData.paretoPoints[pareto]);
+          return {
+            label: pareto,
+            data: dataTable,
+            borderColor: CHART_COLOR_LIST[i],
+            pointBackgroundColor: 'white',
+            pointBorderColor: CHART_COLOR_LIST[i],
+            pointHoverBackgroundColor: CHART_COLOR_LIST[i],
+            pointHoverBorderColor: CHART_COLOR_LIST[i++],
+            pointRadius: 6,
+            pointBorderWidth: 2,
+            pointHoverRadius: 8,
+            fill: false,
+          };
+        }),
+      });
     }
-    this.chart.update();
-  };
+  }, [optimizeData]);
 
-  const onClickHandler = function (e, element) {
-    if (element.length > 0) {
-      var ind = element[0]._index;
-      alert(ind);
+  const onClickHandler = function (e, elementIndex) {
+    if (elementIndex.length > 0) {
+      const dataSetKey = Object.keys(optimizeData.paretoPoints)[
+        elementIndex[0]._datasetIndex
+      ];
+      const dataSet = optimizeData.paretoPoints[dataSetKey];
+      const mesas = dataSetKey.replace(' mesas', '');
+      const paneles = Object.keys(dataSet)[elementIndex[0]._index];
+      const costo = dataSet[paneles];
+      const plan =
+        optimizeData.optimizeResults[[paneles, costo, mesas].join('_')];
+      optimizationActions.selectedOptimizePlan(plan.solution);
     }
   };
 
@@ -39,7 +63,7 @@ const OptimizationSidebar = ({ showOptimizationBar, optimizeData }) => {
     onClick: onClickHandler,
     legend: {
       display: true,
-      onClick: newLegendClickHandler
+      // onClick: newLegendClickHandler,
     },
     responsive: true,
     maintainAspectRatio: false,
@@ -80,31 +104,6 @@ const OptimizationSidebar = ({ showOptimizationBar, optimizeData }) => {
     },
   };
 
-  if (optimizeData != null) {
-    const firstProps = optimizeData['paretoPoints'][Object.keys(optimizeData['paretoPoints'])[0]];
-    const labels = Object.keys(firstProps);
-    let i = 0;
-    lineChartData = {
-      labels: labels,
-      datasets: Object.keys(optimizeData['paretoPoints'])
-        .map(pareto => {
-          let dataTable = Object.values(optimizeData['paretoPoints'][pareto]);
-          return {
-            label: pareto,
-            data: dataTable,
-            borderColor: CHART_COLOR_LIST[i],
-            pointBackgroundColor: 'white',
-            pointBorderColor: CHART_COLOR_LIST[i],
-            pointHoverBackgroundColor: CHART_COLOR_LIST[i],
-            pointHoverBorderColor: CHART_COLOR_LIST[i++],
-            pointRadius: 6,
-            pointBorderWidth: 2,
-            pointHoverRadius: 8,
-            fill: false,
-          }
-        })
-    }
-  }
   return (
     <div id="optimization-bar">
       {showOptimizationBar && optimizeData == null && (
@@ -117,19 +116,34 @@ const OptimizationSidebar = ({ showOptimizationBar, optimizeData }) => {
               <IntlMessages id="planner.optimization-bar" />
             </CardTitle>
             <div className="dashboard-line-chart">
-              <LineChart shadow data={lineChartData} options={lineChartOptions} />
+              <LineChart
+                shadow
+                data={lineChartData}
+                options={lineChartOptions}
+              />
             </div>
           </CardBody>
         </Card>
       )}
     </div>
   );
-};
+}
 
-const mapStateToProps = ({ menu }) => {
+const mapStateToProps = ({ menu, planner }) => {
   const { optimizeData } = menu;
   return {
     optimizeData,
+    statePlanner: planner,
   };
 };
-export default withRouter(connect(mapStateToProps)(OptimizationSidebar));
+
+const mapDispatchToProps = (dispatch) => {
+  const result = {
+    optimizationActions: bindActionCreators(optimizationActionsAll, dispatch),
+  };
+  return result;
+};
+
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(OptimizationSidebar)
+);

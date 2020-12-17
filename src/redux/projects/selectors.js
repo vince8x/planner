@@ -29,3 +29,8 @@ export const getProjectsIds = createSelector(
   projectsSelector,
   selectIds
 );
+
+export const getCurrentProject = createSelector(
+  projectsSelector,
+  project => project.get('loadedProject')
+);

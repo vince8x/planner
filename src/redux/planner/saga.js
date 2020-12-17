@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as _ from 'lodash';
 import { success, message, error } from 'react-toastify-redux';
 import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
+import { reduxSagaFirebase as rsf } from '../../helpers/Firebase';
 import { SET_HEIGHT_FAILURE, SET_LINES_LENGTH_END_DRAWING, SOLUTION_CATEGORIES } from '../../react-planner/constants'
 import { beginDrawingLine, endDrawingLine } from '../../react-planner/actions/lines-actions';
 import {
@@ -18,6 +19,8 @@ import { Project } from '../../react-planner/class/export';
 import { getAcousticRequirement, getFireResistanceRequirement, getThermalRequirement } from '../../react-planner/utils/requirement-solutions';
 import { csvDownload } from '../../react-planner/utils/browser';
 import { populateOptimizeData, cleanupOptimizeData, openOptimizationBar, startProgressBar, stopProgressBar } from '../menu/actions';
+import { getUserId } from '../auth/selectors';
+import { getCurrentProject } from '../projects/selectors';
 
 export function* endDrawingLineSaga(action) {
   const { linesAttributes, layerID } = action;
@@ -70,8 +73,8 @@ export function* optimizePlannerSaga(action) {
     }
     yield put(startProgressBar());
     const response = yield call(apiCall);
-    yield put(stopProgressBar());
     yield put(optimizePlannerSuccess(response));
+    // yield call(rsf.firestore.updateDocument, `users/${userId}/projects/${projectId}`, [{optimizationPlans : response}]);
     if (isTest) {
       const filename = `optimize_result_${Date.now()}.csv`;
       yield csvDownload(response, filename);
@@ -82,6 +85,9 @@ export function* optimizePlannerSaga(action) {
     // }
   } catch (err) {
     yield put(optimizePlannerError(err.message));
+  }
+  finally {
+    yield put(stopProgressBar());
   }
 }
 
