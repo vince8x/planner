@@ -99,6 +99,7 @@ const TopNavPlanner = ({
   selectedElement,
   saveRemoteProjectAction,
   optimizing,
+  optimizeData
 }) => {
   const history = useHistory();
 
@@ -225,12 +226,17 @@ const TopNavPlanner = ({
   const handleSaveProjectElementsToJsonFile = () => {
     const state = statePlanner.get('react-planner');
     const { updatedState } = Project.unselectAll(state);
-    browserDownload(updatedState.get('scene').toJS());
+    const downloadObject = {
+      planner: updatedState.get('scene').toJS(),
+      optimizeData
+    }
+    browserDownload(downloadObject);
   };
 
   const handleImportProjectFromJson = () => {
     browserUpload().then((data) => {
-      projectActions.loadProject(JSON.parse(data));
+      const parseResult = JSON.parse(data);
+      projectActions.loadProject(parseResult.planner, parseResult.optimizeData);
     });
   };
 
@@ -890,7 +896,7 @@ const TopNavPlanner = ({
 
 const mapStateToProps = (state) => {
   const { menu, settings, planner, projects, authUser } = state;
-  const { containerClassnames, menuClickCount, selectedMenuHasSubItems, loading } = menu;
+  const { containerClassnames, menuClickCount, selectedMenuHasSubItems, loading, optimizeData } = menu;
   const { locale } = settings;
   const { loadedProject } = projects;
   const plannerState = getPlannerState(state);
@@ -907,6 +913,7 @@ const mapStateToProps = (state) => {
     mode: plannerState.get('mode'),
     selectedElement: plannerState.get('selectedElementsHistory').first(),
     optimizing: loading.isLoading,
+    optimizeData
   };
 };
 

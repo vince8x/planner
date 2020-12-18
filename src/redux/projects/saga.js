@@ -27,7 +27,14 @@ import {
 } from './actions';
 import { LOAD_PROJECT, NEW_PROJECT } from '../../react-planner/constants';
 import { loadProject } from '../../react-planner/actions/project-actions';
-import { cleanupOptimizeData, closeOptimizationBar, stopProgressBar } from '../menu/actions';
+import {
+  cleanupOptimizeData,
+  closeOptimizationBar,
+  openOptimizationBar,
+  populateOptimizeData,
+  stopProgressBar,
+} from '../menu/actions';
+import { getOptimizeData } from '../menu/selectors';
 
 function* saveRemoteProject({ payload }) {
   const { id, imageBlob } = payload;
@@ -35,16 +42,24 @@ function* saveRemoteProject({ payload }) {
 
   try {
     const userId = yield select(getUserId);
+    const optimizeData = yield select(getOptimizeData);
     project = {
       ...project,
       id,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      optimizeData : optimizeData ?? null,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
 
-    yield rsf.storage.uploadFile(`images/${userId}/projects/${id}.png`, imageBlob);
-    yield call(rsf.firestore.setDocument, `users/${userId}/projects/${id}`, project);
+    yield rsf.storage.uploadFile(
+      `images/${userId}/projects/${id}.png`,
+      imageBlob
+    );
+    yield call(
+      rsf.firestore.setDocument,
+      `users/${userId}/projects/${id}`,
+      project
+    );
     yield put(saveRemoteProjectSuccess(project));
-
   } catch (err) {
     yield put(saveRemoteProjectError(err));
   }
@@ -72,17 +87,19 @@ export function* watchSaveRemoteProjectError() {
   yield takeLatest(SAVE_REMOTE_PROJECT_ERROR, saveRemoteProjectErrorSaga);
 }
 
-
 export function* fetchRemoteProjectList({ payload }) {
   const { userId } = payload;
   try {
-    const snapshot = yield call(rsf.firestore.getCollection, `users/${userId}/projects`);
+    const snapshot = yield call(
+      rsf.firestore.getCollection,
+      `users/${userId}/projects`
+    );
     const projects = [];
-    snapshot.forEach(item => {
+    snapshot.forEach((item) => {
       const project = {
         id: item.id,
-        ...item.data()
-      }
+        ...item.data(),
+      };
       projects.push(project);
     });
     yield put(fetchRemoteProjectListSuccess(projects));
@@ -99,12 +116,15 @@ export function* loadRemoteProject({ payload }) {
   try {
     const { id, history } = payload;
     const userId = yield select(getUserId);
-    const snapshot = yield call(rsf.firestore.getDocument, `users/${userId}/projects/${id}`);
+    const snapshot = yield call(
+      rsf.firestore.getDocument,
+      `users/${userId}/projects/${id}`
+    );
     if (snapshot.exists) {
       const project = snapshot.data();
       project.id = id;
       yield put(loadRemoteProjectSuccess(project));
-      yield put(loadProject(project.state));
+      yield put(loadProject(project.state, project.optimizeData));
       history.push('/planner');
     } else {
       yield put(loadRemoteProjectError('No project found'));
@@ -114,10 +134,15 @@ export function* loadRemoteProject({ payload }) {
   }
 }
 
-export function* loadProjectSaga() {
+export function* loadProjectSaga({ sceneJSON, optimizeData }) {
   yield put(stopProgressBar());
-  yield put(cleanupOptimizeData());
-  yield put(closeOptimizationBar());
+  yield put(populateOptimizeData(optimizeData));
+  if (!_.isNil(optimizeData)) {
+    yield put(openOptimizationBar());
+  }
+  else {
+    yield put(closeOptimizationBar());
+  }
 }
 
 export function* newProjectSaga() {
@@ -145,20 +170,28 @@ function* addRemoteProject({ payload }) {
 
   try {
     const userId = yield select(getUserId);
+    const optimizeData = yield select(getOptimizeData);
     const project = {
       name,
       state: projectState,
+      optimizeData : optimizeData ?? null,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
 
-    const doc = yield call(rsf.firestore.addDocument, `users/${userId}/projects`, project);
+    const doc = yield call(
+      rsf.firestore.addDocument,
+      `users/${userId}/projects`,
+      project
+    );
     const result = yield doc.get();
     const newProject = result.data();
     newProject.id = result.id;
-    yield rsf.storage.uploadFile(`images/${userId}/projects/${newProject.id}.png`, imageBlob);
+    yield rsf.storage.uploadFile(
+      `images/${userId}/projects/${newProject.id}.png`,
+      imageBlob
+    );
     yield put(addRemoteProjectSuccess(newProject));
-
   } catch (err) {
     yield put(addRemoteProjectError(err));
   }
@@ -185,10 +218,9 @@ export function* deleteRemoteProjects({ payload }) {
         return rsf.firestore.deleteDocument(`users/${userId}/projects/${id}`);
       })
     );
-    
   } catch (err) {
     console.log(err);
-    yield put(deleteRemoteProjectsError())
+    yield put(deleteRemoteProjectsError());
   }
 
   yield all(
@@ -223,6 +255,6 @@ export default function* rootSaga() {
     fork(watchLoadRemoteProject),
     fork(watchDeleteRemoteProjects),
     fork(watchLoadProject),
-    fork(watchNewProject)
+    fork(watchNewProject),
   ]);
 }

@@ -2,19 +2,25 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Card, CardBody, CardTitle } from 'reactstrap';
+import { Card, CardBody, CardTitle, Button, ButtonGroup } from 'reactstrap';
 import IntlMessages from '../../../helpers/IntlMessages';
 import LineChart from './line-chart';
 import { CHART_COLOR_LIST } from '../../constants';
 import * as optimizationActionsAll from '../../actions/optimization-actions';
+import * as menuActionsAll from '../../../redux/menu/actions';
 
 function OptimizationSidebar({
   optimizationActions,
-  statePlanner,
+  loadedProject,
   showOptimizationBar,
   optimizeData,
+  email,
+  name,
+  menuActions,
 }) {
-  const [lineChartData, setLineChartData] = useState({})
+  const [lineChartData, setLineChartData] = useState({});
+  const [selectedoptimizeData, setOptimizeData] = useState([]);
+
   useEffect(() => {
     if (optimizeData != null) {
       const firstProps =
@@ -52,9 +58,11 @@ function OptimizationSidebar({
       const mesas = dataSetKey.replace(' mesas', '');
       const paneles = Object.keys(dataSet)[elementIndex[0]._index];
       const costo = dataSet[paneles];
-      const plan =
-        optimizeData.optimizeResults[[paneles, costo, mesas].join('_')];
-      optimizationActions.selectedOptimizePlan(plan.solution);
+      const plan = optimizeData.optimizeResults[[paneles, costo, mesas].join('_')];
+      if (plan) {
+        setOptimizeData(plan.solution);
+        optimizationActions.selectedOptimizePlan(plan.solution);
+      }
     }
   };
 
@@ -62,8 +70,12 @@ function OptimizationSidebar({
     events: ['click'],
     onClick: onClickHandler,
     legend: {
-      display: true,
-      // onClick: newLegendClickHandler,
+      position: 'bottom',
+      labels: {
+        padding: 30,
+        usePointStyle: true,
+        fontSize: 12,
+      },
     },
     responsive: true,
     maintainAspectRatio: false,
@@ -104,42 +116,67 @@ function OptimizationSidebar({
     },
   };
 
+  const handleProcessOptimize = () => {
+    const projectName = loadedProject ? loadedProject.name : '';
+
+    menuActions.processOptimizeData(
+      projectName,
+      email,
+      name,
+      selectedoptimizeData);
+  };
+
   return (
     <div id="optimization-bar">
       {showOptimizationBar && optimizeData == null && (
         <div className="loading" />
       )}
       {optimizeData != null && (
-        <Card>
-          <CardBody>
-            <CardTitle>
-              <IntlMessages id="planner.optimization-bar" />
-            </CardTitle>
-            <div className="dashboard-line-chart">
-              <LineChart
-                shadow
-                data={lineChartData}
-                options={lineChartOptions}
-              />
-            </div>
-          </CardBody>
-        </Card>
+        <div>
+          <Card>
+            <CardBody>
+              <CardTitle>
+                <IntlMessages id="planner.optimization-bar" />
+              </CardTitle>
+              <div className="dashboard-line-chart">
+                <LineChart
+                  shadow
+                  data={lineChartData}
+                  options={lineChartOptions}
+                />
+              </div>
+            </CardBody>
+          </Card>
+          <Button
+            className="mb-2"
+            color="primary"
+            onClick={() => handleProcessOptimize()}
+          >
+            <IntlMessages id="Original" />
+          </Button>
+        </div>
       )}
     </div>
   );
 }
 
-const mapStateToProps = ({ menu, planner }) => {
+const mapStateToProps = ({ menu, planner, authUser, projects }) => {
   const { optimizeData } = menu;
+  const { loadedProject } = projects;
+
   return {
     optimizeData,
     statePlanner: planner,
+    email: authUser.email,
+    name: authUser.displayName,
+    loadedProject
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   const result = {
     optimizationActions: bindActionCreators(optimizationActionsAll, dispatch),
+    menuActions: bindActionCreators(menuActionsAll, dispatch),
   };
   return result;
 };

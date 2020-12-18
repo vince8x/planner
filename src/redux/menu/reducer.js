@@ -16,7 +16,6 @@ import {
   POPULATE_OPTIMIZE_DATA,
   START_PROGRESS_BAR,
   STOP_PROGRESS_BAR,
-  SELECTED_OPTIMIZE_PLAN,
 } from './actions';
 
 import { history } from '../../react-planner/utils/export';

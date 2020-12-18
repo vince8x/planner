@@ -3,8 +3,15 @@ import * as _ from 'lodash';
 import { success, message, error } from 'react-toastify-redux';
 import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
 import { reduxSagaFirebase as rsf } from '../../helpers/Firebase';
-import { SET_HEIGHT_FAILURE, SET_LINES_LENGTH_END_DRAWING, SOLUTION_CATEGORIES } from '../../react-planner/constants'
-import { beginDrawingLine, endDrawingLine } from '../../react-planner/actions/lines-actions';
+import {
+  SET_HEIGHT_FAILURE,
+  SET_LINES_LENGTH_END_DRAWING,
+  SOLUTION_CATEGORIES,
+} from '../../react-planner/constants';
+import {
+  beginDrawingLine,
+  endDrawingLine,
+} from '../../react-planner/actions/lines-actions';
 import {
   OPTIMIZE_PLANNER,
   OPTIMIZE_PLANNER_SUCCESS,
@@ -12,13 +19,23 @@ import {
   optimizePlannerError,
   EXPORT_SOLUTIONS,
   exportSolutionsSuccess,
-  exportSolutionsFailure
+  exportSolutionsFailure,
 } from './actions';
 import { getPlannerState } from './selectors';
 import { Project } from '../../react-planner/class/export';
-import { getAcousticRequirement, getFireResistanceRequirement, getThermalRequirement } from '../../react-planner/utils/requirement-solutions';
+import {
+  getAcousticRequirement,
+  getFireResistanceRequirement,
+  getThermalRequirement,
+} from '../../react-planner/utils/requirement-solutions';
 import { csvDownload } from '../../react-planner/utils/browser';
-import { populateOptimizeData, cleanupOptimizeData, openOptimizationBar, startProgressBar, stopProgressBar } from '../menu/actions';
+import {
+  populateOptimizeData,
+  cleanupOptimizeData,
+  openOptimizationBar,
+  startProgressBar,
+  stopProgressBar,
+} from '../menu/actions';
 import { getUserId } from '../auth/selectors';
 import { getCurrentProject } from '../projects/selectors';
 
@@ -35,10 +52,19 @@ export function* watchSetLinesLengthEndDrawing() {
 }
 
 export function* optimizePlannerSaga(action) {
-  const { userId, projectId, elements, email, name, projectParams, isTest } = action.payload;
+  const {
+    userId,
+    projectId,
+    elements,
+    email,
+    name,
+    projectParams,
+    isTest,
+  } = action.payload;
 
-  const url = isTest ? `${process.env.REACT_APP_API_ENDPOINT}/api/test_process_data` :
-   `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
+  const url = isTest
+    ? `${process.env.REACT_APP_API_ENDPOINT}/api/test_process_data`
+    : `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
 
   const plannerState = yield select(getPlannerState);
   const { updatedState } = Project.unselectAll(plannerState);
@@ -57,42 +83,54 @@ export function* optimizePlannerSaga(action) {
     thermal,
     fire,
     acoustic,
-    projectParams
+    projectParams,
   };
 
   const apiCall = () => {
-    return axios.post(url, data).then(response => response.data).catch(err => {
-      throw err;
-    });
-  }
-  
+    return axios
+      .post(url, data)
+      .then((response) => response.data)
+      .catch((err) => {
+        throw err;
+      });
+  };
+
   try {
-    if (isTest) {
-      yield put(openOptimizationBar());
-      yield put(cleanupOptimizeData());
-    }
+    yield put(openOptimizationBar());
+    yield put(cleanupOptimizeData());
     yield put(startProgressBar());
     const response = yield call(apiCall);
     yield put(optimizePlannerSuccess(response));
-    // yield call(rsf.firestore.updateDocument, `users/${userId}/projects/${projectId}`, [{optimizationPlans : response}]);
+
+    let project = yield select(getCurrentProject);
+
+    project = {
+      ...project,
+      optimizeData: response,
+    };
+
+    yield call(
+      rsf.firestore.setDocument,
+      `users/${userId}/projects/${projectId}`,
+      project
+    );
+
+    yield put(populateOptimizeData(response));
+
     if (isTest) {
       const filename = `optimize_result_${Date.now()}.csv`;
       yield csvDownload(response, filename);
-      yield put(populateOptimizeData(response));
     }
-    // else {
-    //   yield put(populateOptimizeData(response));
-    // }
   } catch (err) {
+    console.log(err);
     yield put(optimizePlannerError(err.message));
-  }
-  finally {
+  } finally {
     yield put(stopProgressBar());
   }
 }
 
 export function* optimizePlannerSuccessSaga() {
-  yield put(success('Request accepted. The result will be sent to your email'));
+  yield put(success('Optimized'));
 }
 
 export function* watchOptimizePlanner() {
@@ -105,38 +143,44 @@ export function* watchOptimizePlannerSuccess() {
 
 export function* exportSolutions({ payload }) {
   const categoryId = _.parseInt(payload.categoryId);
-  const category = _.find(SOLUTION_CATEGORIES, { 'ID': categoryId });
+  const category = _.find(SOLUTION_CATEGORIES, { ID: categoryId });
   const plannerState = yield select(getPlannerState);
   const { updatedState } = Project.unselectAll(plannerState);
   const scene = updatedState.get('scene');
-  const thermal = _.filter(getThermalRequirement(scene), { 'categoryId': categoryId });
-  const fire = _.filter(getFireResistanceRequirement(scene), { 'categoryId': categoryId });
-  const acoustic = _.filter(getAcousticRequirement(scene), { 'categoryId': categoryId });
+  const thermal = _.filter(getThermalRequirement(scene), {
+    categoryId: categoryId,
+  });
+  const fire = _.filter(getFireResistanceRequirement(scene), {
+    categoryId: categoryId,
+  });
+  const acoustic = _.filter(getAcousticRequirement(scene), {
+    categoryId: categoryId,
+  });
 
   const csvResult = [];
 
-  thermal.map(item => {
+  thermal.map((item) => {
     csvResult.push({
-      'Id': categoryId,
-      'Category': category.NAME,
-      'Type': 'Térmico',
-      'Value': item.value
+      Id: categoryId,
+      Category: category.NAME,
+      Type: 'Térmico',
+      Value: item.value,
     });
   });
-  fire.map(item => {
+  fire.map((item) => {
     csvResult.push({
-      'Id': categoryId,
-      'Category': category.NAME,
-      'Type': 'Resistencia al fuego',
-      'Value': item.value
+      Id: categoryId,
+      Category: category.NAME,
+      Type: 'Resistencia al fuego',
+      Value: item.value,
     });
   });
-  acoustic.map(item => {
+  acoustic.map((item) => {
     csvResult.push({
-      'Id': categoryId,
-      'Category': category.NAME,
-      'Type': 'Acústico',
-      'Value': item.value
+      Id: categoryId,
+      Category: category.NAME,
+      Type: 'Acústico',
+      Value: item.value,
     });
   });
   const url = `${process.env.REACT_APP_API_ENDPOINT}/api/filter_solutions`;
@@ -144,14 +188,17 @@ export function* exportSolutions({ payload }) {
     categoryId,
     thermal,
     fire,
-    acoustic
+    acoustic,
   };
 
   const apiCall = () => {
-    return axios.post(url, data).then(response => response.data).catch(err => {
-      throw err;
-    });
-  }
+    return axios
+      .post(url, data)
+      .then((response) => response.data)
+      .catch((err) => {
+        throw err;
+      });
+  };
 
   try {
     const response = yield call(apiCall);
@@ -165,7 +212,6 @@ export function* exportSolutions({ payload }) {
   } catch (err) {
     yield put(exportSolutionsFailure(err.message));
   }
-  
 }
 
 export function* setHeightFailure() {
@@ -186,6 +232,6 @@ export default function* rootSaga() {
     fork(watchOptimizePlanner),
     fork(watchExportSolutions),
     fork(watchOptimizePlannerSuccess),
-    fork(watchSetHeightFailure)
+    fork(watchSetHeightFailure),
   ]);
 }

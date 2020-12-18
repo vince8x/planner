@@ -13,6 +13,9 @@ export const START_PROGRESS_BAR = 'START_PROGRESS_BAR';
 export const STOP_PROGRESS_BAR = 'STOP_PROGRESS_BAR';
 export const CLEANUP_OPTIMIZE_DATA = 'CLEANUP_OPTIMIZE_DATA';
 export const POPULATE_OPTIMIZE_DATA = 'POPULATE_OPTIMIZE_DATA';
+export const PROCESS_OPTIMIZE_DATA = 'PROCESS_OPTIMIZE_DATA';
+export const PROCESS_OPTIMIZE_DATA_SUCCESS = 'PROCESS_OPTIMIZE_DATA_SUCCESS';
+export const PROCESS_OPTIMIZE_DATA_ERROR = 'PROCESS_OPTIMIZE_DATA_ERROR';
 
 export const changeSelectedMenuHasSubItems = (payload) => {
   return {
@@ -173,7 +176,21 @@ export const cleanupOptimizeData = () => ({
   type: CLEANUP_OPTIMIZE_DATA
 });
 
-export const populateOptimizeData = (status) => ({
+export const populateOptimizeData = (data) => ({
   type: POPULATE_OPTIMIZE_DATA,
-  payload: status
+  payload: data
+});
+
+export const processOptimizeData = (projectName, email, name, selectedPlan) => ({
+  type: PROCESS_OPTIMIZE_DATA,
+  payload: { projectName, email, name, selectedPlan }
+});
+
+export const processOptimizeDataSuccess = () => ({
+  type: PROCESS_OPTIMIZE_DATA_SUCCESS,
+});
+
+export const processOptimizeDataError = (message) => ({
+  type: PROCESS_OPTIMIZE_DATA_ERROR,
+  payload: message
 });

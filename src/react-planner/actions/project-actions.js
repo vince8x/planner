@@ -37,10 +37,11 @@ import {
   SET_LINES_LENGTH_END_DRAWING
 } from '../constants';
 
-export function loadProject(sceneJSON) {
+export function loadProject(sceneJSON, optimizeData) {
   return {
     type: LOAD_PROJECT,
-    sceneJSON
+    sceneJSON,
+    optimizeData
   };
 }
 
