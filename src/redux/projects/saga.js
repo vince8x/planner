@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import confirm from 'reactstrap-confirm';
 import { select, call, put, fork, takeLatest, all } from 'redux-saga/effects';
 import { success, error } from 'react-toastify-redux';
 import * as _ from 'lodash';
@@ -34,32 +35,45 @@ import {
   populateOptimizeData,
   stopProgressBar,
 } from '../menu/actions';
-import { getOptimizeData } from '../menu/selectors';
+import { getOptimizeData, isOptimized } from '../menu/selectors';
 
 function* saveRemoteProject({ payload }) {
   const { id, imageBlob } = payload;
   let { project } = payload;
+  const isOptimizedData = yield select(isOptimized);
 
   try {
-    const userId = yield select(getUserId);
-    const optimizeData = yield select(getOptimizeData);
-    project = {
-      ...project,
-      id,
-      optimizeData : optimizeData ?? null,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    };
+    let confirmed = true;
+    if (isOptimizedData) {
+      confirmed = yield confirm({
+        title: 'Save optimization drawing confirmation',
+        message: 'You are trying to save the drawing in optimization mode. Your original will be overrided by the optimized one. Are you sure you want to do this action?',
+        confirmText: 'Confirm',
+        confirmColor: 'primary',
+        cancelColor: 'link text-danger',
+      });
+    }
+    if (confirmed) {
+      const userId = yield select(getUserId);
+      const optimizeData = yield select(getOptimizeData);
+      project = {
+        ...project,
+        id,
+        optimizeData: optimizeData ?? null,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      };
 
-    yield rsf.storage.uploadFile(
-      `images/${userId}/projects/${id}.png`,
-      imageBlob
-    );
-    yield call(
-      rsf.firestore.setDocument,
-      `users/${userId}/projects/${id}`,
-      project
-    );
-    yield put(saveRemoteProjectSuccess(project));
+      yield rsf.storage.uploadFile(
+        `images/${userId}/projects/${id}.png`,
+        imageBlob
+      );
+      yield call(
+        rsf.firestore.setDocument,
+        `users/${userId}/projects/${id}`,
+        project
+      );
+      yield put(saveRemoteProjectSuccess(project));
+    }
   } catch (err) {
     yield put(saveRemoteProjectError(err));
   }
@@ -139,8 +153,7 @@ export function* loadProjectSaga({ sceneJSON, optimizeData }) {
   yield put(populateOptimizeData(optimizeData));
   if (!_.isNil(optimizeData)) {
     yield put(openOptimizationBar());
-  }
-  else {
+  } else {
     yield put(closeOptimizationBar());
   }
 }
@@ -174,7 +187,7 @@ function* addRemoteProject({ payload }) {
     const project = {
       name,
       state: projectState,
-      optimizeData : optimizeData ?? null,
+      optimizeData: optimizeData ?? null,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
     };

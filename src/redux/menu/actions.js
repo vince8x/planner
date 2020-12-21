@@ -16,6 +16,8 @@ export const POPULATE_OPTIMIZE_DATA = 'POPULATE_OPTIMIZE_DATA';
 export const PROCESS_OPTIMIZE_DATA = 'PROCESS_OPTIMIZE_DATA';
 export const PROCESS_OPTIMIZE_DATA_SUCCESS = 'PROCESS_OPTIMIZE_DATA_SUCCESS';
 export const PROCESS_OPTIMIZE_DATA_ERROR = 'PROCESS_OPTIMIZE_DATA_ERROR';
+export const TURN_ON_OPTIMIZE_BUTTON = 'TURN_ON_OPTIMIZE_BUTTON';
+export const TURN_OFF_OPTIMIZE_BUTTON = 'TURN_OFF_OPTIMIZE_BUTTON';
 
 export const changeSelectedMenuHasSubItems = (payload) => {
   return {
@@ -193,4 +195,12 @@ export const processOptimizeDataSuccess = () => ({
 export const processOptimizeDataError = (message) => ({
   type: PROCESS_OPTIMIZE_DATA_ERROR,
   payload: message
+});
+
+export const turnOnOptimizeButton = () => ({
+  type: TURN_ON_OPTIMIZE_BUTTON
+});
+
+export const turnOffOptimizeButton = () => ({
+  type: TURN_OFF_OPTIMIZE_BUTTON
 });

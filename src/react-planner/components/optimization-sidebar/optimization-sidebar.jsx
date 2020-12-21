@@ -17,6 +17,7 @@ function OptimizationSidebar({
   email,
   name,
   menuActions,
+  isOptimized,
 }) {
   const [lineChartData, setLineChartData] = useState({});
   const [selectedoptimizeData, setOptimizeData] = useState([]);
@@ -58,9 +59,11 @@ function OptimizationSidebar({
       const mesas = dataSetKey.replace(' mesas', '');
       const paneles = Object.keys(dataSet)[elementIndex[0]._index];
       const costo = dataSet[paneles];
-      const plan = optimizeData.optimizeResults[[paneles, costo, mesas].join('_')];
+      const plan =
+        optimizeData.optimizeResults[[paneles, costo, mesas].join('_')];
       if (plan) {
-        setOptimizeData(plan.solution);
+        setOptimizeData(plan);
+        menuActions.turnOnOptimizeButton();
         optimizationActions.selectedOptimizePlan(plan.solution);
       }
     }
@@ -117,13 +120,24 @@ function OptimizationSidebar({
   };
 
   const handleProcessOptimize = () => {
-    const projectName = loadedProject ? loadedProject.name : '';
+    if (isOptimized) {
+      const projectName = loadedProject ? loadedProject.name : '';
+  
+      menuActions.processOptimizeData(
+        projectName,
+        email,
+        name,
+        selectedoptimizeData
+      );
+    }
+  };
 
-    menuActions.processOptimizeData(
-      projectName,
-      email,
-      name,
-      selectedoptimizeData);
+  const handleLoadOriginal = () => {
+    if (isOptimized) {
+      const sceneJS = loadedProject ? loadedProject.state : null;
+      menuActions.turnOffOptimizeButton();
+      optimizationActions.loadOriginal(sceneJS);
+    }
   };
 
   return (
@@ -147,13 +161,26 @@ function OptimizationSidebar({
               </div>
             </CardBody>
           </Card>
-          <Button
-            className="mb-2"
-            color="primary"
-            onClick={() => handleProcessOptimize()}
-          >
-            <IntlMessages id="Original" />
-          </Button>
+          <br />
+          <ButtonGroup className="center">
+              <Button
+                className="mb-2"
+                color="primary"
+                onClick={() => handleProcessOptimize()}
+              >
+                <IntlMessages id="planner.generate" />
+              </Button>
+              <Button
+                color="primary"
+                className="mb-2"
+                onClick={() => handleLoadOriginal()}
+                active={isOptimized}
+              >
+                <IntlMessages
+                  id={isOptimized ? 'planner.optimized' : 'planner.original'}
+                />
+              </Button>
+            </ButtonGroup>
         </div>
       )}
     </div>
@@ -161,7 +188,7 @@ function OptimizationSidebar({
 }
 
 const mapStateToProps = ({ menu, planner, authUser, projects }) => {
-  const { optimizeData } = menu;
+  const { optimizeData, isOptimized } = menu;
   const { loadedProject } = projects;
 
   return {
@@ -169,7 +196,8 @@ const mapStateToProps = ({ menu, planner, authUser, projects }) => {
     statePlanner: planner,
     email: authUser.email,
     name: authUser.displayName,
-    loadedProject
+    loadedProject,
+    isOptimized,
   };
 };
 

@@ -11,3 +11,8 @@ export const getOptimizeData = createSelector(
   getMenu,
   menu => menu.optimizeData
 );
+
+export const isOptimized = createSelector(
+  getMenu,
+  menu => menu.isOptimized
+);
