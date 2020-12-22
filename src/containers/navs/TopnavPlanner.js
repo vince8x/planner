@@ -34,6 +34,7 @@ import { bindActionCreators } from 'redux';
 import * as localeActionsAll from '../../redux/settings/actions';
 import * as plannerActionsAll from '../../redux/planner/actions';
 import * as menuActionsAll from '../../redux/menu/actions';
+import * as optimizationActionsAll from '../../react-planner/actions/optimization-actions';
 
 import * as plannerConstants from '../../react-planner/constants';
 import PerimeterWall from '../../catalog/lines/wall/planner-element';
@@ -99,7 +100,8 @@ const TopNavPlanner = ({
   selectedElement,
   saveRemoteProjectAction,
   optimizing,
-  optimizeData
+  optimizeData,
+  optimizationActions
 }) => {
   const history = useHistory();
 
@@ -212,6 +214,9 @@ const TopNavPlanner = ({
       isVentilatedFloor: firstFloorType === plannerConstants.VENTILATED ? 1 : 0,
     };
 
+    menuActions.turnOffOptimizeButton();
+    const sceneJS = loadedProject ? loadedProject.state : null;
+    optimizationActions.loadOriginal(sceneJS);
     plannerActions.optimizePlanner(
       userId,
       loadedProject.id,
@@ -236,7 +241,8 @@ const TopNavPlanner = ({
   const handleImportProjectFromJson = () => {
     browserUpload().then((data) => {
       const parseResult = JSON.parse(data);
-      projectActions.loadProject(parseResult.planner, parseResult.optimizeData);
+      const planner = parseResult.planner ?? parseResult;
+      projectActions.loadProject(planner, parseResult.optimizeData);
     });
   };
 
@@ -925,6 +931,7 @@ const mapDispatchToProps = (dispatch) => {
     ),
     plannerActions: bindActionCreators(plannerActionsAll, dispatch),
     menuActions: bindActionCreators(menuActionsAll, dispatch),
+    optimizationActions: bindActionCreators(optimizationActionsAll, dispatch),
     showSaveProjectAsDialog: () => dispatch(openDialog('saveAsProjectDialog')),
     showExportSolutionsDialog: () =>
       dispatch(openDialog('exportSolutionsDialog')),

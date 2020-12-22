@@ -34,6 +34,7 @@ import {
   openOptimizationBar,
   populateOptimizeData,
   stopProgressBar,
+  turnOffOptimizeButton,
 } from '../menu/actions';
 import { getOptimizeData, isOptimized } from '../menu/selectors';
 
@@ -151,6 +152,7 @@ export function* loadRemoteProject({ payload }) {
 export function* loadProjectSaga({ sceneJSON, optimizeData }) {
   yield put(stopProgressBar());
   yield put(populateOptimizeData(optimizeData));
+  yield put(turnOffOptimizeButton());
   if (!_.isNil(optimizeData)) {
     yield put(openOptimizationBar());
   } else {
@@ -161,6 +163,7 @@ export function* loadProjectSaga({ sceneJSON, optimizeData }) {
 export function* newProjectSaga() {
   yield put(stopProgressBar());
   yield put(cleanupOptimizeData());
+  yield put(turnOffOptimizeButton());
   yield put(closeOptimizationBar());
 }
 
