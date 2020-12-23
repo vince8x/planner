@@ -191,7 +191,7 @@ const TopNavPlanner = ({
     const { updatedState } = Project.unselectAll(state);
     const { numberOfFloor, firstFloorType, layers } = updatedState.get('scene');
     const scene = updatedState.get('scene').toJS();
-    const elements = convertSceneToElements(scene);
+    const { elements, areas } = convertSceneToElements(scene);
     const projectName = loadedProject ? loadedProject.name : '';
 
     let totalAreaSize = 0;
@@ -224,6 +224,7 @@ const TopNavPlanner = ({
       email,
       name,
       projectParams,
+      areas,
       isTest
     );
   };

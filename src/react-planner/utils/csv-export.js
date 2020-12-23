@@ -13,13 +13,15 @@ import {
 import calculateArea from './calculation';
 
 export function convertSceneToElements(scene) {
-  const csvResult = [];
-  const {defaultWallHeight} = scene;
+  const elements = [];
+  const areas = [];
+  const { defaultWallHeight } = scene;
 
   _.map(scene.layers, layer => {
     const layerVertices = layer.vertices;
     const layerLines = layer.lines;
     const layerHoles = layer.holes;
+    const layerAreas = layer.areas;
 
     for (const key in layerLines) {
       if (layerLines.hasOwnProperty(key)) {
@@ -46,9 +48,10 @@ export function convertSceneToElements(scene) {
           Wall_Face_A: line.properties.textureA[0].toUpperCase() + line.properties.textureA.slice(1),
           Wall_Face_B: line.properties.textureB[0].toUpperCase() + line.properties.textureB.slice(1),
           Height: defaultWallHeight,
-          Associated_Wall: null
+          Associated_Wall: null,
+          Areas: null
         };
-        csvResult.push(row);
+        elements.push(row);
       }
     }
 
@@ -105,12 +108,24 @@ export function convertSceneToElements(scene) {
           Wall_Face_B: null,
           Associated_Wall: line.id
         };
-        csvResult.push(row);
+        elements.push(row);
+      }
+    }
+
+    for (const key in layerAreas) {
+      if (layerAreas.hasOwnProperty(key)) {
+        const area = layerAreas[key];
+        if (_.isNil(area)) continue;
+        if (_.isNil(area.vertices) || _.isNil(layerAreas)) continue;
+        area.vertices.forEach(verticeKey => {
+          const { x, y } = _.get(layer.vertices, verticeKey);
+          areas.push({ x, y });
+        });
       }
     }
   });
 
-  return csvResult;
+  return { elements, areas };
 }
 
 export function convertAreaToCSv(areas) {
@@ -129,8 +144,8 @@ export function convertAreaToCSv(areas) {
 }
 
 export function exportElementsCsv(scene) {
-
-  csvDownload(convertSceneToElements(scene));
+  const { elements } = convertSceneToElements(scene)
+  csvDownload(elements);
 }
 
 export function exportAreaCsv(areas) {
@@ -174,7 +189,7 @@ export function exportRequirement(scene, type, translateType) {
     });
 
     let fireResistanceItem;
-    if ((numberOfFloor <= 2 && (totalAreaSize * numberOfFloor) <= 1400000) && 
+    if ((numberOfFloor <= 2 && (totalAreaSize * numberOfFloor) <= 1400000) &&
       (typeOfGrouping !== HORIZONTAL_PAIRED_BUILDING) &&
       (typeOfGrouping !== COLLECTIVE_BUILDING)) {
       fireResistanceItem = _.find(fireResistanceSmall, { 'floorNum': numberOfFloor });

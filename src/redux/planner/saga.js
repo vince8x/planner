@@ -59,6 +59,7 @@ export function* optimizePlannerSaga(action) {
     email,
     name,
     projectParams,
+    areas,
     isTest,
   } = action.payload;
 
@@ -78,6 +79,7 @@ export function* optimizePlannerSaga(action) {
     userId,
     projectId,
     elements,
+    areas,
     email,
     name,
     thermal,
