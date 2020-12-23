@@ -23,7 +23,7 @@ function OptimizationSidebar({
   const [selectedoptimizeData, setOptimizeData] = useState([]);
 
   useEffect(() => {
-    if (optimizeData != null) {
+    if (optimizeData && optimizeData.paretoPoints) {
       const firstProps =
         optimizeData.paretoPoints[Object.keys(optimizeData.paretoPoints)[0]];
       const labels = Object.keys(firstProps);
