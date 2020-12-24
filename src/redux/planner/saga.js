@@ -63,9 +63,7 @@ export function* optimizePlannerSaga(action) {
     isTest,
   } = action.payload;
 
-  const url = isTest
-    ? `${process.env.REACT_APP_API_ENDPOINT}/api/test_process_data`
-    : `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
+  const url = `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
 
   const plannerState = yield select(getPlannerState);
   const { updatedState } = Project.unselectAll(plannerState);
@@ -121,7 +119,18 @@ export function* optimizePlannerSaga(action) {
 
     if (isTest) {
       const filename = `optimize_result_${Date.now()}.csv`;
-      yield csvDownload(response, filename);
+      _.forEach(Object.keys(response), key => {
+
+      })
+      const exportData = _.flatMap(Object.keys(response.optimizeResults), key => {
+        const paretoPoint = key;
+        return response.optimizeResults[paretoPoint].solution.map(item => {
+          let result = _.clone(item);
+          result.paretoPoint = paretoPoint;
+          return result;
+        })
+      });
+      yield csvDownload(exportData, filename);
     }
   } catch (err) {
     console.log(err);

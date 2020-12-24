@@ -131,13 +131,16 @@ export function convertSceneToElements(scene) {
 export function convertAreaToCSv(areas) {
   const csvResult = [];
 
-  _.map(areas, item => {
-    const row = {
-      Id: item.area.id,
-      AreaType: item.area.properties.get('texture'),
-      size: item.size
-    };
-    csvResult.push(row);
+  _.map(areas, area => {
+    _.map(area, item => {
+      const row = {
+        Id: item.id,
+        Type: item.type,
+        X: item.x,
+        Y: item.y
+      };
+      csvResult.push(row);
+    })
   });
 
   return csvResult;

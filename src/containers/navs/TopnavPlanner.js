@@ -280,11 +280,17 @@ const TopNavPlanner = ({
     let totalAreaSize = 0;
     layers.map((layer) => {
       layer.areas.map((area) => {
-        totalAreaSize = calculateArea(area, layer);
-        allAreas.push({
-          area,
-          size: totalAreaSize,
+        const polygon = area.vertices.toArray().map((vertexID) => {
+          const { x, y } = layer.vertices.get(vertexID);
+          return [x, y];
         });
+        allAreas.push(
+          area.vertices.toArray().map((vertexID) => {
+            const { x, y } = layer.vertices.get(vertexID);
+            return {
+              id: area.id, type: area.properties.get('texture'), x, y
+            };
+          }));
       });
     });
 
