@@ -94,7 +94,7 @@ export function* optimizePlannerSaga(action) {
     points.map(point => {
       return { x: _.round(point.x, 2), y: _.round(point.y, 2) }
     })))) {
-    yield put(optimizePlannerError('Only accept 4 points areas'));
+    yield put(optimizePlannerError('Only accept Rectangle/Square areas'));
   }
   else {
 
