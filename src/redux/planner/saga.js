@@ -39,6 +39,7 @@ import {
 } from '../menu/actions';
 import { getUserId } from '../auth/selectors';
 import { getCurrentProject } from '../projects/selectors';
+import { isRectangleArea } from '../../react-planner/utils/geometry';
 
 export function* endDrawingLineSaga(action) {
   const { linesAttributes, layerID } = action;
@@ -86,10 +87,14 @@ export function* optimizePlannerSaga(action) {
     acoustic,
     projectParams,
   };
-  const areaPointCounts = _.countBy(areas, 'areaId')
 
-  if (Object.values(areaPointCounts).some(val => val !== 4)) {
-      yield put(optimizePlannerError('Only accept 4 points areas'));
+  const areaGrp = _.groupBy(areas, 'areaId');
+
+  if (Object.values(areaGrp).some(points => !isRectangleArea(
+    points.map(point => {
+      return { x: _.round(point.x, 2), y: _.round(point.y, 2) }
+    })))) {
+    yield put(optimizePlannerError('Only accept 4 points areas'));
   }
   else {
 
@@ -101,29 +106,29 @@ export function* optimizePlannerSaga(action) {
           throw err;
         });
     };
-  
+
     try {
       yield put(openOptimizationBar());
       yield put(cleanupOptimizeData());
       yield put(startProgressBar());
       const response = yield call(apiCall);
       yield put(optimizePlannerSuccess(response));
-  
+
       let project = yield select(getCurrentProject);
-  
+
       project = {
         ...project,
         optimizeData: response,
       };
-  
+
       yield call(
         rsf.firestore.setDocument,
         `users/${userId}/projects/${projectId}`,
         project
       );
-  
+
       yield put(populateOptimizeData(response));
-  
+
       if (isTest) {
         const filename = `optimize_result_${Date.now()}.csv`;
         const exportData = _.flatMap(Object.keys(response.optimizeResults), key => {
