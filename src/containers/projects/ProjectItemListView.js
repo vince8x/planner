@@ -45,6 +45,7 @@ const ProjectItemListView = ({ userId, project, isSelect, onCheckItem, loadRemot
     e.preventDefault();
     const { id } = item;
     loadRemoteProject(id, history);
+    history.push(`/planner/${project.id}`);
   }
 
   return (
@@ -56,7 +57,7 @@ const ProjectItemListView = ({ userId, project, isSelect, onCheckItem, loadRemot
         })}
       >
         <div className="position-relative">
-          <NavLink to='/planner' onClick={(e) => handleItemClick(e, project)} className="w-40 w-sm-100">
+          <NavLink to={`/planner/${project.id}`} onClick={(e) => handleItemClick(e, project)} className="w-40 w-sm-100">
             {projectImageSrc && <ProjectItemImg alt={project.name} url={projectImageSrc} />}
           </NavLink>
         </div>

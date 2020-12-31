@@ -124,6 +124,7 @@ module.exports = {
   'planner.reset': 'Reset',
   'planner.rotation' : 'Rotation',
   'planner.save': 'Save',
+  'planner.saveas': 'Save As',
   'planner.scene-zoom-level':'Scene Zoom Level',
   'planner.search-element':'Search Element',
   'planner.snap-to-grid':'Snap to Grid',

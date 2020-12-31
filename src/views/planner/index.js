@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react';
-import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
+import { Route, withRouter, Switch, Redirect, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import 'react-progress-bar-plus/lib/progress-bar.css';
 import PlannerPage from './planner-page';
@@ -12,7 +12,7 @@ const App = ({ match }) => {
   useEffect(() => {
     document.body.style.paddingBottom = 0;
   }, []);
-
+  const { id } = useParams();
   const ProgressBar = require('react-progress-bar-plus');
 
   return (
@@ -22,7 +22,7 @@ const App = ({ match }) => {
         <Suspense fallback={<div className="loading" />}>
           <Switch>
             <Route
-              path={`${match.url}`}
+              path={`${match.path}`}
               render={(props) => <PlannerPage {...props} />}
             />
             <Redirect to="/error" />

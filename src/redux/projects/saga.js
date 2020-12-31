@@ -129,7 +129,7 @@ export function* watchFetchRemoteProjectList() {
 
 export function* loadRemoteProject({ payload }) {
   try {
-    const { id, history } = payload;
+    const { id } = payload;
     const userId = yield select(getUserId);
     const snapshot = yield call(
       rsf.firestore.getDocument,
@@ -140,7 +140,6 @@ export function* loadRemoteProject({ payload }) {
       project.id = id;
       yield put(loadRemoteProjectSuccess(project));
       yield put(loadProject(project.state, project.optimizeData));
-      history.push('/planner');
     } else {
       yield put(loadRemoteProjectError('No project found'));
     }
@@ -167,8 +166,9 @@ export function* newProjectSaga() {
   yield put(closeOptimizationBar());
 }
 
-export function* addRemoteProjectSuccessSaga() {
+export function* addRemoteProjectSuccessSaga({ payload, history }) {
   // @TODO: multi language in saga
+  history.push(`/planner/${payload.id}`);
   yield put(success('Add project success'));
 }
 
@@ -182,7 +182,7 @@ export function* watchLoadRemoteProject() {
 }
 
 function* addRemoteProject({ payload }) {
-  const { name, projectState, imageBlob } = payload;
+  const { name, projectState, imageBlob, history } = payload;
 
   try {
     const userId = yield select(getUserId);
@@ -207,7 +207,7 @@ function* addRemoteProject({ payload }) {
       `images/${userId}/projects/${newProject.id}.png`,
       imageBlob
     );
-    yield put(addRemoteProjectSuccess(newProject));
+    yield put(addRemoteProjectSuccess(newProject, history));
   } catch (err) {
     yield put(addRemoteProjectError(err));
   }

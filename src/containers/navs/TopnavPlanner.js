@@ -101,7 +101,7 @@ const TopNavPlanner = ({
   saveRemoteProjectAction,
   optimizing,
   optimizeData,
-  optimizationActions
+  optimizationActions,
 }) => {
   const history = useHistory();
 
@@ -180,6 +180,10 @@ const TopNavPlanner = ({
     }
   };
 
+  const handleSaveAsProject = () => {
+    showSaveProjectAsDialog();
+  };
+
   const handleLoadProjectFromFile = () => {
     browserUpload().then((data) => {
       projectActions.loadProject(JSON.parse(data));
@@ -234,8 +238,8 @@ const TopNavPlanner = ({
     const { updatedState } = Project.unselectAll(state);
     const downloadObject = {
       planner: updatedState.get('scene').toJS(),
-      optimizeData
-    }
+      optimizeData,
+    };
     browserDownload(downloadObject);
   };
 
@@ -288,9 +292,13 @@ const TopNavPlanner = ({
           area.vertices.toArray().map((vertexID) => {
             const { x, y } = layer.vertices.get(vertexID);
             return {
-              id: area.id, type: area.properties.get('texture'), x, y
+              id: area.id,
+              type: area.properties.get('texture'),
+              x,
+              y,
             };
-          }));
+          })
+        );
       });
     });
 
@@ -403,6 +411,21 @@ const TopNavPlanner = ({
               target="planner-save-project"
             >
               <IntlMessages id="planner.save-project" />
+            </UncontrolledTooltip>
+          </Button>
+
+          <Button
+            className="toolbar-item"
+            id="planner-save-as"
+            onClick={() => handleSaveAsProject()}
+            disabled={optimizing}
+          >
+            <FaSave />
+            <div className="btn-title">
+              <IntlMessages id="planner.saveas" />
+            </div>
+            <UncontrolledTooltip placement="right" target="planner-save-as">
+              <IntlMessages id="planner.saveas" />
             </UncontrolledTooltip>
           </Button>
 
@@ -909,7 +932,13 @@ const TopNavPlanner = ({
 
 const mapStateToProps = (state) => {
   const { menu, settings, planner, projects, authUser } = state;
-  const { containerClassnames, menuClickCount, selectedMenuHasSubItems, loading, optimizeData } = menu;
+  const {
+    containerClassnames,
+    menuClickCount,
+    selectedMenuHasSubItems,
+    loading,
+    optimizeData,
+  } = menu;
   const { locale } = settings;
   const { loadedProject } = projects;
   const plannerState = getPlannerState(state);
@@ -926,7 +955,7 @@ const mapStateToProps = (state) => {
     mode: plannerState.get('mode'),
     selectedElement: plannerState.get('selectedElementsHistory').first(),
     optimizing: loading.isLoading,
-    optimizeData
+    optimizeData,
   };
 };
 

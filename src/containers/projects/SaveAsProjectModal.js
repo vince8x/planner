@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import {
@@ -15,6 +16,7 @@ import saveSVGScreenshotToFile from "../../helpers/Screenshot";
 
 const SaveAsProjectModal = ({ toggle, planner, projectActions }) => {
 
+  const history = useHistory();
 
   const onSubmit = (values) => {
     const statePlanner = planner.get('react-planner');
@@ -25,7 +27,7 @@ const SaveAsProjectModal = ({ toggle, planner, projectActions }) => {
     // let result = await confirm();
 
     const addRemoteProjectCallback = (imageBlob) => {
-      projectActions.addRemoteProject(values.name, projectState, imageBlob);
+      projectActions.addRemoteProject(values.name, projectState, imageBlob, history);
       toggle();
     };
 

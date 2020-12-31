@@ -20,6 +20,7 @@ import {
   EXPORT_SOLUTIONS,
   exportSolutionsSuccess,
   exportSolutionsFailure,
+  OPTIMIZE_PLANNER_ERROR,
 } from './actions';
 import { getPlannerState } from './selectors';
 import { Project } from '../../react-planner/class/export';
@@ -85,63 +86,72 @@ export function* optimizePlannerSaga(action) {
     acoustic,
     projectParams,
   };
+  const areaPointCounts = _.countBy(areas, 'areaId')
 
-  const apiCall = () => {
-    return axios
-      .post(url, data)
-      .then((response) => response.data)
-      .catch((err) => {
-        throw err;
-      });
-  };
+  if (Object.values(areaPointCounts).some(val => val !== 4)) {
+      yield put(optimizePlannerError('Only accept 4 points areas'));
+  }
+  else {
 
-  try {
-    yield put(openOptimizationBar());
-    yield put(cleanupOptimizeData());
-    yield put(startProgressBar());
-    const response = yield call(apiCall);
-    yield put(optimizePlannerSuccess(response));
-
-    let project = yield select(getCurrentProject);
-
-    project = {
-      ...project,
-      optimizeData: response,
+    const apiCall = () => {
+      return axios
+        .post(url, data)
+        .then((response) => response.data)
+        .catch((err) => {
+          throw err;
+        });
     };
-
-    yield call(
-      rsf.firestore.setDocument,
-      `users/${userId}/projects/${projectId}`,
-      project
-    );
-
-    yield put(populateOptimizeData(response));
-
-    if (isTest) {
-      const filename = `optimize_result_${Date.now()}.csv`;
-      _.forEach(Object.keys(response), key => {
-
-      })
-      const exportData = _.flatMap(Object.keys(response.optimizeResults), key => {
-        const paretoPoint = key;
-        return response.optimizeResults[paretoPoint].solution.map(item => {
-          let result = _.clone(item);
-          result.paretoPoint = paretoPoint;
-          return result;
-        })
-      });
-      yield csvDownload(exportData, filename);
+  
+    try {
+      yield put(openOptimizationBar());
+      yield put(cleanupOptimizeData());
+      yield put(startProgressBar());
+      const response = yield call(apiCall);
+      yield put(optimizePlannerSuccess(response));
+  
+      let project = yield select(getCurrentProject);
+  
+      project = {
+        ...project,
+        optimizeData: response,
+      };
+  
+      yield call(
+        rsf.firestore.setDocument,
+        `users/${userId}/projects/${projectId}`,
+        project
+      );
+  
+      yield put(populateOptimizeData(response));
+  
+      if (isTest) {
+        const filename = `optimize_result_${Date.now()}.csv`;
+        const exportData = _.flatMap(Object.keys(response.optimizeResults), key => {
+          const paretoPoint = key;
+          return response.optimizeResults[paretoPoint].solution.map(item => {
+            const result = _.clone(item);
+            result.paretoPoint = paretoPoint;
+            return result;
+          })
+        });
+        yield csvDownload(exportData, filename);
+      }
+    } catch (err) {
+      console.log(err);
+      yield put(optimizePlannerError('Optimize failed, Please contact the administrator for more information.'));
+    } finally {
+      yield put(stopProgressBar());
     }
-  } catch (err) {
-    console.log(err);
-    yield put(optimizePlannerError(err.message));
-  } finally {
-    yield put(stopProgressBar());
   }
 }
 
 export function* optimizePlannerSuccessSaga() {
   yield put(success('Optimized'));
+}
+
+export function* optimizePlannerErrorSaga({ payload }) {
+  const errMessage = payload.message ?? 'Optimize failed, Please contact the administrator for more information.';
+  yield put(error(errMessage));
 }
 
 export function* watchOptimizePlanner() {
@@ -150,6 +160,10 @@ export function* watchOptimizePlanner() {
 
 export function* watchOptimizePlannerSuccess() {
   yield takeLatest(OPTIMIZE_PLANNER_SUCCESS, optimizePlannerSuccessSaga);
+}
+
+export function* watchOptimizePlannerError() {
+  yield takeLatest(OPTIMIZE_PLANNER_ERROR, optimizePlannerErrorSaga);
 }
 
 export function* exportSolutions({ payload }) {
@@ -244,5 +258,6 @@ export default function* rootSaga() {
     fork(watchExportSolutions),
     fork(watchOptimizePlannerSuccess),
     fork(watchSetHeightFailure),
+    fork(watchOptimizePlannerError),
   ]);
 }

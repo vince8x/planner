@@ -25,14 +25,15 @@ export const DELETE_REMOTE_PROJECTS_ERROR = 'DELETE_REMOTE_PROJECTS_ERROR';
 
 
 
-export const addRemoteProject = (name, projectState, imageBlob) => ({
+export const addRemoteProject = (name, projectState, imageBlob, history) => ({
   type: ADD_REMOTE_PROJECT,
-  payload: { name, projectState, imageBlob }
+  payload: { name, projectState, imageBlob, history }
 });
 
-export const addRemoteProjectSuccess = (project) => ({
+export const addRemoteProjectSuccess = (project, history) => ({
   type: ADD_REMOTE_PROJECT_SUCCESS,
-  payload: project
+  payload: project,
+  history
 });
 
 export const addRemoteProjectError = (message) => ({

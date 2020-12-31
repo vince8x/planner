@@ -61,6 +61,7 @@ module.exports = {
   'planner.save-project': 'Guardar Proyecto',
   'planner.new': 'Nuevo',
   'planner.save': 'Guardar',
+  'planner.saveas': 'Guardar como',
   'planner.add-horizontal-guide': '+ Agregar Guia Horizontal',
   'planner.add-vertical-guide': '+ Agregar Guia Vertical',
   'planner.2D View': 'Vista 2D',
