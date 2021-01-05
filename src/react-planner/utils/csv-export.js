@@ -119,7 +119,7 @@ export function convertSceneToElements(scene) {
         if (_.isNil(area.vertices) || _.isNil(layerAreas)) continue;
         area.vertices.forEach(verticeKey => {
           const { x, y } = _.get(layer.vertices, verticeKey);
-          areas.push({ areaId: key,  x, y });
+          areas.push({ areaId: key, areaType: area.properties.texture, x, y });
         });
       }
     }

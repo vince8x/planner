@@ -88,6 +88,7 @@ const TopNavPlanner = ({
   menuActions,
   showSaveProjectAsDialog,
   showExportSolutionsDialog,
+  showImportProjectDialog,
   linesActions,
   holesActions,
   itemsActions,
@@ -249,6 +250,10 @@ const TopNavPlanner = ({
       const planner = parseResult.planner ?? parseResult;
       projectActions.loadProject(planner, parseResult.optimizeData);
     });
+  };
+
+  const handleImportProjectFromProjectId = () => {
+    showImportProjectDialog();
   };
 
   const handleSaveProjectElementsToFile = () => {
@@ -504,13 +509,31 @@ const TopNavPlanner = ({
 
           <Button
             className="toolbar-item"
-            id="planner-import-json"
+            id="planner-import-project"
             onClick={() => handleImportProjectFromJson()}
             disabled={optimizing}
           >
             <FaFileImport />
             <div className="btn-title">
               <IntlMessages id="planner.import-json" />
+            </div>
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-import-project"
+            >
+              <IntlMessages id="planner.import-project" />
+            </UncontrolledTooltip>
+          </Button>
+
+          <Button
+            className="toolbar-item"
+            id="planner-import-json"
+            onClick={() => handleImportProjectFromProjectId()}
+            disabled={optimizing}
+          >
+            <FaFileImport />
+            <div className="btn-title">
+              <IntlMessages id="planner.import-project" />
             </div>
             <UncontrolledTooltip placement="right" target="planner-import-json">
               <IntlMessages id="planner.import-json" />
@@ -971,6 +994,7 @@ const mapDispatchToProps = (dispatch) => {
     showSaveProjectAsDialog: () => dispatch(openDialog('saveAsProjectDialog')),
     showExportSolutionsDialog: () =>
       dispatch(openDialog('exportSolutionsDialog')),
+    showImportProjectDialog: () => dispatch(openDialog('importProjectDialog')),
     saveRemoteProjectAction: (id, project, imageBlob) =>
       dispatch(saveRemoteProject(id, project, imageBlob)),
   };

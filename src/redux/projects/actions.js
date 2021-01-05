@@ -15,6 +15,9 @@ export const LOAD_REMOTE_PROJECT = 'LOAD_REMOTE_PROJECT';
 export const LOAD_REMOTE_PROJECT_SUCCESS = 'LOAD_REMOTE_PROJECT_SUCCESS';
 export const LOAD_REMOTE_PROJECT_ERROR = 'LOAD_REMOTE_PROJECT_ERROR';
 
+export const LOAD_REMOTE_PROJECT_DATA = 'LOAD_REMOTE_PROJECT_DATA';
+export const LOAD_REMOTE_PROJECT_DATA_ERROR = 'LOAD_REMOTE_PROJECT_DATA_ERROR';
+
 export const FETCH_REMOTE_PROJECT_LIST = 'FETCH_REMOTE_PROJECT_LIST';
 export const FETCH_REMOTE_PROJECT_LIST_SUCCESS = 'FETCH_REMOTE_PROJECT_LIST_SUCCESS';
 export const FETCH_REMOTE_PROJECT_LIST_ERROR = 'FETCH_REMOTE_PROJECT_LIST_ERROR';
@@ -83,6 +86,16 @@ export const loadRemoteProjectSuccess = (project) => ({
 
 export const loadRemoteProjectError = (message) => ({
   type: LOAD_REMOTE_PROJECT_ERROR,
+  payload: { message },
+});
+
+export const loadRemoteProjectData = (userId, projectId) => ({
+  type: LOAD_REMOTE_PROJECT_DATA,
+  payload: { userId, projectId },
+});
+
+export const loadRemoteProjectDataError = (message) => ({
+  type: LOAD_REMOTE_PROJECT_DATA_ERROR,
   payload: { message },
 });
 

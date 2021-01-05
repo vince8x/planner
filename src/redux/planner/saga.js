@@ -88,7 +88,7 @@ export function* optimizePlannerSaga(action) {
     projectParams,
   };
 
-  const areaGrp = _.groupBy(areas, 'areaId');
+  const areaGrp = _.groupBy(areas.filter(x => x.areaType === 'shaft'), 'areaId');
 
   if (Object.values(areaGrp).some(points => !isRectangleArea(
     points.map(point => {

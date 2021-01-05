@@ -19,6 +19,7 @@ import actions from '../react-planner/actions/export';
 import SaveAsProjectModal from '../containers/projects/SaveAsProjectModal';
 import ExportSolutionsModal from '../containers/projects/ExportSolutionsModal';
 import OptimizationSidebar from '../react-planner/components/optimization-sidebar/optimization-sidebar';
+import ImportProjectModal from '../containers/projects/ImportProjectModal';
 // import Sidebar from '../containers/navs/Sidebar';
 
 const PlannerLayout = ({
@@ -107,6 +108,7 @@ const PlannerLayout = ({
         onSubmitLength={(length, unit) => handleLengthInput(length, unit)}
       />
       <SaveAsProjectModal autoFocus={false} />
+      <ImportProjectModal autoFocus={false} />
       <ExportSolutionsModal autoFocus={false} />
       <ToastContainer />
     </div>

@@ -25,6 +25,9 @@ import {
   DELETE_REMOTE_PROJECTS,
   deleteRemoteProjectsSuccess,
   deleteRemoteProjectsError,
+  LOAD_REMOTE_PROJECT_DATA,
+  LOAD_REMOTE_PROJECT_DATA_ERROR,
+  loadRemoteProjectDataError,
 } from './actions';
 import { LOAD_PROJECT, NEW_PROJECT } from '../../react-planner/constants';
 import { loadProject } from '../../react-planner/actions/project-actions';
@@ -148,6 +151,24 @@ export function* loadRemoteProject({ payload }) {
   }
 }
 
+export function* loadRemoteProjectData({ payload }) {
+  try {
+    const { projectId, userId } = payload;
+    const snapshot = yield call(
+      rsf.firestore.getDocument,
+      `users/${userId}/projects/${projectId}`
+    );
+    if (snapshot.exists) {
+      const project = snapshot.data();
+      yield put(loadProject(project.state, project.optimizeData));
+    } else {
+      yield put(loadRemoteProjectDataError('No project found'));
+    }
+  } catch (err) {
+    yield put(loadRemoteProjectDataError(err));
+  }
+}
+
 export function* loadProjectSaga({ sceneJSON, optimizeData }) {
   yield put(stopProgressBar());
   yield put(populateOptimizeData(optimizeData));
@@ -177,8 +198,21 @@ export function* addRemoteProjectErrorSaga() {
   yield put(error('Unable to add project'));
 }
 
+export function* loadRemoteProjectDataErrorSaga({ payload }) {
+  // @TODO: multi language in saga
+  yield put(error(payload.message));
+}
+
 export function* watchLoadRemoteProject() {
   yield takeLatest(LOAD_REMOTE_PROJECT, loadRemoteProject);
+}
+
+export function* watchLoadRemoteProjectData() {
+  yield takeLatest(LOAD_REMOTE_PROJECT_DATA, loadRemoteProjectData);
+}
+
+export function* watchLoadRemoteProjectDataError() {
+  yield takeLatest(LOAD_REMOTE_PROJECT_DATA_ERROR, loadRemoteProjectDataErrorSaga);
 }
 
 function* addRemoteProject({ payload }) {
@@ -272,5 +306,7 @@ export default function* rootSaga() {
     fork(watchDeleteRemoteProjects),
     fork(watchLoadProject),
     fork(watchNewProject),
+    fork(watchLoadRemoteProjectData),
+    fork(watchLoadRemoteProjectDataError),
   ]);
 }
