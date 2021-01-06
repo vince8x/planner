@@ -88,16 +88,23 @@ export function* optimizePlannerSaga(action) {
     projectParams,
   };
 
-  const areaGrp = _.groupBy(areas.filter(x => x.areaType === 'shaft'), 'areaId');
+  const areaGrp = _.groupBy(
+    areas.filter((x) => x.areaType === 'shaft'),
+    'areaId'
+  );
 
-  if (Object.values(areaGrp).some(points => !isRectangleArea(
-    points.map(point => {
-      return { x: _.round(point.x, 2), y: _.round(point.y, 2) }
-    })))) {
+  if (
+    Object.values(areaGrp).some(
+      (points) =>
+        !isRectangleArea(
+          points.map((point) => {
+            return { x: _.round(point.x, 2), y: _.round(point.y, 2) };
+          })
+        )
+    )
+  ) {
     yield put(optimizePlannerError('Only accept Rectangle/Square areas'));
-  }
-  else {
-
+  } else {
     const apiCall = () => {
       return axios
         .post(url, data)
@@ -131,19 +138,34 @@ export function* optimizePlannerSaga(action) {
 
       if (isTest) {
         const filename = `optimize_result_${Date.now()}.csv`;
-        const exportData = _.flatMap(Object.keys(response.optimizeResults), key => {
-          const paretoPoint = key;
-          return response.optimizeResults[paretoPoint].solution.map(item => {
-            const result = _.clone(item);
-            result.paretoPoint = paretoPoint;
-            return result;
-          })
-        });
+        const exportData = _.flatMap(
+          Object.keys(response.optimizeResults),
+          (key) => {
+            const paretoPoint = key;
+            return response.optimizeResults[paretoPoint].solution.map(
+              (item) => {
+                const result = _.clone(item);
+                result.paretoPoint = paretoPoint;
+                return result;
+              }
+            );
+          }
+        );
         yield csvDownload(exportData, filename);
       }
     } catch (err) {
       console.log(err);
-      yield put(optimizePlannerError('Optimize failed, Please contact the administrator for more information.'));
+      if (err.response?.data?.messages[0]) {
+        yield put(
+          optimizePlannerError(err.response.data.messages[0])
+        );
+      } else {
+        yield put(
+          optimizePlannerError(
+            'Optimize failed, Please contact the administrator for more information.'
+          )
+        );
+      }
     } finally {
       yield put(stopProgressBar());
     }
@@ -155,7 +177,9 @@ export function* optimizePlannerSuccessSaga() {
 }
 
 export function* optimizePlannerErrorSaga({ payload }) {
-  const errMessage = payload.message ?? 'Optimize failed, Please contact the administrator for more information.';
+  const errMessage =
+    payload.message ??
+    'Optimize failed, Please contact the administrator for more information.';
   yield put(error(errMessage));
 }
 
