@@ -38,9 +38,9 @@ const ImportProjectModal = ({ toggle, projectActions }) => {
   };
 
   return (
-    <Fragment key="import-project-modal">
+    <Fragment key="debug-project-modal">
       <ModalHeader toggle={toggle}>
-        <IntlMessages id="planner.import-project" />
+        <IntlMessages id="planner.debug-project-export-json" />
       </ModalHeader>
       <Formik
         initialValues={{

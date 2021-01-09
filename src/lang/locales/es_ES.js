@@ -155,6 +155,8 @@ module.exports = {
   'planner.export-area': 'Exportar area',
   'planner.export-json': 'Exportar json',
   'planner.import-json': 'Importar json',
+  'planner.debug-project': 'Proyecto de depuración',
+  'planner.debug-project-export-json': 'Exportar json para depurar',
   'planner.import-project': 'Importar proyecto',
   'planner.project-id': 'Id del proyecto',
   'planner.user-id': 'Id de usuario',

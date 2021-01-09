@@ -25,6 +25,7 @@ import {
   FaPlay,
   FaFileDownload,
   FaFileImport,
+  FaBug
 } from 'react-icons/fa';
 import { AiOutlineBook } from 'react-icons/ai';
 import { withRouter, useHistory } from 'react-router-dom';
@@ -509,7 +510,7 @@ const TopNavPlanner = ({
 
           <Button
             className="toolbar-item"
-            id="planner-import-project"
+            id="planner-import-json"
             onClick={() => handleImportProjectFromJson()}
             disabled={optimizing}
           >
@@ -517,26 +518,26 @@ const TopNavPlanner = ({
             <div className="btn-title">
               <IntlMessages id="planner.import-json" />
             </div>
-            <UncontrolledTooltip
-              placement="right"
-              target="planner-import-project"
-            >
-              <IntlMessages id="planner.import-project" />
+            <UncontrolledTooltip placement="right" target="planner-import-json">
+              <IntlMessages id="planner.import-json" />
             </UncontrolledTooltip>
           </Button>
 
           <Button
             className="toolbar-item"
-            id="planner-import-json"
+            id="planner-debug-project"
             onClick={() => handleImportProjectFromProjectId()}
             disabled={optimizing}
           >
-            <FaFileImport />
+            <FaBug />
             <div className="btn-title">
-              <IntlMessages id="planner.import-project" />
+              <IntlMessages id="planner.debug-project" />
             </div>
-            <UncontrolledTooltip placement="right" target="planner-import-json">
-              <IntlMessages id="planner.import-json" />
+            <UncontrolledTooltip
+              placement="right"
+              target="planner-debug-project"
+            >
+              <IntlMessages id="planner.debug-project" />
             </UncontrolledTooltip>
           </Button>
 
