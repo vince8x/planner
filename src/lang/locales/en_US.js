@@ -155,6 +155,7 @@ module.exports = {
   'planner.import-json': 'Import json',
   'planner.import-project': 'Import project',
   'planner.debug-project': 'Debug project',
+  'planner.debug-project-export-json': 'Export json to debug',
   'planner.project-id': 'Project Id',
   'planner.user-id': 'User Id',
   'planner.default-wall-height': 'Default Wall Height',
