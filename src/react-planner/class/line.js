@@ -208,9 +208,9 @@ class Line{
           oldHoles.push({hole, offsetPosition});
         });
 
-        reducedState = this.remove( reducedState, layerID, line.id ).updatedState;
+        // reducedState = this.remove( reducedState, layerID, line.id ).updatedState;
 
-        points.push(v0, v1);
+        // points.push(v0, v1);
       }
 
       if (intersection.type === 'intersecting' && (!hasCommonEndpoint)) {
