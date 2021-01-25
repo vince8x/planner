@@ -559,6 +559,7 @@ const TopNavPlanner = ({
               <IntlMessages id="planner.export-csv" />
             </UncontrolledTooltip>
           </Button>
+*/}
 
           <Button
             className="toolbar-item"
@@ -574,7 +575,7 @@ const TopNavPlanner = ({
               <IntlMessages id="planner.export-area" />
             </UncontrolledTooltip>
           </Button>
-
+{/* 
           <Button
             className="toolbar-item"
             id="planner-thermal-requirement"

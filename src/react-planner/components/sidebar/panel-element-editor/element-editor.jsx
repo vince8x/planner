@@ -428,6 +428,11 @@ export default class ElementEditor extends Component {
             ['patternColor', 'currentValue'],
             '#FF0000' // Red
           );
+        } else {
+          propertiesFormData = propertiesFormData.setIn(
+            ['patternColor', 'currentValue'],
+            SharedStyle.AREA_MESH_COLOR.unselected
+          );
         }
         propertiesFormData = propertiesFormData.setIn(
           [propertyName, 'currentValue'],
