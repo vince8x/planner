@@ -540,7 +540,8 @@ const TopNavPlanner = ({
               <IntlMessages id="planner.debug-project" />
             </UncontrolledTooltip>
           </Button>
-
+{/* 
+          // Debugs buttons
           <Button
             className="toolbar-item"
             id="planner-export-project"
@@ -650,7 +651,7 @@ const TopNavPlanner = ({
             >
               <IntlMessages id="planner.export-solutions" />
             </UncontrolledTooltip>
-          </Button>
+          </Button> */}
 
           <Button
             className="toolbar-item"

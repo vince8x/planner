@@ -346,12 +346,12 @@ export function isRectangleArea(points) {
   const xMin = _.min(xVertices);
   const yMin = _.min(yVertices);
 
-  const angle1 = points.filter(point => point.x == xMax && point.y == yMax);
-  const angle2 = points.filter(point => point.x == xMax && point.y == yMin);
-  const angle3 = points.filter(point => point.x == xMin && point.y == yMax);
-  const angle4 = points.filter(point => point.x == xMin && point.y == yMin);
+  const angle1 = _.find(points, point => point.x == xMax && point.y == yMax);
+  const angle2 = _.find(points, point => point.x == xMax && point.y == yMin);
+  const angle3 = _.find(points, point => point.x == xMin && point.y == yMax);
+  const angle4 = _.find(points, point => point.x == xMin && point.y == yMin);
 
-  // hHas 4 valid angles and any other points are belong to the vertices
+  // Has 4 valid angles and any other points are belong to the vertices
   return !_.isNil(angle1) && !_.isNil(angle2) && !_.isNil(angle3) && !_.isNil(angle4) 
-  && _.every(points, point => point.x == xMax ||  point.x == xMin || point.y == yMax ||  point.y == yMin)
+  && _.every(points, point => (point.x == xMax ||  point.x == xMin) && (point.y == yMax ||  point.y == yMin));
 }

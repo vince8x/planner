@@ -71,6 +71,18 @@ export function* optimizePlannerSaga(action) {
   const { updatedState } = Project.unselectAll(plannerState);
   const scene = updatedState.get('scene');
 
+  // round data
+  elements.forEach(element => {
+    element.Ex = _.round(element.Ex, 2);
+    element.Ey = _.round(element.Ey, 2);
+    element.Sx = _.round(element.Sx, 2);
+    element.Sy = _.round(element.Sy, 2);
+  });
+
+  areas.forEach(area => {
+    area.x = _.round(area.x, 2);
+    area.y = _.round(area.y, 2);
+  });
   const thermal = getThermalRequirement(scene);
   const fire = getFireResistanceRequirement(scene);
   const acoustic = getAcousticRequirement(scene);
@@ -93,16 +105,7 @@ export function* optimizePlannerSaga(action) {
     'areaId'
   );
 
-  if (
-    Object.values(areaGrp).some(
-      (points) =>
-        !isRectangleArea(
-          points.map((point) => {
-            return { x: _.round(point.x, 2), y: _.round(point.y, 2) };
-          })
-        )
-    )
-  ) {
+  if (Object.values(areaGrp).some((points) => !isRectangleArea(points))) {
     yield put(optimizePlannerError('Only accept Rectangle/Square areas'));
   } else {
     const apiCall = () => {
