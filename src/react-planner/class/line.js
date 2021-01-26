@@ -326,14 +326,23 @@ class Line{
 
     let v0 = layer.vertices.get(line.vertices.get(0));
 
+    const passingLine = GeometryUtils.linePassingThroughTwoPoints(v0.x, v0.y, x, y);
+    const lineIntersectAxis = (Line.lineIntersectHorizontalAxis(passingLine) && Line.lineIntersectVerticalAxis(passingLine));
+
     state = Line.remove( state, layerID, lineID ).updatedState;
     state = Line.createAvoidingIntersections( state, layerID, line.type, v0.x, v0.y, x, y ).updatedState;
     state = Layer.detectAndUpdateAreas( state, layerID ).updatedState;
 
-    state = state.merge({
+    state = lineIntersectAxis ? state.merge({
       mode: MODE_WAITING_DRAWING_LINE,
       snapElements: new List(),
-      activeSnapElement: null
+      activeSnapElement: null,
+      error: 'Please make sure the lines are orthorgonal'
+    }) : state.merge({
+      mode: MODE_WAITING_DRAWING_LINE,
+      snapElements: new List(),
+      activeSnapElement: null,
+      error: null
     });
 
     return { updatedState: state };
@@ -348,14 +357,22 @@ class Line{
 
     let v0 = layer.vertices.get(line.vertices.get(0));
 
+    const passingLine = GeometryUtils.linePassingThroughTwoPoints(v0.x, v0.y, x, y);
+    const lineIntersectAxis = (Line.lineIntersectHorizontalAxis(passingLine) && Line.lineIntersectVerticalAxis(passingLine));
+
     state = Line.remove( state, layerID, lineID ).updatedState;
     state = Line.createAvoidingIntersections( state, layerID, line.type, v0.x, v0.y, x, y ).updatedState;
     state = Layer.detectAndUpdateAreas( state, layerID ).updatedState;
 
-    state = state.merge({
+    state = lineIntersectAxis ? state.merge({
       mode: MODE_WAITING_DRAWING_LINE,
       snapElements: new List(),
-      activeSnapElement: null
+      activeSnapElement: null,
+      error: 'Please make sure the line are perpendicular'
+    }) : state.merge({
+      mode: MODE_WAITING_DRAWING_LINE,
+      snapElements: new List(),
+      activeSnapElement: null,
     });
 
     return { updatedState: state };
@@ -686,6 +703,32 @@ class Line{
     state = Vertex.setAttributes( state, layerID, line.vertices.get(1), new Map({ x: x2, y: y2 }) ).updatedState;
 
     return { updatedState: state };
+  }
+
+  static lineIntersectHorizontalAxis(line) {
+    const horizontalLine = GeometryUtils.horizontalLine(0);
+
+    return GeometryUtils.twoLinesIntersection(
+      line.a, 
+      line.b, 
+      line.c,
+      horizontalLine.a,
+      horizontalLine.b,
+      horizontalLine.c
+    );
+  }
+
+  static lineIntersectVerticalAxis(line) {
+    const verticalLine = GeometryUtils.verticalLine(0);
+
+    return GeometryUtils.twoLinesIntersection(
+      line.a, 
+      line.b, 
+      line.c,
+      verticalLine.a,
+      verticalLine.b,
+      verticalLine.c
+    );
   }
 
 }

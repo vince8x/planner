@@ -5,6 +5,7 @@ import {
   BEGIN_DRAWING_LINE,
   UPDATE_DRAWING_LINE,
   END_DRAWING_LINE,
+  END_DRAWING_LINE_SUCCESS,
   BEGIN_DRAGGING_LINE,
   UPDATE_DRAGGING_LINE,
   END_DRAGGING_LINE,
@@ -27,7 +28,8 @@ export default function (state, action) {
     case END_DRAWING_LINE:
       state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
       return Line.endDrawingLine(state, action.x, action.y).updatedState;
-
+    case END_DRAWING_LINE_SUCCESS:
+      return state.delete('error');
     case BEGIN_DRAGGING_LINE:
       state = state.merge({ sceneHistory: history.historyPush(state.sceneHistory, state.scene) });
       return Line.beginDraggingLine(state, action.layerID, action.lineID, action.x, action.y).updatedState;

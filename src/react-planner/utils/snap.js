@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import {Map, List, Record} from 'immutable';
 import * as Geometry from './geometry';
 import { GeometryUtils } from './export';

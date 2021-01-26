@@ -13,7 +13,8 @@ const composeEnhancers = composeWithDevTools({
   actionsBlacklist: [
     'UPDATE_MOUSE_COORDS',
     'UPDATE_ZOOM_SCALE',
-    'UPDATE_2D_CAMERA'
+    'UPDATE_2D_CAMERA',
+    'UPDATE_DRAWING_LINE'
   ]
 });
 

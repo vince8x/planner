@@ -10,7 +10,7 @@ import {
 } from '../../react-planner/constants';
 import {
   beginDrawingLine,
-  endDrawingLine,
+  endDrawingLine
 } from '../../react-planner/actions/lines-actions';
 import {
   OPTIMIZE_PLANNER,
@@ -21,6 +21,9 @@ import {
   exportSolutionsSuccess,
   exportSolutionsFailure,
   OPTIMIZE_PLANNER_ERROR,
+  END_DRAWING_LINE,
+  END_DRAWING_LINE_SUCCESS,
+  endDrawingLineSuccess
 } from './actions';
 import { getPlannerState } from './selectors';
 import { Project } from '../../react-planner/class/export';
@@ -37,11 +40,10 @@ import {
   startProgressBar,
   stopProgressBar,
 } from '../menu/actions';
-import { getUserId } from '../auth/selectors';
 import { getCurrentProject } from '../projects/selectors';
 import { isRectangleArea } from '../../react-planner/utils/geometry';
 
-export function* endDrawingLineSaga(action) {
+export function* setLineLengthEndDrawingLineSaga(action) {
   const { linesAttributes, layerID } = action;
   const x = linesAttributes.getIn(['vertexTwo', 'x']);
   const y = linesAttributes.getIn(['vertexTwo', 'y']);
@@ -50,7 +52,7 @@ export function* endDrawingLineSaga(action) {
 }
 
 export function* watchSetLinesLengthEndDrawing() {
-  yield takeLatest(SET_LINES_LENGTH_END_DRAWING, endDrawingLineSaga);
+  yield takeLatest(SET_LINES_LENGTH_END_DRAWING, setLineLengthEndDrawingLineSaga);
 }
 
 export function* optimizePlannerSaga(action) {
@@ -205,13 +207,13 @@ export function* exportSolutions({ payload }) {
   const { updatedState } = Project.unselectAll(plannerState);
   const scene = updatedState.get('scene');
   const thermal = _.filter(getThermalRequirement(scene), {
-    categoryId: categoryId,
+    categoryId,
   });
   const fire = _.filter(getFireResistanceRequirement(scene), {
-    categoryId: categoryId,
+    categoryId,
   });
   const acoustic = _.filter(getAcousticRequirement(scene), {
-    categoryId: categoryId,
+    categoryId,
   });
 
   const csvResult = [];
@@ -283,6 +285,29 @@ export function* watchExportSolutions() {
   yield takeLatest(EXPORT_SOLUTIONS, exportSolutions);
 }
 
+export function* endDrawingLineSaga(action) {
+
+  const plannerState = yield select(getPlannerState);
+
+  if (plannerState.get('error')) {
+    yield put(error('Please make sure the line are perpendicular'));
+  }
+  yield put(endDrawingLineSuccess());
+}
+
+export function* watchEndDrawingLine() {
+  yield takeLatest(END_DRAWING_LINE, endDrawingLineSaga);
+}
+
+export function* endDrawingLineSuccessSaga() {
+  yield takeLatest(END_DRAWING_LINE_SUCCESS, endDrawingLineSuccessSaga);
+}
+
+export function* watchEndDrawingLineSuccess() {
+  yield takeLatest(END_DRAWING_LINE, endDrawingLineSuccessSaga);
+}
+
+
 export default function* rootSaga() {
   yield all([
     fork(watchSetLinesLengthEndDrawing),
@@ -291,5 +316,6 @@ export default function* rootSaga() {
     fork(watchOptimizePlannerSuccess),
     fork(watchSetHeightFailure),
     fork(watchOptimizePlannerError),
+    fork(watchEndDrawingLine)
   ]);
 }

@@ -9,6 +9,9 @@ export const OPTIMIZE_PLANNER_SUCCESS = 'OPTIMIZE_PLANNER_SUCCESS';
 export const OPTIMIZE_PLANNER_ERROR = 'OPTIMIZE_PLANNER_ERROR';
 export const SET_HEIGHT_FAILURE = 'SET_HEIGHT_FAILURE';
 
+export const END_DRAWING_LINE = 'END_DRAWING_LINE';
+export const END_DRAWING_LINE_SUCCESS = 'END_DRAWING_LINE_SUCCESS'
+
 export const optimizePlanner = (userId, projectId, elements, email, name, projectParams, areas, isTest) => ({
   type: OPTIMIZE_PLANNER,
   payload: { userId, projectId, elements, email, name, projectParams, areas, isTest }
@@ -42,5 +45,11 @@ export const exportSolutionsFailure = (message) => ({
 export function setHeightFailure() {
   return {
     type: SET_HEIGHT_FAILURE
+  };
+}
+
+export function endDrawingLineSuccess() {
+  return {
+    type: END_DRAWING_LINE_SUCCESS
   };
 }

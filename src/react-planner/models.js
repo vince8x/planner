@@ -328,7 +328,8 @@ export class State extends Record({
   clipboardProperties: new Map(),
   selectedElementsHistory: new List(),
   misc: new Map(),   // additional info
-  alterate: false
+  alterate: false,
+  error: null
 }, 'State') {
   constructor(json = {}) {
     super({
