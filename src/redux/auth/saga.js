@@ -1,8 +1,9 @@
 import firebase from 'firebase/app';
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
-import { auth } from '../../helpers/Firebase';
+import { auth, reduxSagaFirebase as rsf } from '../../helpers/Firebase';
 import {
   LOGIN_USER,
+  LOGIN_USER_SUCCESS,
   REGISTER_USER,
   LOGOUT_USER,
   FORGOT_PASSWORD,
@@ -12,6 +13,7 @@ import {
 import {
   loginUserSuccess,
   loginUserError,
+  populateUserData,
   registerUserSuccess,
   registerUserError,
   updateUserProfileSuccess,
@@ -40,6 +42,18 @@ function* loginWithEmailPassword({ payload }) {
     const loginUser = yield call(loginWithEmailPasswordAsync, email, password);
     if (!loginUser.message) {
       setCurrentUser(loginUser.user);
+      const snapshot = yield call(
+        rsf.firestore.getDocument,
+        `users/${loginUser.user.uid}`
+      );
+      
+      loginUser.user['isDeveloper'] = false;
+      
+      if (snapshot.exists) {
+        const user = snapshot.data();
+        loginUser.user['isDeveloper'] = user.isDeveloper ?? false;
+      }
+
       yield put(loginUserSuccess(loginUser.user));
       history.push('/projects');
     } else {
@@ -48,6 +62,30 @@ function* loginWithEmailPassword({ payload }) {
   } catch (error) {
     yield put(loginUserError(error));
   }
+}
+
+function* loginUserSuccessSaga({ payload }) {
+  try {
+    const snapshot = yield call(
+      rsf.firestore.getDocument,
+      `users/${payload.uid}`
+    );
+    
+    payload['isDeveloper'] = false;
+    
+    if (snapshot.exists) {
+      const user = snapshot.data();
+      payload['isDeveloper'] = user.isDeveloper ?? false;
+    }
+
+    yield put(populateUserData(payload));
+  } catch (error) {
+    yield put(loginUserError(error));
+  }
+}
+
+export function* watchLoginUserSuccess() {
+  yield takeEvery(LOGIN_USER_SUCCESS, loginUserSuccessSaga);
 }
 
 export function* watchLoginUser() {
@@ -63,7 +101,7 @@ const registerWithEmailPasswordAsync = async (email, password) =>
 const updateUserProfileAsync = async (userProfile) => {
   const user = auth.currentUser;
   return await user.updateProfile(userProfile)
-    .then(() => { 
+    .then(() => {
     })
     .catch(() => { });
 }
@@ -179,6 +217,7 @@ export function* watchResetPassword() {
 export default function* rootSaga() {
   yield all([
     fork(watchLoginUser),
+    fork(watchLoginUserSuccess),
     fork(watchLogoutUser),
     fork(watchRegisterUser),
     fork(watchForgotPassword),

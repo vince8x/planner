@@ -1,6 +1,5 @@
 import {
   LOGIN_USER,
-  LOGIN_USER_SUCCESS,
   LOGIN_USER_ERROR,
   REGISTER_USER,
   REGISTER_USER_SUCCESS,
@@ -15,6 +14,7 @@ import {
   UPDATE_USER_PROFILE_SUCCESS,
 } from '../actions';
 import { getCurrentUser } from '../../helpers/Utils';
+import { POPULATE_USER_DATA } from './actions';
 
 
 const INIT_STATE = {
@@ -33,7 +33,7 @@ export default (state = INIT_STATE, action) => {
   switch (action.type) {
     case LOGIN_USER:
       return { ...state, loading: true, error: '' };
-    case LOGIN_USER_SUCCESS:
+    case POPULATE_USER_DATA:
       return { 
         ...state, 
         loading: false, 
@@ -41,7 +41,7 @@ export default (state = INIT_STATE, action) => {
         error: '',
         email: action.payload.email,
         displayName: action.payload.displayName,
-
+        isDeveloper: action.payload.isDeveloper,
       };
     case LOGIN_USER_ERROR:
       return {

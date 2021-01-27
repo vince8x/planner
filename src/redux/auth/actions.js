@@ -1,6 +1,7 @@
 /* AUTH */
 export const LOGIN_USER = 'LOGIN_USER';
 export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
+export const POPULATE_USER_DATA = 'POPULATE_USER_DATA';
 export const LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
 export const REGISTER_USER = 'REGISTER_USER';
 export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
@@ -23,10 +24,17 @@ export const loginUser = (user, history) => ({
   type: LOGIN_USER,
   payload: { user, history },
 });
+
 export const loginUserSuccess = (user) => ({
   type: LOGIN_USER_SUCCESS,
   payload: user,
 });
+
+export const populateUserData = (user) => ({
+  type: POPULATE_USER_DATA,
+  payload: user,
+});
+
 export const loginUserError = (message) => ({
   type: LOGIN_USER_ERROR,
   payload: { message },

@@ -98,6 +98,7 @@ const TopNavPlanner = ({
   userId,
   email,
   name,
+  isDeveloper,
   mode,
   selectedElement,
   saveRemoteProjectAction,
@@ -522,8 +523,7 @@ const TopNavPlanner = ({
               <IntlMessages id="planner.import-json" />
             </UncontrolledTooltip>
           </Button>
-
-          <Button
+          { isDeveloper ? <Button
             className="toolbar-item"
             id="planner-debug-project"
             onClick={() => handleImportProjectFromProjectId()}
@@ -539,7 +539,8 @@ const TopNavPlanner = ({
             >
               <IntlMessages id="planner.debug-project" />
             </UncontrolledTooltip>
-          </Button>
+          </Button> : null }
+          
 {/* 
           // Debugs buttons
           <Button
@@ -978,6 +979,7 @@ const mapStateToProps = (state) => {
     userId: authUser.user,
     email: authUser.email,
     name: authUser.displayName,
+    isDeveloper: authUser.isDeveloper ?? false,
     mode: plannerState.get('mode'),
     selectedElement: plannerState.get('selectedElementsHistory').first(),
     optimizing: loading.isLoading,
