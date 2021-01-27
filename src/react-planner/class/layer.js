@@ -108,18 +108,26 @@ class Layer{
     );
 
     let areaIDs = [];
+    let innerCyclesByVerticesID_to_area = {};
 
     //remove areas
     state.getIn(['scene', 'layers', layerID, 'areas']).forEach(area => {
-      let areaInUse = innerCyclesByVerticesID.some(vertices => sameSet(vertices, area.vertices));
+      const areaInUse = innerCyclesByVerticesID.some(vertices => sameSet(vertices, area.vertices));
+
       if (!areaInUse) {
+        innerCyclesByVerticesID.forEach((cycle, ind) => {
+          if (area.vertices.isSubset(cycle)) {
+            // are will be replaced
+            innerCyclesByVerticesID_to_area[ind] = area;
+          }
+        })
         state = Area.remove( state, layerID, area.id ).updatedState;
       }
     });
 
     //add new areas
     innerCyclesByVerticesID.forEach((cycle, ind) => {
-      let areaInUse = state.getIn(['scene', 'layers', layerID, 'areas']).find(area => sameSet(area.vertices, cycle));
+      const areaInUse = state.getIn(['scene', 'layers', layerID, 'areas']).find(area => sameSet(area.vertices, cycle));
 
       if (areaInUse) {
         areaIDs[ind] = areaInUse.id;
@@ -127,9 +135,15 @@ class Layer{
       } else {
         let areaVerticesCoords = cycle.map(vertexID => state.getIn(['scene', 'layers', layerID, 'vertices', vertexID]));
         let resultAdd = Area.add(state, layerID, 'area', areaVerticesCoords, state.catalog);
-
         areaIDs[ind] = resultAdd.area.id;
         state = resultAdd.updatedState;
+
+        if (innerCyclesByVerticesID_to_area[ind]) {
+          const replacedArea = innerCyclesByVerticesID_to_area[ind];
+          const properties = replacedArea.get('properties');
+          state = state.setIn(['scene', 'layers', layerID, 'areas', resultAdd.area.id, 'properties', 'patternColor'], properties.get('patternColor'));
+          state = state.setIn(['scene', 'layers', layerID, 'areas', resultAdd.area.id, 'properties', 'texture'], properties.get('texture'));
+        }
       }
     });
 
