@@ -308,23 +308,6 @@ class ProjectConfigurator extends Component {
           </FormBlock>
 
           <FormBlock>
-            <FormLabel htmlFor="building-type">
-              <IntlMessages id="planner.building-type" />
-            </FormLabel>
-            <FormSelect
-              id="building-type"
-              value={buildingType}
-              onChange={(e) => this.setState({ buildingType: e.target.value })}
-            >
-              {BUILDING_TYPES.map((el) => (
-                <option key={el} value={el}>
-                  {el}
-                </option>
-              ))}
-            </FormSelect>
-          </FormBlock>
-
-          <FormBlock>
             <FormLabel htmlFor="type-of-grouping">
               <IntlMessages id="planner.type-of-grouping" />
             </FormLabel>

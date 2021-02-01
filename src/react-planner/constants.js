@@ -374,7 +374,7 @@ export const TYPE_OF_GROUPING = [
 ];
 
 export const NUMBER_OF_FLOORS = [
-  1, 2, 3, 4
+  1, 2, 3, 4, 5, 6
 ];
 
 export const SOIL_TYPES = [
