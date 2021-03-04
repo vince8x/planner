@@ -214,6 +214,7 @@ module.exports = {
   'planner.test-optimize': 'Probar optimizar',
   'planner.export-solutions': 'Exportar imagen',
   'planner.no-records-result': 'No hay registros en el resultado',
+  'planner.floor': 'Piso',
 
   /* 06. Project */
   'project.project-list': 'Lista de proyectos',

@@ -2,7 +2,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Card, CardBody, CardTitle, Button, ButtonGroup } from 'reactstrap';
+import * as _ from 'lodash';
+import { injectIntl } from 'react-intl';
+import { Card, CardBody, CardTitle, Button, ButtonGroup, CardImg, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import IntlMessages from '../../../helpers/IntlMessages';
 import LineChart from './line-chart';
 import { CHART_COLOR_LIST } from '../../constants';
@@ -10,25 +12,30 @@ import * as optimizationActionsAll from '../../actions/optimization-actions';
 import * as menuActionsAll from '../../../redux/menu/actions';
 
 function OptimizationSidebar({
+  intl,
   optimizationActions,
   loadedProject,
   showOptimizationBar,
   optimizeData,
   email,
   name,
+  userId,
   menuActions,
   isOptimized,
 }) {
   const [lineChartData, setLineChartData] = useState({});
   const [selectedoptimizeData, setOptimizeData] = useState([]);
+  const [imagePrefix, setImagePrefix] = useState(null);
+  const [floorDropDownData, setFloorDropDownData] = useState([]);
+  const [selectedFloor, setSelectedFloor] = useState(null);
+  const [selectedFloorText, setSelectedFloorText] = useState(null);
 
   useEffect(() => {
     if (optimizeData && optimizeData.paretoPoints) {
-      const firstProps =
-        optimizeData.paretoPoints[Object.keys(optimizeData.paretoPoints)[0]];
+      const firstProps = optimizeData.paretoPoints[Object.keys(optimizeData.paretoPoints)[0]];
       const labels = Object.keys(firstProps);
       let i = 0;
-      setLineChartData({
+      const data = {
         labels,
         datasets: Object.keys(optimizeData.paretoPoints).map((pareto) => {
           const dataTable = Object.values(optimizeData.paretoPoints[pareto]);
@@ -46,7 +53,26 @@ function OptimizationSidebar({
             fill: false,
           };
         }),
+      };
+
+      // Calculate the floor dropdown data
+      const floors = [];
+      Object.keys(optimizeData.optimizeResults).map((key) => {
+        const value = optimizeData.optimizeResults[key];
+        const { losa } = value;
+        losa.map(floor => {
+          if (!_.isNil(floor['Piso del Panel']) && !_.includes(floors, floor['Piso del Panel'])) {
+            floors.push(floor['Piso del Panel']);
+          }
+        })
       });
+      setFloorDropDownData(floors.map(floor => {
+        return {
+          id: floor,
+          text: `${intl.formatMessage({ id: 'planner.floor' })} ${floor}`
+        }
+      }));
+      setLineChartData(data);
     }
   }, [optimizeData]);
 
@@ -66,6 +92,8 @@ function OptimizationSidebar({
         menuActions.turnOnOptimizeButton();
         optimizationActions.selectedOptimizePlan(plan.solution);
       }
+
+      setImagePrefix(`${process.env.REACT_APP_API_ENDPOINT}/api/images/${userId}/${loadedProject?.id}/imagen_losa_${paneles}_${costo}_${mesas}_`);
     }
   };
 
@@ -122,7 +150,7 @@ function OptimizationSidebar({
   const handleProcessOptimize = () => {
     if (isOptimized) {
       const projectName = loadedProject ? loadedProject.name : '';
-  
+
       menuActions.processOptimizeData(
         projectName,
         email,
@@ -140,6 +168,14 @@ function OptimizationSidebar({
     }
   };
 
+  const handleChangeFloor = (floor) => {
+    setSelectedFloor(floor);
+    const text = `${intl.formatMessage({ id: 'planner.floor'} )} ${floor}`;
+    setSelectedFloorText(text);
+  }
+
+
+
   return (
     <div id="optimization-bar">
       {showOptimizationBar && optimizeData == null && (
@@ -152,6 +188,23 @@ function OptimizationSidebar({
               <CardTitle>
                 <IntlMessages id="planner.optimization-bar" />
               </CardTitle>
+              <div className="btn-group float-right float-none-xs mt-2">
+                <UncontrolledDropdown>
+                  <DropdownToggle caret color="primary" className="btn-xs" outline>
+                    {selectedFloor ? selectedFloorText : <IntlMessages id="planner.floor" />}
+                    
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    {floorDropDownData.map((el) => (
+                      <DropdownItem key={`floor_${el.id}`}
+                      onClick={() => handleChangeFloor(el.id)}
+                      >
+                        {el.text}
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              </div>
               <div className="dashboard-line-chart">
                 <LineChart
                   shadow
@@ -159,28 +212,33 @@ function OptimizationSidebar({
                   options={lineChartOptions}
                 />
               </div>
+              {userId && loadedProject && imagePrefix && selectedFloor && (
+                <a href={`${imagePrefix}${selectedFloor}.png`} target="_blank" rel="noreferrer">
+                  <CardImg className="mt-4" top src={`${imagePrefix}${selectedFloor}.png`} alt="Preview" />
+                </a>
+              )}
             </CardBody>
           </Card>
           <br />
           <ButtonGroup className="center">
-              <Button
-                className="mb-2"
-                color="primary"
-                onClick={() => handleProcessOptimize()}
-              >
-                <IntlMessages id="planner.generate" />
-              </Button>
-              <Button
-                color="primary"
-                className="mb-2"
-                onClick={() => handleLoadOriginal()}
-                active={isOptimized}
-              >
-                <IntlMessages
-                  id={isOptimized ? 'planner.optimized' : 'planner.original'}
-                />
-              </Button>
-            </ButtonGroup>
+            <Button
+              className="mb-2"
+              color="primary"
+              onClick={() => handleProcessOptimize()}
+            >
+              <IntlMessages id="planner.generate" />
+            </Button>
+            <Button
+              color="primary"
+              className="mb-2"
+              onClick={() => handleLoadOriginal()}
+              active={isOptimized}
+            >
+              <IntlMessages
+                id={isOptimized ? 'planner.optimized' : 'planner.original'}
+              />
+            </Button>
+          </ButtonGroup>
         </div>
       )}
     </div>
@@ -196,6 +254,7 @@ const mapStateToProps = ({ menu, planner, authUser, projects }) => {
     statePlanner: planner,
     email: authUser.email,
     name: authUser.displayName,
+    userId: authUser.user,
     loadedProject,
     isOptimized,
   };
@@ -210,5 +269,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(OptimizationSidebar)
+  injectIntl(connect(mapStateToProps, mapDispatchToProps)(OptimizationSidebar))
 );

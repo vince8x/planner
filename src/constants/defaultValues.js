@@ -12,12 +12,13 @@ export const localeOptions = [
   { id: 'es', name: 'Español', direction: 'ltr' },
 ];
 
+// Need to change when switch project
 export const firebaseConfig = {
-  apiKey: 'AIzaSyAJXK205x8hOcpahCYqfc2nCFKmjKC0RHY',
-  authDomain: 'https://deodem-woodproject.firebaseapp.com/',
-  databaseURL: 'https://deodem-woodproject.firebaseio.com',
-  projectId: 'deodem-woodproject',
-  storageBucket: 'deodem-woodproject.appspot.com',
+  apiKey: 'AIzaSyDy4X3NHkiENawm35mu_HXzbOJaRcg5muI',
+  authDomain: 'https://woodproject-development.web.app/',
+  databaseURL: 'https://woodproject-development.firebaseio.com',
+  projectId: 'woodproject-development',
+  storageBucket: 'woodproject-development.appspot.com',
   messagingSenderId: '703206105136',
 };
 

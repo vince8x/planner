@@ -30,7 +30,7 @@ const LineChart = ({ data, options, shadow = false }) => {
       const context = chartContainer.current.getContext('2d');
       const newChartInstance = new Chart(context, {
         type: shadow ? 'lineWithShadow' : 'line',
-        options: options,
+        options,
         data,
       });
       setChartInstance(newChartInstance);

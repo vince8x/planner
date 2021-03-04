@@ -211,6 +211,7 @@ module.exports = {
   'planner.export-solutions': 'Export solutions',
   'planner.export-image': 'Export image',
   'planner.no-records-result': 'There are no records in the result',
+  'planner.floor': 'Floor',
 
   /* 06. Project */
   'project.project-list': 'Project list',

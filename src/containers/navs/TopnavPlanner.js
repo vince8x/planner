@@ -474,26 +474,6 @@ const TopNavPlanner = ({
             </Button>
           )}
 
-          {loadedProject && (
-            <Button
-              className="toolbar-item"
-              id="planner-test-optimize-project"
-              onClick={() => handleOptimize(true)}
-              disabled={optimizing}
-            >
-              <FaPlay />
-              <div className="btn-title">
-                <IntlMessages id="planner.test-optimize" />
-              </div>
-              <UncontrolledTooltip
-                placement="right"
-                target="planner-test-optimize-project"
-              >
-                <IntlMessages id="planner.test-optimize" />
-              </UncontrolledTooltip>
-            </Button>
-          )}
-
           <Button
             className="toolbar-item"
             id="planner-export-json"

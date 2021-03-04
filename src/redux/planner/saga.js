@@ -67,7 +67,7 @@ export function* optimizePlannerSaga(action) {
     isTest,
   } = action.payload;
 
-  const url = `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
+  const url = isTest ? `${process.env.REACT_APP_API_ENDPOINT}/api/test_process_data`: `${process.env.REACT_APP_API_ENDPOINT}/api/process_data`;
 
   const plannerState = yield select(getPlannerState);
   const { updatedState } = Project.unselectAll(plannerState);
