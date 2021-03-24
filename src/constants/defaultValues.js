@@ -13,13 +13,24 @@ export const localeOptions = [
 ];
 
 // Need to change when switch project
+// export const firebaseConfig = {
+//   apiKey: 'AIzaSyDy4X3NHkiENawm35mu_HXzbOJaRcg5muI',
+//   authDomain: 'https://woodproject-development.web.app/',
+//   databaseURL: 'https://woodproject-development.firebaseio.com',
+//   projectId: 'woodproject-development',
+//   storageBucket: 'woodproject-development.appspot.com',
+//   messagingSenderId: '703206105136',
+// };
+
 export const firebaseConfig = {
-  apiKey: 'AIzaSyDy4X3NHkiENawm35mu_HXzbOJaRcg5muI',
-  authDomain: 'https://woodproject-development.web.app/',
-  databaseURL: 'https://woodproject-development.firebaseio.com',
-  projectId: 'woodproject-development',
-  storageBucket: 'woodproject-development.appspot.com',
-  messagingSenderId: '703206105136',
+  apiKey: 'AIzaSyCmCZTxZ5BP8fc2NKXO8L7c7aD4F4mRC14',
+  authDomain: 'https://deodem-woodproject.web.app',
+  databaseURL: 'https://deodem-wood-project.firebaseio.com',
+  projectId: 'deodem-wood-project',
+  storageBucket: 'deodem-wood-project.appspot.com',
+  messagingSenderId: '1079017350217',
+  appId: "1:1079017350217:web:c891adff0e88b60094cb98",
+  measurementId: "G-810Z7C6P6Y"
 };
 
 export const adminRoot = '/app';

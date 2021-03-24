@@ -1,5 +1,15 @@
 {
   "projects": {
-    "default": "woodproject-development"
+    "default": "woodproject-development",
+    "production": "deodem-wood-project"
+  },
+  "targets": {
+    "deodem-wood-project": {
+      "hosting": {
+        "production": [
+          "deodem-wood-project"
+        ]
+      }
+    }
   }
 }
