@@ -48,7 +48,7 @@ class ProjectConfigurator extends Component {
     let totalAreaSize = 0;
     layers.map((layer) => {
       layer.areas.map((area) => {
-        totalAreaSize = calculateArea(area, layer);
+        totalAreaSize += calculateArea(area, layer);
       });
     });
 
