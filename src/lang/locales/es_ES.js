@@ -79,6 +79,7 @@ module.exports = {
   'planner.configure-project': 'Configuracion de projecto',
   'planner.configure-canvas': 'Configuracion de lona',
   'planner.optimization-bar': 'Barra de optimización',
+  'planner.optimization-result': 'Resultado de optimización',
   'planner.generate': 'Generar',
   'planner.original': 'Original',
   'planner.optimized': 'Optimizado',
