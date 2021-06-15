@@ -1,3 +1,5 @@
+## Intro
+This is a project frontend to draw the floor plan and run the optimization
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -29,8 +31,9 @@ Your app is ready to be deployed!
 
 ### Deployment
 
+The application is a SPA application hosting on firebase (or any other hosting). The data is stored in the Google Firestore
 We can deploy with firebase hosting by the command
-```bash```
+```bash
 firebase login
 firebase deploy
 ```
@@ -39,5 +42,15 @@ This section has moved here: https://firebase.google.com/docs/hosting
 
 ### Developer Mode
 Go to the firestore console and add isDeveloper to the user, then you can export and import projects by userId and projectId#
+
+
+### Dependencies
+- <a href="https://reactjs.org/" target="_blank">Reactjs</a>
+- <a href="https://cvdlab.github.io/react-planner/" target="_blank">React Planner</a>
+- <a href="https://chrvadala.github.io/react-svg-pan-zoom/?path=/story/welcome--page" target="_blank">react-svg-pan-zoom</a>
+- <a href="https://redux.js.org/" target="_blank">Redux</a>
+- <a href="https://redux-saga.js.org/" target="_blank">Redux Saga</a>
+- <a href="https://redux-saga-firebase.js.org/" target="_blank">Redux Saga Firebase</a>
+
 
 
