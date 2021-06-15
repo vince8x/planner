@@ -2,6 +2,9 @@
 This is a project frontend to draw the floor plan and run the optimization
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Architecture
+![Architecture diagram](docs/architecture.png)(./architecture)
+
 ## Available Scripts
 
 In the project directory, you can run:
